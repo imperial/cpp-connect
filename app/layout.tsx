@@ -8,8 +8,8 @@ import { Inter } from "next/font/google"
 
 // Next object for information in the HTML head
 export const metadata: Metadata = {
-  title: "ImPaaS Template App",
-  description: "A template app to be deployed on ImPaaS with databases and volumes",
+  title: "CPP Connect",
+  description: "Connecting quality Imperial students with quality employers",
 }
 
 const inter = Inter({ subsets: ["latin"] })
