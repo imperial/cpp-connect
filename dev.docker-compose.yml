@@ -1,0 +1,36 @@
+services:
+  app:
+    image: edtech/cpp-connect
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=postgres://user:pass@database:5432/cpp-connect
+      - UPLOAD_DIR=/uploads
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - uploads:/uploads
+    command:
+      - "npm"
+      - "run"
+      - "dev"
+
+  database:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=cpp-connect
+    ports:
+      - "5432:5432"
+    volumes:
+      - database-data:/var/lib/postgresql/data
+
+volumes:
+  database-data:
+  uploads:

@@ -7,9 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write '{app,components,lib}/**/*.{ts,tsx}'"
+    "format": "prettier --write '{app,components,lib}/**/*.{ts,tsx}'",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "{app, components, lib, styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
+    "lint-staged": "^15.2.7",
     "mime-types": "^2.1.35",
     "mysql2": "^3.10.3",
     "next": "14.2.5",
@@ -19,6 +26,8 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/mime-types": "^2.1.4",
     "@types/node": "^20",
@@ -26,6 +35,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
+    "husky": "^9.1.4",
     "typescript": "^5"
   },
   "license": "MIT",
@@ -46,7 +56,6 @@
       "name": "Kishan Sambhi",
       "email": "kss22@ic.ac.uk"
     },
-    
     {
       "name": "Matthew Alex",
       "email": "ma4723@ic.ac.uk"
