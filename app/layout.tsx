@@ -2,8 +2,9 @@ import { Client } from "@/components/Client"
 
 import "./globals.css"
 
+import { Theme } from "@radix-ui/themes"
+import "@radix-ui/themes/styles.css"
 import { Metadata } from "next"
-import { SessionProvider } from "next-auth/react"
 import { Inter } from "next/font/google"
 
 // Next object for information in the HTML head
@@ -22,7 +23,9 @@ const RootLayout = ({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Client>{children}</Client>
+        <Theme>
+          <Client>{children}</Client>
+        </Theme>
       </body>
     </html>
   )
