@@ -1,6 +1,6 @@
+import { auth } from "@/auth"
 import Auth from "@/components/Auth"
 import Navbar from "@/components/Navbar"
-import { auth } from "@/auth"
 
 import styles from "./page.module.css"
 
