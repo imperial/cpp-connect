@@ -8,7 +8,14 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write '{app,components,lib}/**/*.{ts,tsx}'",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:pull": "dotenv -e .env.local prisma db pull",
+    "db:push": "dotenv -e .env.local prisma db push",
+    "db:migrate-dev": "dotenv -e .env.local prisma migrate dev",
+    "db:studio": "dotenv -e .env.local prisma studio",
+    "db:reset": "dotenv -e .env.local prisma migrate reset --force",
+    "db:generate": "dotenv -e .env.local prisma generate",
+    "db:seed": "dotenv -e .env.local prisma db seed"
   },
   "lint-staged": {
     "{app, components, lib, styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
@@ -16,6 +23,7 @@
     ]
   },
   "dependencies": {
+    "@prisma/client": "^5.17.0",
     "lint-staged": "^15.2.7",
     "mime-types": "^2.1.35",
     "mysql2": "^3.10.3",
@@ -33,9 +41,11 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dotenv-cli": "^7.4.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "husky": "^9.1.4",
+    "prisma": "^5.17.0",
     "typescript": "^5"
   },
   "license": "MIT",
