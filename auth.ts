@@ -15,9 +15,11 @@ export const config: NextAuthConfig = {
             return !!auth
         },
     },
-    pages: {
-      signIn: "/login"
-    },
+
+    // TODO: uncomment when we have a login page
+    // pages: {
+    //   signIn: "/login"
+    // },
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config)

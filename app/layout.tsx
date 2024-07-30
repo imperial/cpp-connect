@@ -1,4 +1,5 @@
 import { Client } from "@/components/Client"
+import Navbar from "@/components/Navbar"
 
 import "./globals.css"
 
@@ -24,6 +25,7 @@ const RootLayout = ({
     <html lang="en">
       <body className={inter.className}>
         <Theme>
+          <Navbar />
           <Client>{children}</Client>
         </Theme>
       </body>

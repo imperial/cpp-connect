@@ -5,13 +5,7 @@ import Navbar from "@/components/Navbar"
 import styles from "./page.module.css"
 
 const Home = async () => {
-  return (
-    <main className={styles.main}>
-      <div>
-        <Navbar />
-      </div>
-    </main>
-  )
+  return <main className={styles.main}></main>
 }
 
 export const dynamic = "force-dynamic"
