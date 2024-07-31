@@ -19,3 +19,19 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Company {
+  id            String        @id @default(cuid())
+  opportunities Opportunity[]
+}
+
+model Opportunity {
+  opportunityID   String  @id @default(cuid())
+  company         Company @relation(fields:[companyID], references:[id])
+  companyID       String  
+  position        String
+  location        String
+  available       Boolean    
+  type            String
+  createdAt       DateTime @default(now())
+}
