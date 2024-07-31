@@ -3,8 +3,10 @@ import Navbar from "@/components/Navbar"
 
 import "./globals.css"
 
-import { Theme } from "@radix-ui/themes"
-import "@radix-ui/themes/styles.css"
+import { Theme, ThemePanel } from "@radix-ui/themes"
+import "@radix-ui/themes/components.css"
+import "@radix-ui/themes/tokens/base.css"
+import "@radix-ui/themes/utilities.css"
 import { Metadata } from "next"
 import { Inter } from "next/font/google"
 
@@ -24,7 +26,8 @@ const RootLayout = ({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Theme>
+        <Theme accentColor="blue" grayColor="gray">
+          <ThemePanel defaultOpen={false} />
           <Navbar />
           <Client>{children}</Client>
         </Theme>

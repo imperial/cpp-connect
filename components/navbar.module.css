@@ -1,54 +1,53 @@
 .container {
-    background-color: #0000CD;
-    padding: 1em;
-    width: 100vw;
-    flex-flow: row wrap;
-    align-items: center;
-    gap: 1em;
+  background-color: var(--blue-9);
+  padding: 1em;
+  width: 100vw;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 1em;
 }
 
 .linksContainer {
-    gap: 1.5em;
-    align-items: center;
+  gap: 1.5em;
+  align-items: center;
 }
 
 .link {
-    color: white !important;
-    font-size: 1.25em !important;
+  color: white !important;
+  font-size: 1.25em !important;
 }
 
-
 .link span {
-    position: relative;
+  position: relative;
 }
 
 .link span::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    bottom: -2px;
-    left: 0;
-    background-color: white;
-    transform-origin: bottom center;
-    transition: transform 0.1s linear;
-    transform: scaleX(0);
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: white;
+  transform-origin: bottom center;
+  transition: transform 0.1s linear;
+  transform: scaleX(0);
 }
 
 .link:hover span::after {
-    transform: scaleX(1);
-    transform-origin: bottom center;
+  transform: scaleX(1);
+  transform-origin: bottom center;
 }
 
 .logosContainer {
-    gap: 2em;
+  gap: 2em;
 }
 
 .logosContainer img {
-    height: 4em;
-    width: auto;
+  max-width: 12em;
+  height: 4em;
+  width: auto;
 }
-
 
 .AvatarRoot {
   display: inline-flex;
@@ -61,7 +60,6 @@
   width: 45px;
   height: 45px;
   border-radius: 100%;
-  background-color: rgb(200, 205, 230);
 }
 
 .AvatarImage {
@@ -77,8 +75,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(200, 205, 230);
-  color: #0000CD;
+  background-color: var(--gray-4);
+  color: var(--blue-9);
   font-size: 15px;
   line-height: 1;
   font-weight: 500;
