@@ -1,16 +1,8 @@
-import Auth from "@/components/Auth"
-import { auth } from "@/lib/auth"
-
-import styles from "./page.module.css"
+import "./globals.scss"
+import styles from "./page.module.scss"
 
 const Home = async () => {
-  return (
-    <main className={styles.main}>
-      <div>
-        <Auth />
-      </div>
-    </main>
-  )
+  return <main className={styles.main}></main>
 }
 
 export const dynamic = "force-dynamic"

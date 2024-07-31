@@ -41,6 +41,7 @@ const config = {
         'revert',
         'style',
         'test',
+        'wip',
       ],
     ] as [RuleConfigSeverity, RuleConfigCondition, string[]],
   },

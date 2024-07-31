@@ -1,0 +1,51 @@
+.container {
+  background-color: var(--blue-9);
+  padding: 1em;
+  width: 100vw;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 1em;
+}
+
+.linksContainer {
+  gap: 1.5em;
+  align-items: center;
+}
+
+.link {
+  color: white !important;
+  font-size: 1.25em !important;
+}
+
+/* Underline hover animation for links */
+.link span {
+  position: relative;
+}
+
+.link span::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: white;
+  transform-origin: bottom center;
+  transition: transform 0.1s linear;
+  transform: scaleX(0);
+}
+
+.link:hover span::after {
+  transform: scaleX(1);
+  transform-origin: bottom center;
+}
+
+.logosContainer {
+  gap: 2em;
+}
+
+.logosContainer img {
+  max-width: 12em;
+  height: 4em;
+  width: auto;
+}
