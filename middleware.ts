@@ -14,6 +14,9 @@ export const config = {
   * - _next/static (static files)
   * - _next/image (image optimization files)
   * - favicon.ico (favicon file)
+  * - images (static images from public directory)
+  * - login (login page)
+  * Also do not match home path
   */
   matcher: ["\/((?!api|_next\/static|_next\/image|favicon.ico|images|login|$).*)"],
 }
