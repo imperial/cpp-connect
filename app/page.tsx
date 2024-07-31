@@ -1,7 +1,3 @@
-import { auth } from "@/auth"
-import Auth from "@/components/Auth"
-import Navbar from "@/components/Navbar"
-
 import "./globals.scss"
 import styles from "./page.module.scss"
 

@@ -12,7 +12,7 @@ const UserAvatar = ({ user }: { user: User }) => (
         ?.split(",")
         .reverse()
         .join(" ")
-        .split(/\s|\-/g)
+        .split(/\s|-/g)
         .map(name => name[0]?.toUpperCase())
         .join("")}
     </Avatar.Fallback>

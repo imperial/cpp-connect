@@ -9,6 +9,7 @@ import "@radix-ui/themes/tokens/base.css"
 import "@radix-ui/themes/utilities.css"
 import { Metadata } from "next"
 import { Inter } from "next/font/google"
+import { ReactNode } from "react"
 
 // Next object for information in the HTML head
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ const inter = Inter({ subsets: ["latin"] })
 const RootLayout = ({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: ReactNode
 }>) => {
   return (
     <html lang="en">
