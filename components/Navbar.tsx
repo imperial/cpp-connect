@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 
+import UserAvatar from "./UserAvatar"
 import styles from "./navbar.module.css"
 
 import * as Avatar from "@radix-ui/react-avatar"
@@ -39,18 +40,7 @@ const Navbar = async () => {
         </Flex>
 
         {session?.user ? (
-          <Avatar.Root className={styles.AvatarRoot}>
-            <Avatar.Image src={session.user.image ?? undefined} alt="Profile" className={styles.AvatarImage} />
-            <Avatar.Fallback className={styles.AvatarFallback}>
-              {session.user.name
-                ?.split(",")
-                .reverse()
-                .join(" ")
-                .split(/\s|\-/g)
-                .map(name => name[0]?.toUpperCase())
-                .join("")}
-            </Avatar.Fallback>
-          </Avatar.Root>
+          <UserAvatar user={session.user} />
         ) : (
           <Link href="/login" className={styles.link}>
             <span>Log In</span>
