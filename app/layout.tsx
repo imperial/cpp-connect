@@ -1,7 +1,7 @@
 import { Client } from "@/components/Client"
 import Navbar from "@/components/Navbar"
 
-import "./globals.css"
+import "./globals.scss"
 
 import { Theme, ThemePanel } from "@radix-ui/themes"
 import "@radix-ui/themes/components.css"

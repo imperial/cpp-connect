@@ -1,7 +1,7 @@
 import { auth } from "@/auth"
 
 import UserAvatar from "./UserAvatar"
-import styles from "./navbar.module.css"
+import styles from "./navbar.module.scss"
 
 import * as Avatar from "@radix-ui/react-avatar"
 import { Flex, Link } from "@radix-ui/themes"

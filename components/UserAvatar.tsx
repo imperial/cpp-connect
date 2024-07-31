@@ -1,4 +1,4 @@
-import styles from "@/components/userAvatar.module.css"
+import styles from "@/components/userAvatar.module.scss"
 
 import * as Avatar from "@radix-ui/react-avatar"
 import { User } from "next-auth"
