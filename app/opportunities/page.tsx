@@ -5,6 +5,7 @@ import React from "react"
 
 const OpportunitiesPage = async () => {
   const opportunities = await prisma.opportunity.findMany({
+    orderBy: { createdAt: "desc" },
     include: {
       company: true,
     },
