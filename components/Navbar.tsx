@@ -28,7 +28,7 @@ const Navbar = async () => {
               <Link href="/" className={styles.link}>
                 <span>Events</span>
               </Link>
-              <Link href="/" className={styles.link}>
+              <Link href="/opportunities" className={styles.link}>
                 <span>Opportunities</span>
               </Link>
               <Link href="/" className={styles.link}>
