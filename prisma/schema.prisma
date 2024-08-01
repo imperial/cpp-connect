@@ -21,14 +21,14 @@ model User {
 }
 
 model Company {
-  id            String        @id @default(cuid())
+  id            Int  @id @default(autoincrement())
   opportunities Opportunity[]
 }
 
 model Opportunity {
-  opportunityID   String  @id @default(cuid())
+  id              Int  @id @default(autoincrement())
   company         Company @relation(fields:[companyID], references:[id])
-  companyID       String  
+  companyID       Int  
   position        String
   location        String
   available       Boolean    
