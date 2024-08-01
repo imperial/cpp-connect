@@ -42,3 +42,10 @@ body {
   }
 }
 
+.page-container {
+  width: 100vw;
+}
+
+.page-content {
+  width: min(90vw, 1200px);
+}

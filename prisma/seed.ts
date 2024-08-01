@@ -3,14 +3,14 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-  const alice = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'ab1223@ic.ac.uk' },
     update: {},
     create: {
       email: 'ab1223@ic.ac.uk',
     },
   })
-  const bob = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'ma4723@ic.ac.uk' },
     update: {},
     create: {
@@ -28,12 +28,27 @@ async function main() {
       sector: "Education",
       logo: "",
       website: "https://scientia.doc.ic.ac.uk",
+      opportunities: {
+        create: [
+          {
+            position: "software engineer",
+            location: "london",
+            available: true,
+            type: "internship",
+          },
+          {
+            position: "prompt engineer",
+            location: "mars",
+            available: false,
+            type: "job",
+          }
+        ]
+      }
     },
   })
 
-  const users = await prisma.user.findMany()
-  console.log(users)
-  
+  const opportunities = await prisma.opportunity.findMany()
+  console.log(opportunities)
 }
 
 main()
