@@ -20,14 +20,24 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-model Company {
+model CompanyProfile {
   id            Int  @id @default(autoincrement())
+  name          String
+  summary       String
+  sector        String
+  logo          String
+  website       String
+  size          String?
+  hq            String?
+  email         String?
+  phone         String?
+  founded       String?
   opportunities Opportunity[]
 }
 
 model Opportunity {
   id              Int  @id @default(autoincrement())
-  company         Company @relation(fields:[companyID], references:[id])
+  company         CompanyProfile @relation(fields:[companyID], references:[id])
   companyID       Int  
   position        String
   location        String

@@ -18,39 +18,37 @@ async function main() {
     },
   })
 
-  await prisma.company.upsert({
-    where: { id: "1234"},
+  await prisma.companyProfile.upsert({
+    where: { id: 1 },
     update: {},
-    create: { id: "1234" },
-  })
-
-  await prisma.opportunity.upsert({
-    where: { opportunityID: "1"},
-    update: {},
-    create: { opportunityID: "1",
-      position: "software engineer",
-      location: "london",
-      available: true,
-      type: "internship",
-      companyID: "1234"
-    }
-  })
-
-  await prisma.opportunity.upsert({
-    where: { opportunityID: "2"},
-    update: {},
-    create: { opportunityID: "2",
-      position: "prompt engineer",
-      location: "mars",
-      available: false,
-      type: "job",
-      companyID: "1234"
-    }
+    create: {
+      id: 1,
+      name: "Doc EdTech",
+      summary: "We the best",
+      sector: "Education",
+      logo: "",
+      website: "https://scientia.doc.ic.ac.uk",
+      opportunities: {
+        create: [
+          {
+            position: "software engineer",
+            location: "london",
+            available: true,
+            type: "internship",
+          },
+          {
+            position: "prompt engineer",
+            location: "mars",
+            available: false,
+            type: "job",
+          }
+        ]
+      }
+    },
   })
 
   const opportunities = await prisma.opportunity.findMany()
   console.log(opportunities)
-
 }
 
 main()
