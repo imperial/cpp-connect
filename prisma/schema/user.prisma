@@ -1,5 +1,5 @@
 // From https://authjs.dev/getting-started/adapters/prisma - allow Auth.js to use the database for user storage
-// NOTE: TRY TO MODIFY THIS!
+// NOTE: TRY NOT TO MODIFY THIS!
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -13,6 +13,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  eIDPreferredUsername String? // Microsoft Entra ID preferred username (e.g. ab1223@ic.ac.uk)
 }
 
 enum Role {

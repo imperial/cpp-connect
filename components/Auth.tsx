@@ -8,9 +8,10 @@ import React from "react"
  */
 const Auth = () => {
   const { data: session } = useSession()
+  console.log(session)
   return session?.user ? (
     <>
-      Signed in as {session.user.email} <br />
+      Signed in as {session.user.email} with role {session.user.role} <br />
       <button onClick={() => signOut()}>Sign out</button>
     </>
   ) : (
