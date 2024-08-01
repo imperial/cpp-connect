@@ -29,12 +29,13 @@ export const config: NextAuthConfig = {
       clientSecret: process.env.MS_ENTRA_CLIENT_SECRET,
       tenantId: process.env.MS_ENTRA_TENANT_ID,
       async profile(profile, tokens) {
+        // From https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/microsoft-entra-id.ts
         const response = await fetch(`https://graph.microsoft.com/v1.0/me/photos/240x240/$value`, {
           headers: { Authorization: `Bearer ${tokens.access_token}` },
         })
 
         // Confirm that profile photo was returned
-        let image
+        let image = null
         // TODO: Do this without Buffer
         if (response.ok && typeof Buffer !== "undefined") {
           try {
@@ -45,6 +46,7 @@ export const config: NextAuthConfig = {
         }
 
         const userProfile: Prisma.UserCreateInput = {
+          id: profile.sub,
           role: profile.role ?? "STUDENT",
           name: profile.name,
           email: profile.email,
@@ -60,13 +62,7 @@ export const config: NextAuthConfig = {
       // Logged in users are authenticated, otherwise redirect to login page
       return !!auth
     },
-    // jwt({ token, user }) {
-    //   if (user) token.role = user.role
-    //   return token
-    // },
     session({ session, user, token }) {
-      console.log("TOKEN", token)
-      console.log("USER", user)
       if (!user?.role) {
         throw new Error("Role not found in user when creating session")
       }
