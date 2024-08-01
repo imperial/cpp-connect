@@ -18,6 +18,19 @@ async function main() {
     },
   })
 
+  await prisma.companyProfile.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      id: 1,
+      name: "Doc EdTech",
+      summary: "We the best",
+      sector: "Education",
+      logo: "",
+      website: "https://scientia.doc.ic.ac.uk",
+    },
+  })
+
   const users = await prisma.user.findMany()
   console.log(users)
   
