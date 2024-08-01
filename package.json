@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write '{app,components,lib}/**/*.{ts,tsx,css}'",
+    "format": "prettier --write '{app,components,lib}/**/*.{ts,tsx,scss}'",
     "prepare": "husky",
     "db:pull": "dotenv -e .env.local prisma db pull",
     "db:push": "dotenv -e .env.local prisma db push",
