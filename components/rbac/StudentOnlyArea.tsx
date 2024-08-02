@@ -9,7 +9,7 @@ const StudentOnlyArea = async ({ children }: { children: React.ReactNode }) => {
     return <p>Not authenticated.</p>
   }
 
-  if (!(session.user.role === "COMPANY" || session.user.role === "ADMIN")) {
+  if (!(session.user.role === "STUDENT" || session.user.role === "ADMIN")) {
     return <p>Unauthorised</p>
   }
 
