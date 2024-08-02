@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 import prisma from "@/lib/db"
+import { getEntraAccessToken, getLatestEntraAccountForUser } from "@/lib/tokens"
 
 export const GET = async () => {
   const session = await auth()
@@ -12,32 +13,15 @@ export const GET = async () => {
     return new Response("User ID not found", { status: 401 })
   }
 
-  // Get token
-  const user = await prisma.user.findFirst({
-    relationLoadStrategy: "join",
-    select: {
-      accounts: {
-        where: {
-          provider: "microsoft-entra-id",
-        },
-        orderBy: {
-          updatedAt: "desc",
-        },
-      },
-      id: true,
-    },
-    where: {
-      id: session.user.id,
-    },
-  })
-
-  if (!user) {
-    return new Response("User not found", { status: 401 })
-  } else if (!user.accounts.length) {
-    return new Response("No accounts found", { status: 401 })
+  let access_token: string
+  try {
+    access_token = await getEntraAccessToken(session.user.id)
+    if (!access_token) {
+      return new Response("Not authenticated", { status: 401 })
+    }
+  } catch (e) {
+    return new Response("Error fetching access token", { status: 500 })
   }
-
-  const access_token = user.accounts[0].access_token
 
   const response = await fetch(`https://graph.microsoft.com/v1.0/me/photos/240x240/$value`, {
     headers: { Authorization: `Bearer ${access_token}` },

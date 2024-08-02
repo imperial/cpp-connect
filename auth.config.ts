@@ -45,28 +45,12 @@ export default {
       async profile(profile, tokens) {
         // From https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/microsoft-entra-id.ts
         // TODO: Stick behind proxy route as won't fit into JWT
-        console.log(tokens.access_token)
-        const response = await fetch(`https://graph.microsoft.com/v1.0/me/photos/240x240/$value`, {
-          headers: { Authorization: `Bearer ${tokens.access_token}` },
-        })
-
-        // Confirm that profile photo was returned
-        let image = null
-        // TODO: Do this without Buffer
-        if (response.ok && typeof Buffer !== "undefined") {
-          try {
-            const pictureBuffer = await response.arrayBuffer()
-            const pictureBase64 = Buffer.from(pictureBuffer).toString("base64")
-            image = `data:image/jpeg;base64, ${pictureBase64}`
-          } catch {}
-        }
 
         const userProfile: Prisma.UserCreateInput = {
           id: profile.sub,
           role: profile.role ?? "STUDENT",
           name: profile.name,
           email: profile.email,
-          image,
           eIDPreferredUsername: profile.preferred_username,
         }
         return userProfile
