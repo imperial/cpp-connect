@@ -1,4 +1,5 @@
 import { Prisma, Role } from "@prisma/client"
+import { se } from "date-fns/locale"
 import { DefaultSession, NextAuthConfig } from "next-auth"
 import MicrosoftEntraIDProfile from "next-auth/providers/microsoft-entra-id"
 
@@ -10,7 +11,8 @@ declare module "@auth/core/adapters" {
 
 declare module "@auth/core/jwt" {
   interface JWT extends DefaultJWT {
-    role: Role
+    role: Role,
+    id: string
   }
 }
 declare module "next-auth" {
@@ -19,11 +21,13 @@ declare module "next-auth" {
   }
   interface Session {
     user: {
-      role: Role
+      role: Role,
+      id: string
     } & DefaultSession["user"]
   }
   interface JWT {
-    role: Role
+    role: Role,
+    id: string
   }
 }
 
@@ -33,9 +37,15 @@ export default {
       clientId: process.env.MS_ENTRA_CLIENT_ID,
       clientSecret: process.env.MS_ENTRA_CLIENT_SECRET,
       tenantId: process.env.MS_ENTRA_TENANT_ID,
+      authorization: {
+        params: {
+          scope: "offline_access openid profile email User.Read",
+        }
+      },
       async profile(profile, tokens) {
         // From https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/microsoft-entra-id.ts
         // TODO: Stick behind proxy route as won't fit into JWT
+        console.log(tokens.access_token)
         const response = await fetch(`https://graph.microsoft.com/v1.0/me/photos/240x240/$value`, {
           headers: { Authorization: `Bearer ${tokens.access_token}` },
         })
@@ -69,8 +79,14 @@ export default {
       return !!auth
     },
     jwt({ token, user }) {
-      if (user && user.role) {
-        token.role = user.role
+      if (user) {
+        if (user.role) {
+          token.role = user.role
+        }
+
+        if (user.id) {
+          token.id = user.id
+        }
       }
 
       // Clear image
@@ -86,6 +102,7 @@ export default {
     },
     session({ session, token }) {
       session.user.role = token.role
+      session.user.id = token.id
       return session
     },
   },
