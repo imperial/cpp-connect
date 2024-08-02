@@ -1,6 +1,5 @@
 import { auth } from "@/auth"
-import prisma from "@/lib/db"
-import { getEntraAccessToken, getLatestEntraAccountForUser } from "@/lib/tokens"
+import { getEntraAccessToken } from "@/lib/tokens"
 
 export const GET = async () => {
   const session = await auth()

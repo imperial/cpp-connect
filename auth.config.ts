@@ -2,6 +2,9 @@ import { Prisma, Role } from "@prisma/client"
 import { se } from "date-fns/locale"
 import { DefaultSession, NextAuthConfig } from "next-auth"
 import MicrosoftEntraIDProfile from "next-auth/providers/microsoft-entra-id"
+import prisma from "./lib/db"
+
+const ALLOWED_ADMINS = process.env.CPP_ALLOWED_ADMINS?.split(",") ?? []
 
 declare module "@auth/core/adapters" {
   interface AdapterUser {
@@ -42,13 +45,34 @@ export default {
           scope: "offline_access openid profile email User.Read",
         }
       },
-      async profile(profile, tokens) {
-        // From https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/microsoft-entra-id.ts
-        // TODO: Stick behind proxy route as won't fit into JWT
+      async profile(profile) {
+
+        // By default the role is STUDENT unless in admins
+        const role: Role = ALLOWED_ADMINS.includes(profile.email) ? "ADMIN" : "STUDENT"
+
+        // Update role if user already exists
+        const currentUser = await prisma.user.findUnique({
+          select: {
+            role: true,
+          },
+          where: {
+            email: profile.email,
+          },
+        })
+        if (currentUser && currentUser.role !== role) {
+          await prisma.user.update({
+            data: {
+              role: role,
+            },
+            where: {
+              email: profile.email,
+            },
+          })
+        }
 
         const userProfile: Prisma.UserCreateInput = {
           id: profile.sub,
-          role: profile.role ?? "STUDENT",
+          role: role,
           name: profile.name,
           email: profile.email,
           eIDPreferredUsername: profile.preferred_username,
