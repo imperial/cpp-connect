@@ -10,6 +10,7 @@ declare module "@auth/core/adapters" {
     role?: Role
   }
 }
+
 declare module "next-auth" {
   interface User {
     role: Role
@@ -23,6 +24,7 @@ declare module "next-auth" {
 
 export const config: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
+
   providers: [
     MicrosoftEntraIDProfile({
       clientId: process.env.MS_ENTRA_CLIENT_ID,
@@ -62,11 +64,15 @@ export const config: NextAuthConfig = {
       // Logged in users are authenticated, otherwise redirect to login page
       return !!auth
     },
-    session({ session, user, token }) {
-      if (!user?.role) {
-        throw new Error("Role not found in user when creating session")
+    session({ session, token, user }) {
+      if (user) {
+        if (user.role) {
+          session.user.role = user.role
+        } else {
+          throw new Error("No role found!")
+        }
+        session.user.image = user.image
       }
-      session.user.role = user?.role
       return session
     },
   },
