@@ -26,6 +26,7 @@
     "@auth/prisma-adapter": "^2.4.2",
     "@prisma/client": "^5.17.0",
     "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/themes": "^3.1.1",
     "@tanstack/react-table": "^8.19.3",
     "date-fns": "^3.6.0",

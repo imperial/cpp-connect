@@ -53,3 +53,13 @@
   justify-content: center;
   padding: 0 1em 1em 1em;
 }
+
+.CollapsibleRoot[data-state="closed"] > .summaryContainer {
+  -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)));
+  height: 3em;
+}
+
+.CollapsibleRoot[data-state="open"] > .summaryContainer {
+  -webkit-mask-image: none;
+  height: auto;
+}

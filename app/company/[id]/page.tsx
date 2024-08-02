@@ -2,6 +2,7 @@ import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
 
+import * as Collapsible from "@radix-ui/react-collapsible"
 import { Box, Card, Flex, Heading, Inset, Text } from "@radix-ui/themes"
 import Image from "next/image"
 import { notFound } from "next/navigation"
@@ -15,7 +16,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <Flex gap="9">
+    <Flex gap="1" direction="column">
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top" pb="current">
           <Image src="/images/amazon-logo.svg" alt={"amazon"} width={0} height={0} className={styles.banner} />
@@ -34,6 +35,24 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
             <Text>{[companyProfile.hq, companyProfile.founded, companyProfile.size].filter(x => x).join(" • ")}</Text>
           </Flex>
         </Flex>
+      </Card>
+      <Card>
+        <Collapsible.Root className={styles.CollapsibleRoot}>
+          <Collapsible.Trigger>
+            <Heading size="6">About</Heading>
+          </Collapsible.Trigger>
+          <Box className={styles.summaryContainer}>
+            <Text>{companyProfile.summary}</Text>
+            Founded in {companyProfile.founded}
+            <br />
+            Located in {companyProfile.hq}
+            <br />
+            {companyProfile.size} employees
+            <br />
+            {companyProfile.sector}
+            <br />
+          </Box>
+        </Collapsible.Root>
       </Card>
     </Flex>
   )
