@@ -20,7 +20,12 @@ async function main() {
 
   await prisma.companyProfile.upsert({
     where: { id: 1 },
-    update: {},
+    update: {
+        summary: "Technological innovation drives the growth of Amazon and we're delighted to be offering exciting internship and graduate opportunities for Software Development Engineers. Whether it's in our UK Headquarters or Development Centres (Edinburgh, Dublin, Central London) or Seattle, you could be working on a number of initiatives for Amazons global websites and services. For ambitious graduates, like you, intent on developing a successful career, the result is a technical learning environment quite unlike any other. Work Hard. Have Fun. Make History. To find out more see our UK Opportunities and our US Opportunities.",
+        hq: "Slough, UK",
+        founded: "1994",
+        size: "10000+",
+    },
     create: {
       id: 1,
       name: "Doc EdTech",

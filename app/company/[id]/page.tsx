@@ -2,7 +2,8 @@ import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
 
-import { Flex, Text } from "@radix-ui/themes"
+import { Box, Card, Flex, Heading, Inset, Text } from "@radix-ui/themes"
+import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
 
@@ -14,38 +15,26 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <Flex gap="5" direction="column">
-      <Flex>
-        <Text>{companyProfile.name}</Text>
-      </Flex>
-      <Flex direction="column">
-        <Text className={styles.subheading}>Summary</Text>
-        <Text>{companyProfile.summary}</Text>
-      </Flex>
-      <Flex direction="row" wrap="wrap">
-        <Flex>
-          <Text className={styles.subheading}>Sector</Text>
-          <Text>{companyProfile.sector}</Text>
+    <Flex gap="9">
+      <Card className={styles.headerCard}>
+        <Inset clip="padding-box" p="0" side="top" pb="current">
+          <Image src="/images/amazon-logo.svg" alt={"amazon"} width={0} height={0} className={styles.banner} />
+        </Inset>
+        <Flex direction="column">
+          <Flex gap="5" direction="column" className={styles.companyInfo}>
+            <Box className={styles.companyLogoContainer}>
+              <Card className={styles.companyLogo}>
+                <Image src="/images/amazon-logo.svg" alt={"amazon"} width={0} height={0} />
+              </Card>
+            </Box>
+            <Heading color="blue" size="7">
+              {companyProfile.name}
+            </Heading>
+            <Text size="5">{companyProfile.sector}</Text>
+            <Text>{[companyProfile.hq, companyProfile.founded, companyProfile.size].filter(x => x).join(" • ")}</Text>
+          </Flex>
         </Flex>
-        <Flex>
-          <Text className={styles.subheading}>Size</Text>
-          <Text>{companyProfile.size ?? "N/A"}</Text>
-        </Flex>
-        <Flex>
-          <Text className={styles.subheading}>HQ</Text>
-          <Text>{companyProfile.hq ?? "N/A"}</Text>
-        </Flex>
-        {/* <Flex>
-          <Text>Founded</Text>
-          <Text>{companyProfile.founded ?? "N/A"}</Text>
-        </Flex>
-        <Flex>
-          <Text>Contacts</Text>
-          <Text>{companyProfile.website}</Text>
-          <Text>{companyProfile.email ?? "N/A"}</Text>
-          <Text>{companyProfile.phone ?? "N/A"}</Text>
-        </Flex> */}
-      </Flex>
+      </Card>
     </Flex>
   )
 }
