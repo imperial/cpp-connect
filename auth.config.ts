@@ -9,7 +9,7 @@ declare module "@auth/core/adapters" {
 }
 
 declare module "@auth/core/jwt" {
-	interface JWT extends DefaultJWT {
+  interface JWT extends DefaultJWT {
     role: Role
   }
 }
@@ -35,7 +35,7 @@ export default {
       tenantId: process.env.MS_ENTRA_TENANT_ID,
       async profile(profile, tokens) {
         // From https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/microsoft-entra-id.ts
-				// TODO: Stick behind proxy route as won't fit into JWT
+        // TODO: Stick behind proxy route as won't fit into JWT
         const response = await fetch(`https://graph.microsoft.com/v1.0/me/photos/240x240/$value`, {
           headers: { Authorization: `Bearer ${tokens.access_token}` },
         })
@@ -69,22 +69,22 @@ export default {
       return !!auth
     },
     jwt({ token, user }) {
-			if (user && user.role) {
-				token.role = user.role
-			}
+      if (user && user.role) {
+        token.role = user.role
+      }
 
-			// Clear image
-			if (token.picture) {
-				delete token.picture
-			}
+      // Clear image
+      if (token.picture) {
+        delete token.picture
+      }
 
-			if (token.image) {
-				delete token.image
-			}
+      if (token.image) {
+        delete token.image
+      }
 
-			return token
-		},
-    session({ session, token }) {	
+      return token
+    },
+    session({ session, token }) {
       session.user.role = token.role
       return session
     },
