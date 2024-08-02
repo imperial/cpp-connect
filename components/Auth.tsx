@@ -10,7 +10,7 @@ const Auth = () => {
   const { data: session } = useSession()
   return session?.user ? (
     <>
-      Signed in as {session.user.email} <br />
+      Signed in as {session.user.email} with role {session.user.role} <br />
       <button onClick={() => signOut()}>Sign out</button>
     </>
   ) : (

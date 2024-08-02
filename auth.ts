@@ -1,25 +1,13 @@
-import NextAuth, { NextAuthConfig } from "next-auth"
-import AzureAd from "next-auth/providers/azure-ad"
+import authConfig from "./auth.config"
 
-export const config: NextAuthConfig = {
-    providers: [
-        AzureAd({
-            clientId: process.env.AZURE_AD_CLIENT_ID,
-            clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
-            tenantId: process.env.AZURE_AD_TENANT_ID,
-        }),
-    ],
-    callbacks: {
-        authorized: async ({ auth }) => {
-            // Logged in users are authenticated, otherwise redirect to login page
-            return !!auth
-        },
-    },
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { PrismaClient } from "@prisma/client"
+import NextAuth from "next-auth"
 
-    // TODO: uncomment when we have a login page
-    // pages: {
-    //   signIn: "/login"
-    // },
-}
+const prisma = new PrismaClient()
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config)
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
+  ...authConfig,
+})

@@ -1,4 +1,5 @@
 import ListingTable from "@/components/Table"
+import StudentOnlyArea from "@/components/rbac/StudentOnlyArea"
 import prisma from "@/lib/db"
 
 import React from "react"
@@ -12,9 +13,11 @@ const OpportunitiesPage = async () => {
   })
 
   return (
-    <div>
-      <ListingTable opportunities={opportunities} />
-    </div>
+    <StudentOnlyArea>
+      <div>
+        <ListingTable opportunities={opportunities} />
+      </div>
+    </StudentOnlyArea>
   )
 }
 
