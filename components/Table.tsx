@@ -1,37 +1,80 @@
-import type { Company, Opportunity } from "@prisma/client"
+"use client"
+
+import type { CompanyProfile, Opportunity } from "@prisma/client"
 import { Table } from "@radix-ui/themes"
+import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
+import { info } from "console"
 import { formatDistanceToNowStrict } from "date-fns"
 import React from "react"
 
+type OpportunityRow = {
+  company: CompanyProfile
+} & Opportunity
+
 interface ListingTableProps {
-  opportunities: ({ company: Company } & Opportunity)[]
+  opportunities: OpportunityRow[]
 }
 
+const columnHelper = createColumnHelper<OpportunityRow>()
+
+const columns = [
+  columnHelper.accessor("company.name", {
+    cell: info => info.getValue(),
+    header: "Company",
+    id: "company.name",
+  }),
+  columnHelper.accessor("position", {
+    cell: info => info.getValue(),
+    header: "Position",
+  }),
+  columnHelper.accessor("location", {
+    cell: info => info.getValue(),
+    header: "Location",
+  }),
+  columnHelper.accessor("type", {
+    cell: info => info.getValue(),
+    header: "Type",
+  }),
+  columnHelper.accessor("createdAt", {
+    cell: info => formatDistanceToNowStrict(info.getValue(), { addSuffix: true }),
+    header: "Posted",
+  }),
+]
+
 const ListingTable = ({ opportunities }: ListingTableProps) => {
+  const table = useReactTable({
+    data: opportunities,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
   return (
     <Table.Root size="3">
       <Table.Header>
         <Table.Row>
-          <Table.ColumnHeaderCell>Company</Table.ColumnHeaderCell>
-          <Table.ColumnHeaderCell>Position</Table.ColumnHeaderCell>
-          <Table.ColumnHeaderCell>Location</Table.ColumnHeaderCell>
-          <Table.ColumnHeaderCell>Type</Table.ColumnHeaderCell>
-          <Table.ColumnHeaderCell>Posted</Table.ColumnHeaderCell>
+          {table.getFlatHeaders().map(header => (
+            <Table.ColumnHeaderCell key={header.id}>
+              {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+            </Table.ColumnHeaderCell>
+          ))}
         </Table.Row>
       </Table.Header>
 
       <Table.Body>
-        {opportunities
-          .filter(opportunity => opportunity.available)
-          .map((opportunity, index) => (
-            <Table.Row key={index}>
-              <Table.RowHeaderCell>{opportunity.company.id}</Table.RowHeaderCell>
-              <Table.Cell>{opportunity.position}</Table.Cell>
-              <Table.Cell>{opportunity.location}</Table.Cell>
-              <Table.Cell>{opportunity.type}</Table.Cell>
-              <Table.Cell>{formatDistanceToNowStrict(opportunity.createdAt, { addSuffix: true })}</Table.Cell>
-            </Table.Row>
-          ))}
+        {table.getRowModel().rows.map(row => (
+          <Table.Row key={row.id}>
+            {row
+              .getVisibleCells()
+              .map(cell =>
+                cell.column.columnDef.id === "company.name" ? (
+                  <Table.RowHeaderCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </Table.RowHeaderCell>
+                ) : (
+                  <Table.Cell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Table.Cell>
+                ),
+              )}
+          </Table.Row>
+        ))}
       </Table.Body>
     </Table.Root>
   )
