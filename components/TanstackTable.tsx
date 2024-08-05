@@ -10,7 +10,7 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons"
-import { Select } from "@radix-ui/themes"
+import { Select, Spinner } from "@radix-ui/themes"
 import { Box, Button, Flex, Grid, IconButton, Table, Text } from "@radix-ui/themes"
 import {
   ColumnDef,
@@ -24,8 +24,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Pagination } from "react-headless-pagination"
+import { useMediaQuery } from "react-responsive"
 
 const ICON_SIZE = 20
 
@@ -64,9 +65,30 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
     onPaginationChange: setPagination,
   })
 
+  // Under 800px, wrap the pagination
+  const isLowWidth = useMediaQuery({ maxWidth: 900 })
+
+  // Do not render if not mounted
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    return (
+      <Flex align={"center"} justify={"center"} style={{ padding: "2em" }} gap="3">
+        <Text>Loading...</Text>
+        <Spinner size="3" />
+      </Flex>
+    )
+  }
+
+  const PaginationComponent = isLowWidth ? Flex : Grid
+
   return (
     <Flex gap="4" direction="column">
-      <Table.Root size="3">
+      <Table.Root size="2">
         <Table.Header>
           {table.getHeaderGroups().map(headerGroup => (
             <Table.Row key={headerGroup.id}>
@@ -109,7 +131,7 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
 
       <Pagination
         totalPages={table.getPageCount()}
-        middlePagesSiblingCount={2}
+        middlePagesSiblingCount={isLowWidth ? 1 : 2}
         edgePageCount={0}
         currentPage={table.getState().pagination.pageIndex}
         setCurrentPage={table.setPageIndex}
@@ -118,7 +140,7 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
         truncableClassName=""
       >
         <nav className={styles.tablePagination}>
-          <Grid columns={"3"} gap="0" width={"100%"}>
+          <PaginationComponent columns={"3"} gap="3" width={"100%"} direction={"column"} align={"center"}>
             <Box />
             <ul>
               <IconButton variant="outline" disabled={!table.getCanPreviousPage()} onClick={table.firstPage}>
@@ -158,7 +180,7 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
               </Select.Root>
               <Text style={{ display: "inline-flex", alignItems: "center" }}>records per page</Text>
             </Flex>
-          </Grid>
+          </PaginationComponent>
         </nav>
       </Pagination>
     </Flex>
