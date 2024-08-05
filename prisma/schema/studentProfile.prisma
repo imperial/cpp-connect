@@ -1,0 +1,13 @@
+model StudentProfile {
+  user            User @relation(fields: [userId], references: [id])
+  userId          String @id
+  bio             String
+  personalWebsite String?
+  github          String?
+  linkedIn        String?
+  course          String
+  graduatingDate  String
+  cv              String?
+  skills          String[]
+  interests       String[]
+}
