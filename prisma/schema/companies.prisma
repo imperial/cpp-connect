@@ -34,7 +34,8 @@ model Event {
   dateStart DateTime
   dateEnd   DateTime?
 
-  summary  String
+  shortDescription String
+  richSummary  String
   // No. spaces available at the event
   spaces   Int
   location String
