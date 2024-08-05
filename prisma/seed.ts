@@ -1,8 +1,19 @@
 import { PrismaClient } from '@prisma/client'
+import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient()
 
+function createFakeOpportunity() {
+  return {
+    position: faker.person.jobTitle(),
+    type: faker.person.jobType(),
+    location: faker.location.city(),
+    available: faker.datatype.boolean(0.75),
+  }
+}
+
 async function main() {
+
   await prisma.user.upsert({
     where: { email: 'ab1223@ic.ac.uk' },
     update: {},
@@ -20,6 +31,11 @@ async function main() {
     },
   })
 
+  const positions = []
+  for (let i = 0; i < 50; i++) {
+    positions.push(createFakeOpportunity())
+  }
+
   await prisma.companyProfile.upsert({
     where: { id: 1 },
     update: {
@@ -36,20 +52,7 @@ async function main() {
       logo: "",
       website: "https://scientia.doc.ic.ac.uk",
       opportunities: {
-        create: [
-          {
-            position: "software engineer",
-            location: "london",
-            available: true,
-            type: "internship",
-          },
-          {
-            position: "prompt engineer",
-            location: "mars",
-            available: false,
-            type: "job",
-          }
-        ]
+        create: positions
       }
     },
   })
