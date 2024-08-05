@@ -1,10 +1,10 @@
-import type { Company, Opportunity } from "@prisma/client"
+import type { CompanyProfile, Opportunity } from "@prisma/client"
 import { Table } from "@radix-ui/themes"
 import { formatDistanceToNowStrict } from "date-fns"
 import React from "react"
 
 interface ListingTableProps {
-  opportunities: ({ company: Company } & Opportunity)[]
+  opportunities: ({ company: CompanyProfile } & Opportunity)[]
 }
 
 const ListingTable = ({ opportunities }: ListingTableProps) => {

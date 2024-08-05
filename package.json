@@ -26,7 +26,9 @@
     "@auth/prisma-adapter": "^2.4.2",
     "@prisma/client": "^5.17.0",
     "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/themes": "^3.1.1",
+    "@tanstack/react-table": "^8.19.3",
     "date-fns": "^3.6.0",
     "lint-staged": "^15.2.7",
     "mime-types": "^2.1.35",
@@ -36,6 +38,8 @@
     "prettier": "^3.3.3",
     "react": "^18",
     "react-dom": "^18",
+    "react-icons": "^5.2.1",
+    "react-markdown": "^9.0.1",
     "sass": "^1.77.8",
     "ts-node": "^10.9.2"
   },

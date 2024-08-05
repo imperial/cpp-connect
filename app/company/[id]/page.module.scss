@@ -1,0 +1,83 @@
+.subheading {
+  font-size: 2em;
+  color: var(--blue-8);
+}
+
+.heading {
+  font-size: 3em;
+  color: var(--blue-8);
+}
+
+.companyLogo img {
+  width: 100%;
+  height: auto;
+}
+
+.companyLogo {
+  background-color: var(--gray-1);
+  width: var(--profile-image-size);
+  height: var(--profile-image-size);
+  padding: 0.5em;
+  box-shadow: 0 4px 12px var(--gray-11);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(-50%);
+}
+
+.companyLogoContainer {
+  height: calc(var(--profile-image-size) / 2);
+}
+
+.headerCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  --profile-image-size: 8em;
+}
+
+.banner {
+  height: auto;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+  height: 8em;
+  background-color: var(--gray-5);
+}
+
+.companyInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.aboutCard {
+  padding: var(--space-5);
+}
+
+.CollapsibleRoot[data-state="closed"] > .summaryContainer {
+  -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)));
+  height: 3em;
+}
+
+.CollapsibleRoot[data-state="open"] > .summaryContainer {
+  -webkit-mask-image: none;
+  height: auto;
+}
+
+.CollapsibleTrigger {
+  float: right;
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--gray-11);
+}
+
+.CollapsibleRoot[data-state="open"] > .CollapsibleTrigger {
+  display: none;
+}
+
+.markdownContainer {
+  list-style-position: inside;
+}
