@@ -1,13 +1,13 @@
 model StudentProfile {
   user            User @relation(fields: [userId], references: [id])
   userId          String @id
-  bio             String
+  bio             String?
   personalWebsite String?
   github          String?
   linkedIn        String?
-  course          String
-  graduatingDate  String
+  course          String?
+  graduationDate  String?
   cv              String?
-  skills          String[]
-  interests       String[]
+  skills          String[] @default([])
+  interests       String[] @default([])
 }

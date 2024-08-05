@@ -1,15 +1,15 @@
 -- CreateTable
 CREATE TABLE "StudentProfile" (
     "userId" TEXT NOT NULL,
-    "bio" TEXT NOT NULL,
+    "bio" TEXT,
     "personalWebsite" TEXT,
     "github" TEXT,
     "linkedIn" TEXT,
-    "course" TEXT NOT NULL,
-    "graduatingDate" TEXT NOT NULL,
+    "course" TEXT,
+    "graduationDate" TEXT,
     "cv" TEXT,
-    "skills" TEXT[],
-    "interests" TEXT[],
+    "skills" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "interests" TEXT[] DEFAULT ARRAY[]::TEXT[],
 
     CONSTRAINT "StudentProfile_pkey" PRIMARY KEY ("userId")
 );
