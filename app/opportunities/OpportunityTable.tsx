@@ -3,7 +3,7 @@
 import TanstackTable from "@/components/TanstackTable"
 
 import type { CompanyProfile, Opportunity } from "@prisma/client"
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import { createColumnHelper } from "@tanstack/react-table"
 import { formatDistanceToNowStrict } from "date-fns"
 
 type OpportunityRow = {
@@ -43,8 +43,8 @@ const columns = [
   }),
 ]
 
-const ListingTable = ({ opportunities }: { opportunities: OpportunityRow[] }) => {
+const OpportunityTable = ({ opportunities }: { opportunities: OpportunityRow[] }) => {
   return <TanstackTable data={opportunities} columns={columns} />
 }
 
-export default ListingTable
+export default OpportunityTable

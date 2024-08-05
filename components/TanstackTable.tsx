@@ -77,14 +77,14 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
 
   if (!isClient) {
     return (
-      <Flex align={"center"} justify={"center"} style={{ padding: "2em" }} gap="3">
+      <Flex align="center" justify="center" p="4" gap="3">
         <Text>Loading...</Text>
         <Spinner size="3" />
       </Flex>
     )
   }
 
-  const PaginationComponent = isLowWidth ? Flex : Grid
+  const FooterWrapper = isLowWidth ? Flex : Grid
 
   return (
     <Flex gap="4" direction="column">
@@ -135,12 +135,10 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
         edgePageCount={0}
         currentPage={table.getState().pagination.pageIndex}
         setCurrentPage={table.setPageIndex}
-        className=""
         truncableText="..."
-        truncableClassName=""
       >
         <nav className={styles.tablePagination}>
-          <PaginationComponent columns={"3"} gap="3" width={"100%"} direction={"column"} align={"center"}>
+          <FooterWrapper columns="3" gap="3" width="100%" direction="column" align="center">
             <Box />
             <ul>
               <IconButton variant="outline" disabled={!table.getCanPreviousPage()} onClick={table.firstPage}>
@@ -155,7 +153,7 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
                 inactiveClassName=""
                 className=""
               />
-              <Pagination.NextButton className="" as={<IconButton variant="outline" />}>
+              <Pagination.NextButton as={<IconButton variant="outline" />}>
                 <ChevronRightIcon />
               </Pagination.NextButton>
               <IconButton variant="outline" disabled={!table.getCanNextPage()} onClick={table.lastPage}>
@@ -178,9 +176,9 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
                   </Select.Group>
                 </Select.Content>
               </Select.Root>
-              <Text style={{ display: "inline-flex", alignItems: "center" }}>records per page</Text>
+              <Text className={styles.inlineFlexCenter}>records per page</Text>
             </Flex>
-          </PaginationComponent>
+          </FooterWrapper>
         </nav>
       </Pagination>
     </Flex>
