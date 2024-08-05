@@ -1,0 +1,6 @@
+.tableHeader {
+  &:hover {
+    cursor: pointer;
+    background-color: var(--gray-3);
+  }
+}
