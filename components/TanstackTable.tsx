@@ -10,7 +10,8 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons"
-import { Button, Flex, IconButton, Table } from "@radix-ui/themes"
+import { Select } from "@radix-ui/themes"
+import { Box, Button, Flex, Grid, IconButton, Table, Text } from "@radix-ui/themes"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -105,6 +106,7 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
           ))}
         </Table.Body>
       </Table.Root>
+
       <Pagination
         totalPages={table.getPageCount()}
         middlePagesSiblingCount={2}
@@ -116,26 +118,47 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
         truncableClassName=""
       >
         <nav className={styles.tablePagination}>
-          <ul>
-            <IconButton variant="outline" disabled={!table.getCanPreviousPage()} onClick={table.firstPage}>
-              <DoubleArrowLeftIcon />
-            </IconButton>
-            <Pagination.PrevButton className="" as={<IconButton variant="outline" />}>
-              <ChevronLeftIcon />
-            </Pagination.PrevButton>
-            <Pagination.PageButton
-              as={<Button variant="outline" />}
-              activeClassName={styles.activePage}
-              inactiveClassName=""
-              className=""
-            />
-            <Pagination.NextButton className="" as={<IconButton variant="outline" />}>
-              <ChevronRightIcon />
-            </Pagination.NextButton>
-            <IconButton variant="outline" disabled={!table.getCanNextPage()} onClick={table.lastPage}>
-              <DoubleArrowRightIcon />
-            </IconButton>
-          </ul>
+          <Grid columns={"3"} gap="0" width={"100%"}>
+            <Box />
+            <ul>
+              <IconButton variant="outline" disabled={!table.getCanPreviousPage()} onClick={table.firstPage}>
+                <DoubleArrowLeftIcon />
+              </IconButton>
+              <Pagination.PrevButton className="" as={<IconButton variant="outline" />}>
+                <ChevronLeftIcon />
+              </Pagination.PrevButton>
+              <Pagination.PageButton
+                as={<Button variant="outline" />}
+                activeClassName={styles.activePage}
+                inactiveClassName=""
+                className=""
+              />
+              <Pagination.NextButton className="" as={<IconButton variant="outline" />}>
+                <ChevronRightIcon />
+              </Pagination.NextButton>
+              <IconButton variant="outline" disabled={!table.getCanNextPage()} onClick={table.lastPage}>
+                <DoubleArrowRightIcon />
+              </IconButton>
+            </ul>
+            <Flex justify="end" gap="3">
+              <Select.Root
+                defaultValue={table.getState().pagination.pageSize.toString()}
+                onValueChange={newPageSize => table.setPageSize(parseInt(newPageSize))}
+              >
+                <Select.Trigger />
+                <Select.Content>
+                  <Select.Group>
+                    <Select.Item value="1">1</Select.Item>
+                    <Select.Item value="5">5</Select.Item>
+                    <Select.Item value="15">15</Select.Item>
+                    <Select.Item value="25">25</Select.Item>
+                    <Select.Item value="50">50</Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+              <Text style={{ display: "inline-flex", alignItems: "center" }}>records per page</Text>
+            </Flex>
+          </Grid>
         </nav>
       </Pagination>
     </Flex>
