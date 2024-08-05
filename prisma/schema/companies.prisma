@@ -23,6 +23,7 @@ model Opportunity {
   available Boolean
   type      String
   createdAt DateTime       @default(now())
+  // TODO: Add Link
 }
 
 model Event {
@@ -37,6 +38,8 @@ model Event {
   // No. spaces available at the event
   spaces   Int
   location String
+  // Singular outbound link to the event
+  link     String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
