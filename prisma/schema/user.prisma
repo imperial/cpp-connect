@@ -15,7 +15,7 @@ model User {
   updatedAt DateTime @updatedAt
   eIDPreferredUsername String? // Microsoft Entra ID preferred username (e.g. ab1223@ic.ac.uk)
 
-  userProfile StudentProfile? // Student Profile
+  studentProfile StudentProfile? // Student Profile
 }
 
 enum Role {
