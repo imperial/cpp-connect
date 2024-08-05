@@ -50,13 +50,15 @@ const ListingTable = ({ opportunities }: ListingTableProps) => {
   return (
     <Table.Root size="3">
       <Table.Header>
-        <Table.Row>
-          {table.getFlatHeaders().map(header => (
-            <Table.ColumnHeaderCell key={header.id}>
-              {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-            </Table.ColumnHeaderCell>
-          ))}
-        </Table.Row>
+        {table.getHeaderGroups().map(headerGroup => (
+          <Table.Row key={headerGroup.id}>
+            {headerGroup.headers.map(header => (
+              <Table.ColumnHeaderCell key={header.id}>
+                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+              </Table.ColumnHeaderCell>
+            ))}
+          </Table.Row>
+        ))}
       </Table.Header>
 
       <Table.Body>
@@ -65,7 +67,7 @@ const ListingTable = ({ opportunities }: ListingTableProps) => {
             {row
               .getVisibleCells()
               .map(cell =>
-                cell.column.columnDef.id === "company.name" ? (
+                cell.column.getIsFirstColumn() ? (
                   <Table.RowHeaderCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Table.RowHeaderCell>
