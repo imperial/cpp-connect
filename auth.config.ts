@@ -70,14 +70,20 @@ export default {
           })
         }
 
-        const userProfile: Prisma.UserCreateInput = {
+        const role: Role = profile.role ?? "STUDENT"
+
+        const user: Prisma.UserCreateInput = {
           id: profile.sub,
-          role: role,
+          role,
           name: profile.name,
           email: profile.email,
           eIDPreferredUsername: profile.preferred_username,
+          studentProfile: (role === "STUDENT") ? {
+            create: {}
+          } : undefined
         }
-        return userProfile
+
+        return user
       },
     }),
   ],

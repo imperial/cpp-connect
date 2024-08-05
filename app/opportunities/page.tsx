@@ -1,4 +1,4 @@
-import ListingTable from "@/components/Table"
+import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import StudentOnlyArea from "@/components/rbac/StudentOnlyArea"
 import prisma from "@/lib/db"
 
@@ -15,7 +15,7 @@ const OpportunitiesPage = async () => {
   return (
     <StudentOnlyArea>
       <div>
-        <ListingTable opportunities={opportunities} />
+        <OpportunityTable opportunities={opportunities} />
       </div>
     </StudentOnlyArea>
   )
