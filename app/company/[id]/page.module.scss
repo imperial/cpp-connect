@@ -18,7 +18,7 @@
   width: var(--profile-image-size);
   height: var(--profile-image-size);
   padding: 0.5em;
-  box-shadow: var(--gray-11) 0px 10px 10px;
+  box-shadow: 0 4px 12px var(--gray-11);
   position: relative;
   display: flex;
   justify-content: center;
@@ -51,7 +51,10 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 1em 1em 1em;
+}
+
+.aboutCard {
+  padding: var(--space-5);
 }
 
 .CollapsibleRoot[data-state="closed"] > .summaryContainer {
@@ -62,4 +65,19 @@
 .CollapsibleRoot[data-state="open"] > .summaryContainer {
   -webkit-mask-image: none;
   height: auto;
+}
+
+.CollapsibleTrigger {
+  float: right;
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--gray-11);
+}
+
+.CollapsibleRoot[data-state="open"] > .CollapsibleTrigger {
+  display: none;
+}
+
+.markdownContainer {
+  list-style-position: inside;
 }
