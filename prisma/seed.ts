@@ -8,6 +8,7 @@ async function main() {
     update: {},
     create: {
       email: 'ab1223@ic.ac.uk',
+      role: 'STUDENT',
     },
   })
   await prisma.user.upsert({
@@ -15,6 +16,7 @@ async function main() {
     update: {},
     create: {
       email: 'ma4723@ic.ac.uk',
+      role: 'STUDENT',
     },
   })
 
