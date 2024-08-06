@@ -123,7 +123,9 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
             <MagnifyingGlassIcon height="16" width="16" />
           </TextField.Slot>
           <TextField.Slot>
-            <Button variant="ghost">Reset</Button>
+            <Button variant="ghost" onClick={() => setSearchQuery("")}>
+              Reset
+            </Button>
           </TextField.Slot>
         </TextField.Root>
         <Dropdown
