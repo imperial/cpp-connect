@@ -1,9 +1,17 @@
 @import "@/styling/breakpoints.scss";
 
 .tableHeader {
+  .isSortableIndicator {
+    color: var(--gray-9);
+    visibility: hidden;
+  }
+
   &:hover {
     cursor: pointer;
     background-color: var(--gray-3);
+    .isSortableIndicator {
+      visibility: visible;
+    }
   }
 }
 

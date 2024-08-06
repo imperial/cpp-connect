@@ -4,6 +4,7 @@ import { Dropdown } from "./Dropdown"
 import styles from "./tanstack-table.module.scss"
 
 import {
+  CaretSortIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -40,7 +41,7 @@ interface ListingTableProps<T> {
 const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
   switch (isSorted) {
     case false:
-      return <ChevronDownIcon style={{ opacity: 0 }} width={ICON_SIZE} height={ICON_SIZE} />
+      return <CaretSortIcon className={styles.isSortableIndicator} width={ICON_SIZE} height={ICON_SIZE} />
     case "desc":
       return <ChevronDownIcon width={ICON_SIZE} height={ICON_SIZE} />
     case "asc":
@@ -146,14 +147,16 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
               {headerGroup.headers.map(header => (
                 <Table.ColumnHeaderCell
                   key={header.id}
-                  onClick={() => header.column.toggleSorting(header.column.getIsSorted() === "asc")}
+                  onClick={() =>
+                    header.column.getCanSort() && header.column.toggleSorting(header.column.getIsSorted() === "asc")
+                  }
                   className={styles.tableHeader}
                 >
                   <Flex align="center">
                     <span style={{ flex: "1 1 0" }}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </span>
-                    {getSortingIcon(header.column.getIsSorted())}
+                    {header.column.getCanSort() && getSortingIcon(header.column.getIsSorted())}
                   </Flex>
                 </Table.ColumnHeaderCell>
               ))}
