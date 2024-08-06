@@ -14,7 +14,7 @@ const OpportunitiesPage = async () => {
 
   return (
     <StudentOnlyArea>
-        <OpportunityTable opportunities={opportunities} />
+      <OpportunityTable opportunities={opportunities} />
     </StudentOnlyArea>
   )
 }

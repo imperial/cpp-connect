@@ -15,7 +15,7 @@ const EventsPage = async () => {
 
   return (
     <StudentOnlyArea>
-        <EventTable events={events} />
+      <EventTable events={events} />
     </StudentOnlyArea>
   )
 }

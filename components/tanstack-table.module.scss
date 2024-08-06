@@ -1,3 +1,5 @@
+@import "@/styling/breakpoints.scss";
+
 .tableHeader {
   &:hover {
     cursor: pointer;
@@ -41,5 +43,13 @@
   padding: 0 5em;
   .searchBar {
     flex: 1 0 0;
+  }
+
+  @include phablet {
+    flex-direction: column;
+    padding: 0;
+    .searchBar {
+      min-height: 3em;
+    }
   }
 }
