@@ -22,7 +22,7 @@ const Navbar = async () => {
 
           {session?.user && (
             <Flex className={styles.linksContainer}>
-              <Link href="/" className={styles.link}>
+              <Link href="/companies" className={styles.link}>
                 <span>Companies</span>
               </Link>
               <Link href="/events" className={styles.link}>
@@ -31,7 +31,7 @@ const Navbar = async () => {
               <Link href="/opportunities" className={styles.link}>
                 <span>Opportunities</span>
               </Link>
-              <Link href="/" className={styles.link}>
+              <Link href="/students" className={styles.link}>
                 <span>Students</span>
               </Link>
             </Flex>
