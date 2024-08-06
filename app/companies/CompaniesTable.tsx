@@ -10,13 +10,15 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Image from "next/image"
 import Link from "next/link"
 
-const columnHelper = createColumnHelper<CompanyProfile>()
+type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "website" | "size" | "hq" >
+
+const columnHelper = createColumnHelper<CompanyRow>()
 
 const columns = [
   columnHelper.accessor("logo", {
     cell: info => (
       <Box width="4em" height="2.5em">
-        <Image src={info.getValue()} alt={"profile teaser"} width={100} height={100} className={styles.teaser} />
+        <Image src={info.getValue()} alt="profile teaser" width={100} height={100} className={styles.teaser} />
       </Box>
     ),
     header: "",
@@ -54,7 +56,7 @@ const columns = [
   }),
 ]
 
-const CompaniesTable = ({ companies }: { companies: CompanyProfile[] }) => {
+const CompaniesTable = ({ companies }: { companies: CompanyRow[] }) => {
   return <TanstackTable data={companies} columns={columns} />
 }
 

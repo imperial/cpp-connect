@@ -5,7 +5,16 @@ import prisma from "@/lib/db"
 import React from "react"
 
 const OpportunitiesPage = async () => {
-  const companies = await prisma.companyProfile.findMany()
+  const companies = await prisma.companyProfile.findMany({
+    select: {
+      logo: true,
+      name: true,
+      sector: true,
+      website: true,
+      size: true,
+      hq: true,
+    },
+  })
 
   return (
     <StudentOnlyArea>
