@@ -1,12 +1,16 @@
+import Chip from "@/components/Chip"
 import UserAvatar from "@/components/UserAvatar"
 import StudentOnlyArea from "@/components/rbac/StudentOnlyArea"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
 
-import { Flex, Heading, Text } from "@radix-ui/themes"
+import { Flex, Heading, Link, Text } from "@radix-ui/themes"
 import { format } from "date-fns"
 import { notFound } from "next/navigation"
+import React from "react"
+import { BsEnvelope, BsFileEarmarkText, BsGithub, BsGlobe, BsLinkedin } from "react-icons/bs"
+import Markdown from "react-markdown"
 
 const formatLookingFor = (lookingFor: string) => {
   switch (lookingFor) {
@@ -40,17 +44,93 @@ const StudentProfilePage = async ({ params }: { params: { id: string } }) => {
       <Flex gap="3" direction="row" style={{ border: "solid black 1px" }}>
         <Flex direction="column" align="center" gap="5">
           <UserAvatar user={studentProfile.user} size={10} />
-          <Flex direction="column" align="center">
-            <Heading size="7">{studentProfile.user.name}</Heading>
-            <Text color="gray" size="1">
-              Last updated: {format(studentProfile.updatedAt, "dd/MM/yyyy")}
-            </Text>
+
+          <Flex align="center" gap="2">
+            <Flex direction="column" align="center">
+              <Heading size="7">{studentProfile.user.name}</Heading>
+              <Text color="gray" size="1">
+                Last updated: {format(studentProfile.updatedAt, "dd/MM/yyyy")}
+              </Text>
+            </Flex>
+
+            {studentProfile.cv && (
+              <Link href={studentProfile.cv} target="_blank">
+                <BsFileEarmarkText size="35" title="download cv" />
+              </Link>
+            )}
           </Flex>
+
           {studentProfile.course && <Text>{studentProfile.course}</Text>}
+
           {studentProfile.lookingFor && <Text>Looking for {formatLookingFor(studentProfile.lookingFor)}</Text>}
+
           {studentProfile.graduationDate && (
             <Text>Graduating in {format(studentProfile.graduationDate, "MMMM, yyyy")}</Text>
           )}
+
+          <Flex align="center" gap="2">
+            <BsEnvelope />
+            <Link href={`mailto:${studentProfile.user.email}`}>{studentProfile.user.email}</Link>
+          </Flex>
+
+          <Flex gap="2">
+            {studentProfile.personalWebsite && (
+              <Flex align="center" gap="2">
+                <Link href={studentProfile.personalWebsite} target="_blank">
+                  <BsGlobe size="25" />
+                </Link>
+              </Flex>
+            )}
+
+            {studentProfile.github && (
+              <Flex align="center" gap="2">
+                <Link href={studentProfile.github} target="_blank">
+                  <BsGithub size="25" />
+                </Link>
+              </Flex>
+            )}
+
+            {studentProfile.linkedIn && (
+              <Flex align="center" gap="2">
+                <Link href={studentProfile.linkedIn} target="_blank">
+                  <BsLinkedin size="25" />
+                </Link>
+              </Flex>
+            )}
+          </Flex>
+        </Flex>
+
+        <Flex>
+          <Flex direction="column" gap="3">
+            {studentProfile.bio && (
+              <Flex direction="column" gap="3">
+                <Heading size="5">About me</Heading>
+                <Markdown>{studentProfile.bio}</Markdown>
+              </Flex>
+            )}
+
+            {studentProfile.skills && (
+              <Flex direction="column" gap="3">
+                <Heading size="5">Skills</Heading>
+                <Flex>
+                  {studentProfile.skills.map((skill, id) => (
+                    <Chip label={skill} key={id} />
+                  ))}
+                </Flex>
+              </Flex>
+            )}
+
+            {studentProfile.interests && (
+              <Flex direction="column" gap="3">
+                <Heading size="5">Interests</Heading>
+                <Flex>
+                  {studentProfile.interests.map((interest, id) => (
+                    <Chip label={interest} key={id} />
+                  ))}
+                </Flex>
+              </Flex>
+            )}
+          </Flex>
         </Flex>
       </Flex>
     </StudentOnlyArea>
