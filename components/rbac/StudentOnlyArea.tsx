@@ -2,6 +2,9 @@ import { auth } from "@/auth"
 
 import React from "react"
 
+/**
+ * Area only students and admins can access
+ */
 const StudentOnlyArea = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth()
 
