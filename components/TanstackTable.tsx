@@ -48,6 +48,9 @@ const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
   }
 }
 
+/**
+ * NOTE: To allow columns to be filtered, you must ensure that they have an id and a header
+ */
 export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
