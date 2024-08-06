@@ -15,8 +15,8 @@ const Navbar = async () => {
         <Flex gap="9" wrap="wrap">
           <Link href="/">
             <Flex className={styles.logosContainer}>
-              <Image src="images/cpp-connect-logo.svg" alt="cpp connect logo" width={0} height={0} />
-              <Image src="images/imperial-logo.svg" alt="imperial logo" width={0} height={0} />
+              <Image src="/images/cpp-connect-logo.svg" alt="cpp connect logo" width={0} height={0} />
+              <Image src="/images/imperial-logo.svg" alt="imperial logo" width={0} height={0} />
             </Flex>
           </Link>
 
