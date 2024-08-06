@@ -10,7 +10,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Image from "next/image"
 import Link from "next/link"
 
-type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "website" | "size" | "hq" >
+type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "website" | "size" | "hq">
 
 const columnHelper = createColumnHelper<CompanyRow>()
 
