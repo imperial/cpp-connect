@@ -1,11 +1,12 @@
-import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import StudentOnlyArea from "@/components/rbac/StudentOnlyArea"
 import prisma from "@/lib/db"
 
+import EventTable from "./EventTable"
+
 import React from "react"
 
-const OpportunitiesPage = async () => {
-  const opportunities = await prisma.opportunity.findMany({
+const EventsPage = async () => {
+  const events = await prisma.event.findMany({
     orderBy: { createdAt: "desc" },
     include: {
       company: true,
@@ -14,9 +15,9 @@ const OpportunitiesPage = async () => {
 
   return (
     <StudentOnlyArea>
-        <OpportunityTable opportunities={opportunities} />
+        <EventTable events={events} />
     </StudentOnlyArea>
   )
 }
 
-export default OpportunitiesPage
+export default EventsPage
