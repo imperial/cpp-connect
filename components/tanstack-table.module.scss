@@ -35,3 +35,11 @@
   display: inline-flex;
   align-items: center;
 }
+
+.searchBarContainer {
+  flex: 1 0 0;
+  padding: 0 5em;
+  .searchBar {
+    flex: 1 0 0;
+  }
+}

@@ -1,5 +1,6 @@
 "use client"
 
+import { Dropdown } from "./Dropdown"
 import styles from "./tanstack-table.module.scss"
 
 import {
@@ -9,8 +10,9 @@ import {
   ChevronUpIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
+  MagnifyingGlassIcon,
 } from "@radix-ui/react-icons"
-import { Select, Spinner } from "@radix-ui/themes"
+import { Select, Spinner, TextField } from "@radix-ui/themes"
 import { Box, Button, Flex, Grid, IconButton, Table, Text } from "@radix-ui/themes"
 import {
   ColumnDef,
@@ -24,7 +26,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Pagination } from "react-headless-pagination"
 import { useMediaQuery } from "react-responsive"
 
@@ -47,8 +49,9 @@ const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
 }
 
 export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
     pageSize: 15, //default page size
@@ -57,15 +60,16 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     state: { columnFilters, sorting, pagination },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
+    onColumnFiltersChange: setColumnFilters,
   })
 
-  // Under 800px, wrap the pagination
+  // Under 900px, wrap the pagination
   const isLowWidth = useMediaQuery({ maxWidth: 900 })
 
   // Do not render if not mounted
@@ -74,6 +78,23 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
   useEffect(() => {
     setIsClient(true)
   }, [])
+
+  const filterableColumns = useMemo(
+    () =>
+      table
+        .getAllFlatColumns()
+        .filter(col => col.getCanFilter())
+        .filter(col => typeof col.columnDef.header !== "undefined")
+        .filter(col => typeof col.columnDef.id !== "undefined"),
+    [table],
+  )
+
+  const [searchQuery, setSearchQuery] = useState("")
+  const [currentFilteredColumn, setCurrentFilteredColumn] = useState(filterableColumns[0].id ?? "")
+
+  useEffect(() => {
+    table.setColumnFilters([{ id: currentFilteredColumn, value: searchQuery }])
+  }, [table, searchQuery, currentFilteredColumn])
 
   if (!isClient) {
     return (
@@ -88,6 +109,31 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
 
   return (
     <Flex gap="4" direction="column">
+      <Flex direction="row" gap="3" className={styles.searchBarContainer}>
+        <TextField.Root
+          placeholder={`Search by ${table.getColumn(currentFilteredColumn)?.columnDef.header?.toString() ?? "..."}`}
+          className={styles.searchBar}
+          onChange={e => setSearchQuery(e.target.value)}
+          value={searchQuery}
+        >
+          <TextField.Slot>
+            <MagnifyingGlassIcon height="16" width="16" />
+          </TextField.Slot>
+          <TextField.Slot>
+            <Button variant="ghost">Reset</Button>
+          </TextField.Slot>
+        </TextField.Root>
+        <Dropdown
+          items={filterableColumns.map(col => ({ item: col.columnDef.header!.toString(), value: col.columnDef.id! }))}
+          defaultValue={filterableColumns[0].id ?? ""}
+          onValueChange={setCurrentFilteredColumn}
+          triggerProps={{
+            "aria-label": "Filter by column",
+            title: "Filter by column",
+          }}
+        />
+      </Flex>
+
       <Table.Root size="2">
         <Table.Header>
           {table.getHeaderGroups().map(headerGroup => (
@@ -161,21 +207,11 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
               </IconButton>
             </ul>
             <Flex justify="end" gap="3">
-              <Select.Root
+              <Dropdown
+                items={["1", "5", "15", "25", "50"].map(i => ({ item: i, value: i }))}
                 defaultValue={table.getState().pagination.pageSize.toString()}
                 onValueChange={newPageSize => table.setPageSize(parseInt(newPageSize))}
-              >
-                <Select.Trigger />
-                <Select.Content>
-                  <Select.Group>
-                    <Select.Item value="1">1</Select.Item>
-                    <Select.Item value="5">5</Select.Item>
-                    <Select.Item value="15">15</Select.Item>
-                    <Select.Item value="25">25</Select.Item>
-                    <Select.Item value="50">50</Select.Item>
-                  </Select.Group>
-                </Select.Content>
-              </Select.Root>
+              />
               <Text className={styles.inlineFlexCenter}>records per page</Text>
             </Flex>
           </FooterWrapper>
