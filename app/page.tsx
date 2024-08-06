@@ -1,4 +1,5 @@
-import "./globals.scss"
+import "@/styling/globals.scss"
+
 import styles from "./page.module.scss"
 
 const Home = async () => {

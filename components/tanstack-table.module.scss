@@ -1,7 +1,17 @@
+@import "@/styling/breakpoints.scss";
+
 .tableHeader {
+  .isSortableIndicator {
+    color: var(--gray-9);
+    visibility: hidden;
+  }
+
   &:hover {
     cursor: pointer;
     background-color: var(--gray-3);
+    .isSortableIndicator {
+      visibility: visible;
+    }
   }
 }
 
@@ -34,4 +44,20 @@
 .inlineFlexCenter {
   display: inline-flex;
   align-items: center;
+}
+
+.searchBarContainer {
+  flex: 1 0 0;
+  padding: 0 5em;
+  .searchBar {
+    flex: 1 0 0;
+  }
+
+  @include phablet {
+    flex-direction: column;
+    padding: 0;
+    .searchBar {
+      min-height: 3em;
+    }
+  }
 }
