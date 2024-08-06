@@ -1,0 +1,16 @@
+.SeparatorRoot {
+  background-color: var(--blue-6);
+  height: 100%;
+  width: 1px;
+}
+
+.shortDetailsCard {
+  text-align: center;
+  flex: 1 1;
+  min-width: min(300px, 90vw);
+}
+
+.longDetailsCard {
+  flex: 2 2;
+  min-width: min(300px, 90vw);
+}
