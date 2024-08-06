@@ -1,6 +1,9 @@
 import { Prisma, Role } from "@prisma/client"
 import { DefaultSession, NextAuthConfig } from "next-auth"
 import MicrosoftEntraIDProfile from "next-auth/providers/microsoft-entra-id"
+import prisma from "./lib/db"
+
+const ALLOWED_ADMINS = process.env.CPP_ALLOWED_ADMINS?.split(",") ?? []
 
 declare module "@auth/core/adapters" {
   interface AdapterUser {
@@ -10,7 +13,8 @@ declare module "@auth/core/adapters" {
 
 declare module "@auth/core/jwt" {
   interface JWT extends DefaultJWT {
-    role: Role
+    role: Role,
+    id: string
   }
 }
 declare module "next-auth" {
@@ -19,11 +23,13 @@ declare module "next-auth" {
   }
   interface Session {
     user: {
-      role: Role
+      role: Role,
+      id: string
     } & DefaultSession["user"]
   }
   interface JWT {
-    role: Role
+    role: Role,
+    id: string
   }
 }
 
@@ -33,32 +39,41 @@ export default {
       clientId: process.env.MS_ENTRA_CLIENT_ID,
       clientSecret: process.env.MS_ENTRA_CLIENT_SECRET,
       tenantId: process.env.MS_ENTRA_TENANT_ID,
-      async profile(profile, tokens) {
-        // From https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/microsoft-entra-id.ts
-        // TODO: Stick behind proxy route as won't fit into JWT
-        const response = await fetch(`https://graph.microsoft.com/v1.0/me/photos/240x240/$value`, {
-          headers: { Authorization: `Bearer ${tokens.access_token}` },
-        })
-
-        // Confirm that profile photo was returned
-        let image = null
-        // TODO: Do this without Buffer
-        if (response.ok && typeof Buffer !== "undefined") {
-          try {
-            const pictureBuffer = await response.arrayBuffer()
-            const pictureBase64 = Buffer.from(pictureBuffer).toString("base64")
-            image = `data:image/jpeg;base64, ${pictureBase64}`
-          } catch {}
+      authorization: {
+        params: {
+          scope: "offline_access openid profile email User.Read",
         }
+      },
+      async profile(profile) {
 
-        const role: Role = profile.role ?? "STUDENT"
+        // By default the role is STUDENT unless in admins
+        const role: Role = ALLOWED_ADMINS.includes(profile.email) ? "ADMIN" : "STUDENT"
+
+        // Update role if user already exists
+        const currentUser = await prisma.user.findUnique({
+          select: {
+            role: true,
+          },
+          where: {
+            email: profile.email,
+          },
+        })
+        if (currentUser && currentUser.role !== role) {
+          await prisma.user.update({
+            data: {
+              role: role,
+            },
+            where: {
+              email: profile.email,
+            },
+          })
+        }
 
         const user: Prisma.UserCreateInput = {
           id: profile.sub,
           role,
           name: profile.name,
           email: profile.email,
-          image,
           eIDPreferredUsername: profile.preferred_username,
           studentProfile: (role === "STUDENT") ? {
             create: {}
@@ -75,8 +90,14 @@ export default {
       return !!auth
     },
     jwt({ token, user }) {
-      if (user && user.role) {
-        token.role = user.role
+      if (user) {
+        if (user.role) {
+          token.role = user.role
+        }
+
+        if (user.id) {
+          token.id = user.id
+        }
       }
 
       // Clear image
@@ -92,6 +113,7 @@ export default {
     },
     session({ session, token }) {
       session.user.role = token.role
+      session.user.id = token.id
       return session
     },
   },

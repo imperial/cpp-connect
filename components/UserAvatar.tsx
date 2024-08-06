@@ -6,7 +6,7 @@ import React from "react"
 
 const UserAvatar = ({ user }: { user: User }) => (
   <Avatar.Root className={styles.AvatarRoot}>
-    <Avatar.Image src={user.image ?? undefined} alt="Profile" className={styles.AvatarImage} />
+    <Avatar.Image src={"/api/ms-graph/profile" ?? undefined} alt="Profile" className={styles.AvatarImage} />
     <Avatar.Fallback className={styles.AvatarFallback}>
       {user.name
         ?.split(",")
