@@ -11,6 +11,7 @@ model CompanyProfile {
   phone         String?
   founded       String?
   opportunities Opportunity[]
+  events        Event[]
 }
 
 model Opportunity {
@@ -22,4 +23,25 @@ model Opportunity {
   available Boolean
   type      String
   createdAt DateTime       @default(now())
+  // TODO: Add Link
+}
+
+model Event {
+  id        Int            @id @default(autoincrement())
+  company   CompanyProfile @relation(fields: [companyID], references: [id])
+  companyID Int
+  title     String
+  dateStart DateTime
+  dateEnd   DateTime?
+
+  shortDescription String
+  richSummary  String
+  // No. spaces available at the event
+  spaces   Int
+  location String
+  // Singular outbound link to the event
+  link     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

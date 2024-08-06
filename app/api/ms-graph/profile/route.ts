@@ -1,4 +1,5 @@
 import { auth } from "@/auth"
+import { makeGraphRequest } from "@/lib/graph"
 import { getEntraAccessToken } from "@/lib/tokens"
 
 export const GET = async () => {
@@ -19,12 +20,10 @@ export const GET = async () => {
       return new Response("Not authenticated", { status: 401 })
     }
   } catch (e) {
-    return new Response("Error fetching access token", { status: 500 })
+    return new Response(`Error fetching access token: ${e}`, { status: 500 })
   }
 
-  const response = await fetch(`https://graph.microsoft.com/v1.0/me/photos/240x240/$value`, {
-    headers: { Authorization: `Bearer ${access_token}` },
-  })
+  const response = await makeGraphRequest(access_token, "/me/photos/240x240/$value")
 
   // Confirm that profile photo was returned
   // TODO: Do this without Buffer
