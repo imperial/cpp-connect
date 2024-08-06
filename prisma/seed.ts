@@ -36,10 +36,11 @@ function createFakeStudent() {
       create: {
         bio: faker.lorem.paragraph(),
         personalWebsite: faker.internet.url(),
+        lookingFor: faker.helpers.arrayElement(['Internship', 'Graduate Job', 'Part-time Job', 'Full-time Job']),
         github: faker.internet.url(),
         linkedIn: faker.internet.url(),
         course: `Computing (${faker.helpers.arrayElements(['Software Engineering', 'Artificial Intelligence', 'Machine Learning', 'Visual Computing', 'Security and Reliability', 'Management'], {min: 1, max: 2}).join(' and ')})`,
-        graduationDate: faker.date.future().toISOString(),
+        graduationDate: faker.date.future(),
         cv: faker.system.filePath(),
         skills: faker.helpers.arrayElements(['Python', 'Java', 'C++', 'JavaScript', 'React', 'Node.js', 'SQL', 'NoSQL', 'Docker', 'Kubernetes', 'AWS', 'GCP', 'Azure'], {min: 1, max: 5}),
         interests: faker.helpers.arrayElements(['Web Development', 'Mobile Development', 'Machine Learning', 'Data Science', 'Cybersecurity', 'DevOps', 'Cloud Computing'], {min: 1, max: 3}),
