@@ -3,37 +3,14 @@
 import TanstackTable from "@/components/TanstackTable"
 
 import type { CompanyProfile, Event } from "@prisma/client"
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { format, formatDistanceToNowStrict, getDate, intlFormat } from "date-fns"
+import { createColumnHelper } from "@tanstack/react-table"
+import { format, getDate, intlFormat } from "date-fns"
 
 type EventRow = {
   company: CompanyProfile
 } & Event
 
 const columnHelper = createColumnHelper<EventRow>()
-
-const getDateSuffix = (date: number): string => {
-  if (date === 1 || date === 21 || date === 31) {
-    return "st"
-  } else if (date === 2 || date === 22) {
-    return "nd"
-  } else if (date === 3 || date === 23) {
-    return "rd"
-  } else {
-    return "th"
-  }
-}
-
-const formatDate = (date: Date): string => {
-  const day = format(date, "EEEE")
-  const dateNum = getDate(date)
-  const month = format(date, "MMMM")
-  const hours = format(date, "HH")
-  const minutes = format(date, "mm")
-  const dateSuffix = getDateSuffix(dateNum)
-
-  return `${day} ${dateNum}${dateSuffix} ${month} ${hours}:${minutes}`
-}
 
 const columns = [
   columnHelper.accessor("company.name", {
@@ -50,7 +27,7 @@ const columns = [
   }),
 
   columnHelper.accessor("dateStart", {
-    cell: info => <time suppressHydrationWarning={true}>{formatDate(info.getValue())}</time>,
+    cell: info => <time suppressHydrationWarning={true}>{format(info.getValue(), "eeee, MMMM eo 'at' HH:mm ")}</time>,
     header: "Start Date",
     sortingFn: "datetime",
   }),

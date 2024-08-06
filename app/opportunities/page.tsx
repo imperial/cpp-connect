@@ -14,9 +14,7 @@ const OpportunitiesPage = async () => {
 
   return (
     <StudentOnlyArea>
-      <div>
         <OpportunityTable opportunities={opportunities} />
-      </div>
     </StudentOnlyArea>
   )
 }

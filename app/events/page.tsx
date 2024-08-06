@@ -15,9 +15,7 @@ const EventsPage = async () => {
 
   return (
     <StudentOnlyArea>
-      <div>
         <EventTable events={events} />
-      </div>
     </StudentOnlyArea>
   )
 }
