@@ -9,7 +9,7 @@ export const GET = async () => {
   }
 
   if (!session.user.id) {
-    return new Response("User ID not found", { status: 401 })
+    return new Response("User ID not found", { status: 404 })
   }
 
   let access_token: string
