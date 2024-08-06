@@ -69,8 +69,6 @@ export default {
           })
         }
 
-        const role: Role = profile.role ?? "STUDENT"
-
         const user: Prisma.UserCreateInput = {
           id: profile.sub,
           role,
