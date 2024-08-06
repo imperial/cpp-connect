@@ -6,7 +6,7 @@ model StudentProfile {
   github          String?
   linkedIn        String?
   course          String?
-  graduationDate  String?
+  graduationDate  DateTime?
   cv              String?
   skills          String[] @default([])
   interests       String[] @default([])
