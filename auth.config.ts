@@ -1,5 +1,4 @@
 import { Prisma, Role } from "@prisma/client"
-import { se } from "date-fns/locale"
 import { DefaultSession, NextAuthConfig } from "next-auth"
 import MicrosoftEntraIDProfile from "next-auth/providers/microsoft-entra-id"
 import prisma from "./lib/db"
