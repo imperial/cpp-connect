@@ -23,16 +23,19 @@ const columns = [
     cell: info => info.getValue(),
     header: "Position",
     sortingFn: "text",
+    id: "position",
   }),
   columnHelper.accessor("location", {
     cell: info => info.getValue(),
     header: "Location",
     sortingFn: "text",
+    id: "location",
   }),
   columnHelper.accessor("type", {
     cell: info => info.getValue(),
     header: "Type",
     sortingFn: "text",
+    id: "type",
   }),
   columnHelper.accessor("createdAt", {
     cell: info => (
@@ -40,6 +43,8 @@ const columns = [
     ),
     header: "Posted",
     sortingFn: "datetime",
+    id: "posted",
+    enableColumnFilter: false,
   }),
 ]
 
