@@ -13,6 +13,14 @@ import React from "react"
 import { BsEnvelope, BsFileEarmarkText, BsGithub, BsGlobe, BsLinkedin } from "react-icons/bs"
 import Markdown from "react-markdown"
 
+const linkIconSize = "25"
+
+/**
+ * Formats the looking for field into a human readable string.
+ * @param lookingFor The looking for field from the student profile.
+ * @returns A human readable string.
+ * @example formatLookingFor("Internship") => "an internship"
+ */
 const formatLookingFor = (lookingFor: OpportunityType) => {
   switch (lookingFor) {
     case "Internship":
@@ -23,6 +31,19 @@ const formatLookingFor = (lookingFor: OpportunityType) => {
       return "a graduate job"
   }
 }
+
+/**
+ * A link to a student's website.
+ * @param href The URL of the student's website.
+ * @param children The icon to display.
+ */
+const StudentWebsiteLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <Flex align="center" gap="2">
+    <Link href={href} target="_blank">
+      {children}
+    </Link>
+  </Flex>
+)
 
 const StudentProfilePage = async ({ params }: { params: { shortcode: string } }) => {
   const studentProfile = await prisma.studentProfile.findFirst({
@@ -77,27 +98,21 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
 
             <Flex gap="2">
               {studentProfile.personalWebsite && (
-                <Flex align="center" gap="2">
-                  <Link href={studentProfile.personalWebsite} target="_blank">
-                    <BsGlobe size="25" color="black" />
-                  </Link>
-                </Flex>
+                <StudentWebsiteLink href={studentProfile.personalWebsite}>
+                  <BsGlobe size={linkIconSize} color="black" />
+                </StudentWebsiteLink>
               )}
 
               {studentProfile.github && (
-                <Flex align="center" gap="2">
-                  <Link href={studentProfile.github} target="_blank">
-                    <BsGithub size="25" color="black" />
-                  </Link>
-                </Flex>
+                <StudentWebsiteLink href={studentProfile.github}>
+                  <BsGithub size={linkIconSize} color="black" />
+                </StudentWebsiteLink>
               )}
 
               {studentProfile.linkedIn && (
-                <Flex align="center" gap="2">
-                  <Link href={studentProfile.linkedIn} target="_blank">
-                    <BsLinkedin size="25" color="black" />
-                  </Link>
-                </Flex>
+                <StudentWebsiteLink href={studentProfile.linkedIn}>
+                  <BsLinkedin size={linkIconSize} color="black" />
+                </StudentWebsiteLink>
               )}
             </Flex>
           </Flex>
