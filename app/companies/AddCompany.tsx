@@ -1,35 +1,11 @@
 "use client"
 
-import AdminOnlyArea from "@/components/rbac/AdminOnlyArea"
 import { createCompany } from "@/lib/crud/companies"
 
 import { CrossCircledIcon, ExclamationTriangleIcon, PlusIcon } from "@radix-ui/react-icons"
 import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
 import React, { use, useCallback, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
-
-export const AddCompany = () => {
-  const [openState, setopenState] = useState(false)
-
-  return (
-    <Dialog.Root open={openState} onOpenChange={setopenState} defaultOpen={false}>
-      <Dialog.Trigger>
-        <Button size="3">
-          <PlusIcon />
-          <Text>Add Company</Text>
-        </Button>
-      </Dialog.Trigger>
-      <Dialog.Content maxWidth="60vw">
-        <Dialog.Title>Add new company</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
-          Add a new company profile
-        </Dialog.Description>
-
-        <AddCompanyForm setOpenState={setopenState} />
-      </Dialog.Content>
-    </Dialog.Root>
-  )
-}
 
 const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }) => {
   const [formState, formAction] = useFormState(createCompany, { message: "" })
@@ -96,5 +72,28 @@ const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }
         <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
       </Flex>
     </form>
+  )
+}
+
+export const AddCompany = () => {
+  const [openState, setopenState] = useState(false)
+
+  return (
+    <Dialog.Root open={openState} onOpenChange={setopenState} defaultOpen={false}>
+      <Dialog.Trigger>
+        <Button size="3">
+          <PlusIcon />
+          <Text>Add Company</Text>
+        </Button>
+      </Dialog.Trigger>
+      <Dialog.Content maxWidth="60vw">
+        <Dialog.Title>Add new company</Dialog.Title>
+        <Dialog.Description size="2" mb="4">
+          Add a new company profile
+        </Dialog.Description>
+
+        <AddCompanyForm setOpenState={setopenState} />
+      </Dialog.Content>
+    </Dialog.Root>
   )
 }

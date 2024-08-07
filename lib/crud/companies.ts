@@ -1,5 +1,7 @@
 "use server"
 
+import { auth } from "@/auth"
+
 import prisma from "../db"
 import { revalidatePath } from "next/cache"
 
@@ -9,6 +11,13 @@ export interface FormPassBackState {
 }
 
 export const createCompany = async (prevState: FormPassBackState, formData: FormData): Promise<FormPassBackState> => {
+  const session = await auth()
+  if (!session) {
+    return { message: "You must be logged in to perform this action.", status: "error" }
+  }
+  if (!session.user?.role || session.user.role !== "ADMIN") {
+    return { message: "Unauthorised.", status: "error" }
+  }
   // Validate things
   const name = formData.get("name")
   const website = formData.get("website")
@@ -31,17 +40,6 @@ export const createCompany = async (prevState: FormPassBackState, formData: Form
   if (!sector) {
     return { message: "Sector is required.", status: "error" }
   }
-
-  // Check existance
-  // const existsCompany = await prisma.companyProfile.findFirst({
-  // 	where: {
-  // 		name: name.toString(),
-  // 	},
-  // })
-
-  // if (existsCompany) {
-  // 	return { message: "Company already exists.", status: "error" }
-  // }
 
   // Now add the company to the database
   try {

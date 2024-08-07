@@ -16,7 +16,7 @@ const AdminOnlyArea = async ({ children }: { children: React.ReactNode }) => {
     return <p>{children}</p>
   }
 
-  return <>Unauthorisation</>
+  return <p>Unauthorised</p>
 }
 
 export default AdminOnlyArea
