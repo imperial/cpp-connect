@@ -12,5 +12,5 @@ model StudentProfile {
   skills           String[] @default([])
   interests        String[] @default([])
   updatedAt        DateTime @updatedAt
-  studentShortcode String? // Shortcode from Microsoft Entra Id preferred username (e.g. ab1223)
+  studentShortcode String // Shortcode from Microsoft Entra Id preferred username (e.g. ab1223)
 }
