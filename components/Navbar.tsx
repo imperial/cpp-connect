@@ -56,23 +56,27 @@ const Navbar = async () => {
         </Flex>
 
         {session?.user ? (
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger>
-              <button className={styles.avatarButton}>
-                <UserAvatar user={session.user} size="4" />
-              </button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content>
-              <DropdownMenu.Item>
-                <Link
-                  href={`/students/${(await getEIDPreferredUsername(session.user))?.split("@")[0]}`}
-                  className={styles.link}
-                >
-                  Profile
-                </Link>
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu.Root>
+          session.user.role === "STUDENT" ? (
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger>
+                <button className={styles.avatarButton}>
+                  <UserAvatar user={session.user} size="4" />
+                </button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content>
+                <DropdownMenu.Item>
+                  <Link
+                    href={`/students/${(await getEIDPreferredUsername(session.user))?.split("@")[0]}`}
+                    className={styles.link}
+                  >
+                    Profile
+                  </Link>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Root>
+          ) : (
+            <UserAvatar user={session.user} size="4" />
+          )
         ) : (
           <Link href="/login" className={styles.link}>
             <span>Log In</span>
