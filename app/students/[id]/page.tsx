@@ -11,6 +11,7 @@ import { format } from "date-fns"
 import { notFound } from "next/navigation"
 import React from "react"
 import { BsEnvelope, BsFileEarmarkText, BsGithub, BsGlobe, BsLinkedin } from "react-icons/bs"
+import { IconType } from "react-icons/lib"
 import Markdown from "react-markdown"
 
 const linkIconSize = "25"
@@ -33,17 +34,20 @@ const formatLookingFor = (lookingFor: OpportunityType) => {
 }
 
 /**
- * A link to a student's website.
+ * A link to a student's website - rendered conditionally based on if the URL is provided or not
  * @param href The URL of the student's website.
- * @param children The icon to display.
+ * @param icon The icon to display.
  */
-const StudentWebsiteLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <Flex align="center" gap="2">
-    <Link href={href} target="_blank">
-      {children}
-    </Link>
-  </Flex>
-)
+const StudentWebsiteLink = ({ href, icon: Icon }: { href?: string | null; icon: IconType }) =>
+  href ? (
+    <Flex align="center" gap="2">
+      <Link href={href} target="_blank">
+        <Icon size={linkIconSize} color="black" />
+      </Link>
+    </Flex>
+  ) : (
+    <> </>
+  )
 
 const StudentProfilePage = async ({ params }: { params: { shortcode: string } }) => {
   const studentProfile = await prisma.studentProfile.findFirst({
@@ -97,23 +101,9 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
             </Flex>
 
             <Flex gap="2">
-              {studentProfile.personalWebsite && (
-                <StudentWebsiteLink href={studentProfile.personalWebsite}>
-                  <BsGlobe size={linkIconSize} color="black" />
-                </StudentWebsiteLink>
-              )}
-
-              {studentProfile.github && (
-                <StudentWebsiteLink href={studentProfile.github}>
-                  <BsGithub size={linkIconSize} color="black" />
-                </StudentWebsiteLink>
-              )}
-
-              {studentProfile.linkedIn && (
-                <StudentWebsiteLink href={studentProfile.linkedIn}>
-                  <BsLinkedin size={linkIconSize} color="black" />
-                </StudentWebsiteLink>
-              )}
+              <StudentWebsiteLink href={studentProfile.personalWebsite} icon={BsGlobe} />
+              <StudentWebsiteLink href={studentProfile.github} icon={BsGithub} />
+              <StudentWebsiteLink href={studentProfile.linkedIn} icon={BsLinkedin} />
             </Flex>
           </Flex>
         </Card>
