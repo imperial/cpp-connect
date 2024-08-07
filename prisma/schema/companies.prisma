@@ -1,9 +1,9 @@
 model CompanyProfile {
   id            Int           @id @default(autoincrement())
-  name          String
-  summary       String
+  name          String        @unique
+  summary       String        @default("")
   sector        String
-  logo          String
+  logo          String        @default("")
   website       String
   size          String?
   hq            String?
