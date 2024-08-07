@@ -1,4 +1,4 @@
-import { PrismaClient, Role, Event } from '@prisma/client'
+import { PrismaClient, Role, Event, OpportunityType } from '@prisma/client'
 import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient()
@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 function createFakeOpportunity() {
   return {
     position: faker.person.jobTitle(),
-    type: faker.person.jobType(),
+    type: faker.helpers.arrayElement([OpportunityType.Internship, OpportunityType.Graduate, OpportunityType.Placement]),
     location: faker.location.city(),
     available: faker.datatype.boolean(0.75),
   }
@@ -32,11 +32,12 @@ function createFakeStudent() {
     name: faker.person.fullName(),
     email: faker.internet.email(),
     role: Role.STUDENT,
+    eIDPreferredUsername: `${faker.internet.userName()}@ic.ac.uk`,
     studentProfile: {
       create: {
         bio: faker.lorem.paragraph(),
         personalWebsite: faker.internet.url(),
-        lookingFor: faker.helpers.arrayElement(['Internship', 'Graduate Job', 'Part-time Job', 'Full-time Job']),
+        lookingFor: faker.helpers.arrayElement([OpportunityType.Internship, OpportunityType.Graduate, OpportunityType.Placement]),
         github: faker.internet.url(),
         linkedIn: faker.internet.url(),
         course: `Computing (${faker.helpers.arrayElements(['Software Engineering', 'Artificial Intelligence', 'Machine Learning', 'Visual Computing', 'Security and Reliability', 'Management'], {min: 1, max: 2}).join(' and ')})`,
@@ -52,7 +53,7 @@ function createFakeStudent() {
 async function main() {
 
   const firstStudent = createFakeStudent()
-  console.log("a student id: ", firstStudent.id)
+  console.log("a student id: ", firstStudent.eIDPreferredUsername)
   await prisma.user.create({
     data: firstStudent
   })

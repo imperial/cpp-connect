@@ -14,6 +14,12 @@ model CompanyProfile {
   events        Event[]
 }
 
+enum OpportunityType {
+  Internship
+  Placement
+  Graduate
+}
+
 model Opportunity {
   id        Int            @id @default(autoincrement())
   company   CompanyProfile @relation(fields: [companyID], references: [id])
@@ -21,7 +27,7 @@ model Opportunity {
   position  String
   location  String
   available Boolean
-  type      String
+  type      OpportunityType
   createdAt DateTime       @default(now())
   // TODO: Add Link
 }

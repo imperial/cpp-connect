@@ -5,6 +5,7 @@ import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
 
+import { OpportunityType } from "@prisma/client"
 import { Box, Card, Flex, Heading, Link, Text } from "@radix-ui/themes"
 import { format } from "date-fns"
 import { notFound } from "next/navigation"
@@ -12,18 +13,14 @@ import React from "react"
 import { BsEnvelope, BsFileEarmarkText, BsGithub, BsGlobe, BsLinkedin } from "react-icons/bs"
 import Markdown from "react-markdown"
 
-const formatLookingFor = (lookingFor: string) => {
+const formatLookingFor = (lookingFor: OpportunityType) => {
   switch (lookingFor) {
     case "Internship":
       return "an internship"
-    case "Graduate Job":
+    case "Placement":
+      return "a placement"
+    case "Graduate":
       return "a graduate job"
-    case "Part-time Job":
-      return "a part-time job"
-    case "Full-time Job":
-      return "a full-time job"
-    default:
-      return lookingFor
   }
 }
 
