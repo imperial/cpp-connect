@@ -1,5 +1,7 @@
 "use client"
 
+import { signInWithMagicLink } from "@/lib/authActions"
+
 import { signIn, signOut, useSession } from "next-auth/react"
 import React from "react"
 
@@ -17,6 +19,11 @@ const Auth = () => {
     <>
       Not signed in <br />
       <button onClick={() => signIn()}>Sign in</button>
+      <form action={signInWithMagicLink}>
+        <label htmlFor="email">Email</label>
+        <input id="email" name="email" type="email" required />
+        <button type="submit">Sign In with magic link</button>
+      </form>
     </>
   )
 }

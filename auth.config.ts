@@ -1,6 +1,7 @@
 import { Prisma, Role } from "@prisma/client"
 import { DefaultSession, NextAuthConfig } from "next-auth"
 import MicrosoftEntraIDProfile from "next-auth/providers/microsoft-entra-id"
+import Nodemailer from "next-auth/providers/nodemailer"
 import prisma from "./lib/db"
 import { getDepartment } from "./lib/graph"
 
@@ -37,6 +38,10 @@ declare module "next-auth" {
 
 export default {
   providers: [
+    Nodemailer({
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
+    }),
     MicrosoftEntraIDProfile({
       clientId: process.env.MS_ENTRA_CLIENT_ID,
       clientSecret: process.env.MS_ENTRA_CLIENT_SECRET,
