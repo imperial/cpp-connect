@@ -9,17 +9,17 @@ import { useFormState } from "react-dom"
 
 const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }) => {
   const [formState, formAction] = useFormState(createCompany, { message: "" })
-  const [isSubmitting, setisSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     if (formState?.status === "success") {
       setOpenState(false)
     }
-    setisSubmitting(false)
+    setIsSubmitting(false)
   }, [formState, setOpenState])
 
   const clientSideSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    setisSubmitting(true)
+    setIsSubmitting(true)
   }, [])
 
   return (
@@ -76,10 +76,10 @@ const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }
 }
 
 export const AddCompany = () => {
-  const [openState, setopenState] = useState(false)
+  const [openState, setOpenState] = useState(false)
 
   return (
-    <Dialog.Root open={openState} onOpenChange={setopenState} defaultOpen={false}>
+    <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
       <Dialog.Trigger>
         <Button size="3">
           <PlusIcon />
@@ -92,7 +92,7 @@ export const AddCompany = () => {
           Add a new company profile
         </Dialog.Description>
 
-        <AddCompanyForm setOpenState={setopenState} />
+        <AddCompanyForm setOpenState={setOpenState} />
       </Dialog.Content>
     </Dialog.Root>
   )
