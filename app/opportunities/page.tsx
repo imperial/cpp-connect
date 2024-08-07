@@ -1,5 +1,5 @@
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
-import StudentOnlyArea from "@/components/rbac/StudentOnlyArea"
+import RestrictedArea from "@/components/rbac/RestrictedArea"
 import prisma from "@/lib/db"
 
 import React from "react"
@@ -13,9 +13,9 @@ const OpportunitiesPage = async () => {
   })
 
   return (
-    <StudentOnlyArea>
+    <RestrictedArea allowedRoles={["STUDENT"]}>
       <OpportunityTable opportunities={opportunities} />
-    </StudentOnlyArea>
+    </RestrictedArea>
   )
 }
 

@@ -1,7 +1,10 @@
 import CompaniesTable from "@/app/companies/CompaniesTable"
-import StudentOnlyArea from "@/components/rbac/StudentOnlyArea"
+import RestrictedArea from "@/components/rbac/RestrictedArea"
 import prisma from "@/lib/db"
 
+import { CompanyAdminActions } from "./CompanyAdminActions"
+
+import { Flex } from "@radix-ui/themes"
 import React from "react"
 
 const OpportunitiesPage = async () => {
@@ -17,9 +20,12 @@ const OpportunitiesPage = async () => {
   })
 
   return (
-    <StudentOnlyArea>
-      <CompaniesTable companies={companies} />
-    </StudentOnlyArea>
+    <RestrictedArea allowedRoles={["STUDENT"]}>
+      <Flex gap="5" direction="column">
+        <CompanyAdminActions />
+        <CompaniesTable companies={companies} />
+      </Flex>
+    </RestrictedArea>
   )
 }
 

@@ -1,4 +1,4 @@
-import StudentOnlyArea from "@/components/rbac/StudentOnlyArea"
+import RestrictedArea from "@/components/rbac/RestrictedArea"
 import prisma from "@/lib/db"
 
 import EventTable from "./EventTable"
@@ -14,9 +14,9 @@ const EventsPage = async () => {
   })
 
   return (
-    <StudentOnlyArea>
+    <RestrictedArea allowedRoles={["STUDENT"]}>
       <EventTable events={events} />
-    </StudentOnlyArea>
+    </RestrictedArea>
   )
 }
 
