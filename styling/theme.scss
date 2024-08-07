@@ -1,3 +1,14 @@
+@mixin load-radix-theme($theme) {
+  @import url('@radix-ui/colors/#{$theme}.css');
+  @import url('@radix-ui/colors/#{$theme}-dark.css');
+  @import url('@radix-ui/colors/#{$theme}-alpha.css');
+  @import url('@radix-ui/colors/#{$theme}-dark-alpha.css');
+}
+
+@include load-radix-theme("red");
+@include load-radix-theme("yellow");
+@include load-radix-theme("green");
+
 :root,
 .light,
 .light-theme {

@@ -24,30 +24,37 @@ const columns = [
     cell: info => info.getValue(),
     header: "Title",
     sortingFn: "alphanumeric",
+    id: "title",
   }),
 
   columnHelper.accessor("dateStart", {
     cell: info => <time suppressHydrationWarning={true}>{format(info.getValue(), "eeee, MMMM eo 'at' HH:mm ")}</time>,
     header: "Start Date",
     sortingFn: "datetime",
+    id: "dateStart",
+    enableColumnFilter: false,
   }),
 
   columnHelper.accessor("shortDescription", {
     cell: info => info.getValue(),
     header: "Description",
     sortingFn: "text",
+    id: "shortDescription",
   }),
 
   columnHelper.accessor("location", {
     cell: info => info.getValue(),
     header: "Location",
     sortingFn: "text",
+    id: "location",
   }),
 
   columnHelper.accessor("spaces", {
     cell: info => info.getValue(),
     header: "Spaces",
     sortingFn: "alphanumeric",
+    id: "spaces",
+    enableColumnFilter: false,
   }),
 ]
 
