@@ -1,5 +1,5 @@
 import CompaniesTable from "@/app/companies/CompaniesTable"
-import StudentOnlyArea from "@/components/rbac/StudentOnlyArea"
+import RestrictedArea from "@/components/rbac/RestrictedArea"
 import prisma from "@/lib/db"
 
 import { CompanyAdminActions } from "./CompanyAdminActions"
@@ -20,12 +20,12 @@ const OpportunitiesPage = async () => {
   })
 
   return (
-    <StudentOnlyArea>
+    <RestrictedArea allowedRoles={["STUDENT"]}>
       <Flex gap="5" direction="column">
         <CompanyAdminActions />
         <CompaniesTable companies={companies} />
       </Flex>
-    </StudentOnlyArea>
+    </RestrictedArea>
   )
 }
 

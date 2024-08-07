@@ -1,15 +1,13 @@
-import DisplayOnlyIfAdmin from "@/components/rbac/DisplayOnlyIfAdmin"
+import RestrictedArea from "@/components/rbac/RestrictedArea"
 
 import { AddCompany } from "./AddCompany"
-import styles from "./company-admin-actions.module.scss"
 
-import { PlusIcon } from "@radix-ui/react-icons"
-import { Button, Card, Flex, Heading, Text } from "@radix-ui/themes"
+import { Card, Flex, Heading } from "@radix-ui/themes"
 import React from "react"
 
 export const CompanyAdminActions = () => {
   return (
-    <DisplayOnlyIfAdmin>
+    <RestrictedArea showMessage={false}>
       <Card variant="surface">
         <Flex gap="3" direction="row" align="center" justify="between" p="2">
           <Heading size="6">Admin Actions</Heading>
@@ -18,6 +16,6 @@ export const CompanyAdminActions = () => {
           </Flex>
         </Flex>
       </Card>
-    </DisplayOnlyIfAdmin>
+    </RestrictedArea>
   )
 }
