@@ -3,7 +3,7 @@ import { auth } from "@/auth"
 import UserAvatar from "./UserAvatar"
 import styles from "./navbar.module.scss"
 
-import { Flex, Link } from "@radix-ui/themes"
+import { DropdownMenu, Flex, Link } from "@radix-ui/themes"
 import Image from "next/image"
 import React from "react"
 
@@ -39,7 +39,20 @@ const Navbar = async () => {
         </Flex>
 
         {session?.user ? (
-          <UserAvatar user={session.user} size="4" />
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger>
+              <button className={styles.avatarButton}>
+                <UserAvatar user={session.user} size="4" />
+              </button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content>
+              <DropdownMenu.Item>
+                <Link href={`/students/${session.user.id}`} className={styles.link}>
+                  Profile
+                </Link>
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
         ) : (
           <Link href="/login" className={styles.link}>
             <span>Log In</span>
