@@ -26,7 +26,7 @@ const formatLookingFor = (lookingFor: OpportunityType) => {
 
 const StudentProfilePage = async ({ params }: { params: { id: string } }) => {
   const studentProfile = await prisma.studentProfile.findFirst({
-    where: { user: { eIDPreferredUsername: `${params.id}@ic.ac.uk` } },
+    where: { studentShortcode: params.id },
     include: {
       user: true,
     },

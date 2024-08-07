@@ -32,7 +32,6 @@ function createFakeStudent() {
     name: faker.person.fullName(),
     email: faker.internet.email(),
     role: Role.STUDENT,
-    eIDPreferredUsername: `${faker.internet.userName()}@ic.ac.uk`,
     studentProfile: {
       create: {
         bio: faker.lorem.paragraph(),
@@ -45,6 +44,7 @@ function createFakeStudent() {
         cv: faker.system.filePath(),
         skills: faker.helpers.arrayElements(['Python', 'Java', 'C++', 'JavaScript', 'React', 'Node.js', 'SQL', 'NoSQL', 'Docker', 'Kubernetes', 'AWS', 'GCP', 'Azure'], {min: 1, max: 5}),
         interests: faker.helpers.arrayElements(['Web Development', 'Mobile Development', 'Machine Learning', 'Data Science', 'Cybersecurity', 'DevOps', 'Cloud Computing'], {min: 1, max: 3}),
+        studentShortcode: faker.internet.userName(),
       }
     }
   }
@@ -53,7 +53,7 @@ function createFakeStudent() {
 async function main() {
 
   const firstStudent = createFakeStudent()
-  console.log("a student id: ", firstStudent.eIDPreferredUsername)
+  console.log("a student shortCode: ", firstStudent.studentProfile.create.studentShortcode)
   await prisma.user.create({
     data: firstStudent
   })

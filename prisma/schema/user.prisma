@@ -11,11 +11,10 @@ model User {
 
   role Role
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  eIDPreferredUsername String? // Microsoft Entra ID preferred username (e.g. ab1223@ic.ac.uk)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  studentProfile StudentProfile? // Student Profile
+  studentProfile   StudentProfile? // Student Profile
 }
 
 enum Role {

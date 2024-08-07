@@ -74,9 +74,10 @@ export default {
           role,
           name: profile.name,
           email: profile.email,
-          eIDPreferredUsername: profile.preferred_username,
           studentProfile: (role === "STUDENT") ? {
-            create: {}
+            create: {
+              studentShortcode: profile.preferred_username.split("@")[0],
+            }
           } : undefined
         }
 
