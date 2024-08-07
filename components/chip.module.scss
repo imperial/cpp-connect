@@ -1,0 +1,12 @@
+.chip {
+  padding: 0.2em 0.5em 0.2em 0.5em;
+  border: solid var(--gray-8) 1px;
+  border-radius: 1em;
+  align-items: center;
+}
+
+.deleteButton {
+  cursor: pointer;
+  border-radius: 50%;
+  margin-right: -0.3em;
+}

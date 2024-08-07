@@ -1,22 +1,26 @@
 import styles from "@/components/userAvatar.module.scss"
 
-import * as Avatar from "@radix-ui/react-avatar"
+import { Avatar } from "@radix-ui/themes"
 import { User } from "next-auth"
 import React from "react"
 
-const UserAvatar = ({ user }: { user: User }) => (
-  <Avatar.Root className={styles.AvatarRoot}>
-    <Avatar.Image src={"/api/ms-graph/profile" ?? undefined} alt="Profile" className={styles.AvatarImage} />
-    <Avatar.Fallback className={styles.AvatarFallback}>
-      {user.name
+const UserAvatar = ({ user, size }: { user: User; size: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" }) => (
+  <Avatar
+    alt="Profile"
+    radius="full"
+    size={size}
+    style={{ fontSize: `${parseInt(size) / 3.5}rem` }}
+    className={styles.Avatar}
+    fallback={
+      user.name
         ?.split(",")
         .reverse()
         .join(" ")
         .split(/\s|-/g)
         .map(name => name[0]?.toUpperCase())
-        .join("")}
-    </Avatar.Fallback>
-  </Avatar.Root>
+        .join("") ?? ""
+    }
+  />
 )
 
 export default UserAvatar

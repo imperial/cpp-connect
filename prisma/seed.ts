@@ -1,4 +1,4 @@
-import { PrismaClient, Event } from '@prisma/client'
+import { PrismaClient, Role, Event, OpportunityType } from '@prisma/client'
 import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient()
@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 function createFakeOpportunity() {
   return {
     position: faker.person.jobTitle(),
-    type: faker.person.jobType(),
+    type: faker.helpers.arrayElement([OpportunityType.Internship, OpportunityType.Graduate, OpportunityType.Placement]),
     location: faker.location.city(),
     available: faker.datatype.boolean(0.75),
   }
@@ -25,27 +25,47 @@ function createFakeEvent(): Omit<Event, "id" | "companyID" | "createdAt" | "upda
   }
 }
 
+
+function createFakeStudent() {
+  return {
+    id: faker.string.uuid(),
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    role: Role.STUDENT,
+    studentProfile: {
+      create: {
+        bio: faker.lorem.paragraph(),
+        personalWebsite: faker.internet.url(),
+        lookingFor: faker.helpers.arrayElement([OpportunityType.Internship, OpportunityType.Graduate, OpportunityType.Placement]),
+        github: faker.internet.url(),
+        linkedIn: faker.internet.url(),
+        course: `Computing (${faker.helpers.arrayElements(['Software Engineering', 'Artificial Intelligence', 'Machine Learning', 'Visual Computing', 'Security and Reliability', 'Management'], {min: 1, max: 2}).join(' and ')})`,
+        graduationDate: faker.date.future(),
+        cv: faker.system.filePath(),
+        skills: faker.helpers.arrayElements(['Python', 'Java', 'C++', 'JavaScript', 'React', 'Node.js', 'SQL', 'NoSQL', 'Docker', 'Kubernetes', 'AWS', 'GCP', 'Azure'], {min: 1, max: 5}),
+        interests: faker.helpers.arrayElements(['Web Development', 'Mobile Development', 'Machine Learning', 'Data Science', 'Cybersecurity', 'DevOps', 'Cloud Computing'], {min: 1, max: 3}),
+        studentShortcode: faker.internet.userName(),
+      }
+    }
+  }
+}
+
 async function main() {
 
-  await prisma.user.upsert({
-    where: { email: 'ab1223@ic.ac.uk' },
-    update: {},
-    create: {
-      email: 'ab1223@ic.ac.uk',
-      role: 'STUDENT',
-    },
-  })
-  await prisma.user.upsert({
-    where: { email: 'ma4723@ic.ac.uk' },
-    update: {},
-    create: {
-      email: 'ma4723@ic.ac.uk',
-      role: 'STUDENT',
-    },
+  const firstStudent = createFakeStudent()
+  console.log("a student shortCode: ", firstStudent.studentProfile.create.studentShortcode)
+  await prisma.user.create({
+    data: firstStudent
   })
 
+  for (let i = 0; i < 10; i++) {
+    await prisma.user.create({
+      data: createFakeStudent()
+    })
+  }
+
   const positions = []
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 10; i++) {
     positions.push(createFakeOpportunity())
   }
 
@@ -57,10 +77,10 @@ async function main() {
   await prisma.companyProfile.upsert({
     where: { name: "Doc EdTech" },
     update: {
-        summary: "Technological innovation drives the growth of Amazon and we're delighted to be offering exciting internship and graduate opportunities for Software Development Engineers. Whether it's in our UK Headquarters or Development Centres (Edinburgh, Dublin, Central London) or Seattle, you could be working on a number of initiatives for Amazons global websites and services. For ambitious graduates, like you, intent on developing a successful career, the result is a technical learning environment quite unlike any other. Work Hard. Have Fun. Make History. To find out more see our UK Opportunities and our US Opportunities.",
-        hq: "Slough, UK",
-        founded: "1994",
-        size: "10000+",
+      summary: "Technological innovation drives the growth of Amazon and we're delighted to be offering exciting internship and graduate opportunities for Software Development Engineers. Whether it's in our UK Headquarters or Development Centres (Edinburgh, Dublin, Central London) or Seattle, you could be working on a number of initiatives for Amazons global websites and services. For ambitious graduates, like you, intent on developing a successful career, the result is a technical learning environment quite unlike any other. Work Hard. Have Fun. Make History. To find out more see our UK Opportunities and our US Opportunities.",
+      hq: "Slough, UK",
+      founded: "1994",
+      size: "10000+",
     },
     create: {
       name: "Doc EdTech",
@@ -76,9 +96,6 @@ async function main() {
       }
     },
   })
-
-  const opportunities = await prisma.opportunity.findMany()
-  console.log(opportunities)
 }
 
 main()
