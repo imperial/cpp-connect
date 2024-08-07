@@ -24,9 +24,9 @@ const formatLookingFor = (lookingFor: OpportunityType) => {
   }
 }
 
-const StudentProfilePage = async ({ params }: { params: { id: string } }) => {
+const StudentProfilePage = async ({ params }: { params: { shortcode: string } }) => {
   const studentProfile = await prisma.studentProfile.findFirst({
-    where: { studentShortcode: params.id },
+    where: { studentShortcode: params.shortcode },
     include: {
       user: true,
     },

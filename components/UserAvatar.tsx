@@ -6,7 +6,6 @@ import React from "react"
 
 const UserAvatar = ({ user, size }: { user: User; size: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" }) => (
   <Avatar
-    src={"/api/ms-graph/profile" ?? undefined}
     alt="Profile"
     radius="full"
     size={size}
