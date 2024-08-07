@@ -44,7 +44,7 @@ const StudentProfilePage = async ({ params }: { params: { id: string } }) => {
       <Flex gap="3" direction="row" wrap="wrap">
         <Card variant="ghost" className={styles.shortDetailsCard}>
           <Flex direction="column" align="center" gap="5">
-            <UserAvatar user={studentProfile.user} size={10} />
+            <UserAvatar user={studentProfile.user} size="9" />
 
             <Flex align="center" gap="2">
               <Flex direction="column" align="center">
@@ -63,13 +63,15 @@ const StudentProfilePage = async ({ params }: { params: { id: string } }) => {
 
             {studentProfile.course && <Text>{studentProfile.course}</Text>}
 
-            <Box>
-              {studentProfile.lookingFor && <Text>Looking for {formatLookingFor(studentProfile.lookingFor)}</Text>}
-              <br />
-              {studentProfile.graduationDate && (
-                <Text>Graduating in {format(studentProfile.graduationDate, "MMMM, yyyy")}</Text>
-              )}
-            </Box>
+            {(studentProfile.lookingFor || studentProfile.graduationDate) && (
+              <Box>
+                {studentProfile.lookingFor && <Text>Looking for {formatLookingFor(studentProfile.lookingFor)}</Text>}
+                <br />
+                {studentProfile.graduationDate && (
+                  <Text>Graduating in {format(studentProfile.graduationDate, "MMMM, yyyy")}</Text>
+                )}
+              </Box>
+            )}
 
             <Flex align="center" gap="2">
               <BsEnvelope />
@@ -114,27 +116,25 @@ const StudentProfilePage = async ({ params }: { params: { id: string } }) => {
                 </Flex>
               )}
 
-              {studentProfile.skills && (
-                <Flex direction="column" gap="3">
-                  <Heading size="5">Skills</Heading>
-                  <Flex gap="1">
-                    {studentProfile.skills.map((skill, id) => (
-                      <Chip label={skill} key={id} />
-                    ))}
-                  </Flex>
+              <Flex direction="column" gap="3">
+                <Heading size="5">Skills</Heading>
+                <Flex gap="1">
+                  {studentProfile.skills.map((skill, id) => (
+                    <Chip label={skill} key={id} />
+                  ))}
+                  {!studentProfile.skills.length && <Text>No skills listed</Text>}
                 </Flex>
-              )}
+              </Flex>
 
-              {studentProfile.interests && (
-                <Flex direction="column" gap="3">
-                  <Heading size="5">Interests</Heading>
-                  <Flex gap="1">
-                    {studentProfile.interests.map((interest, id) => (
-                      <Chip label={interest} key={id} />
-                    ))}
-                  </Flex>
+              <Flex direction="column" gap="3">
+                <Heading size="5">Interests</Heading>
+                <Flex gap="1">
+                  {studentProfile.interests.map((interest, id) => (
+                    <Chip label={interest} key={id} />
+                  ))}
+                  {!studentProfile.interests.length && <Text>No interests listed</Text>}
                 </Flex>
-              )}
+              </Flex>
             </Flex>
           </Flex>
         </Card>

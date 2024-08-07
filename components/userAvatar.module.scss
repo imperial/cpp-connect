@@ -1,29 +1,3 @@
-.AvatarRoot {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  overflow: hidden;
-  user-select: none;
-  border-radius: 100%;
-}
-
-.AvatarImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-}
-
-.AvatarFallback {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.Avatar {
   background-color: var(--gray-4);
-  color: var(--blue-9);
-  line-height: 1;
-  font-weight: 500;
 }

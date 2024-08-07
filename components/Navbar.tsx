@@ -39,7 +39,7 @@ const Navbar = async () => {
         </Flex>
 
         {session?.user ? (
-          <UserAvatar user={session.user} size={3} />
+          <UserAvatar user={session.user} size="4" />
         ) : (
           <Link href="/login" className={styles.link}>
             <span>Log In</span>
