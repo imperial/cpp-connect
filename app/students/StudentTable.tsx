@@ -20,7 +20,7 @@ const columns = [
     sortingFn: "text",
   }),
   columnHelper.accessor("graduationDate", {
-    cell: info => info.getValue(),
+    cell: info => info.getValue()?.getFullYear() ?? "N/A",
     header: "Graduating",
     sortingFn: "datetime",
   }),

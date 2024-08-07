@@ -1,6 +1,6 @@
 import Chip from "@/components/Chip"
 import UserAvatar from "@/components/UserAvatar"
-import StudentOnlyArea from "@/components/rbac/StudentOnlyArea"
+import RestrictedArea from "@/components/rbac/RestrictedArea"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -62,7 +62,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
   }
 
   return (
-    <StudentOnlyArea>
+    <RestrictedArea allowedRoles={["STUDENT"]}>
       <Flex gap="3" direction="row" wrap="wrap">
         <Card variant="ghost" className={styles.shortDetailsCard}>
           <Flex direction="column" align="center" gap="5">
@@ -141,7 +141,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
           </Flex>
         </Card>
       </Flex>
-    </StudentOnlyArea>
+    </RestrictedArea>
   )
 }
 
