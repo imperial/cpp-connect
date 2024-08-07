@@ -28,8 +28,8 @@ const formatLookingFor = (lookingFor: string) => {
 }
 
 const StudentProfilePage = async ({ params }: { params: { id: string } }) => {
-  const studentProfile = await prisma.studentProfile.findUnique({
-    where: { userId: params.id },
+  const studentProfile = await prisma.studentProfile.findFirst({
+    where: { user: { eIDPreferredUsername: `${params.id}@ic.ac.uk` } },
     include: {
       user: true,
     },

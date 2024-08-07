@@ -1,14 +1,31 @@
 import { auth } from "@/auth"
+import prisma from "@/lib/db"
 
 import UserAvatar from "./UserAvatar"
 import styles from "./navbar.module.scss"
 
 import { DropdownMenu, Flex, Link } from "@radix-ui/themes"
+import { Session } from "next-auth"
 import Image from "next/image"
 import React from "react"
 
 const Navbar = async () => {
   const session = await auth()
+
+  // Get the eIDPreferredUsername from the user for the profile link
+  const getEIDPreferredUsername = async (user: Session["user"]) => {
+    return (
+      await prisma.user.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          eIDPreferredUsername: true,
+        },
+      })
+    )?.eIDPreferredUsername
+  }
+
   return (
     <Flex className={styles.container} justify="between" asChild>
       <nav>
@@ -47,7 +64,10 @@ const Navbar = async () => {
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>
               <DropdownMenu.Item>
-                <Link href={`/students/${session.user.id}`} className={styles.link}>
+                <Link
+                  href={`/students/${(await getEIDPreferredUsername(session.user))?.split("@")[0]}`}
+                  className={styles.link}
+                >
                   Profile
                 </Link>
               </DropdownMenu.Item>
