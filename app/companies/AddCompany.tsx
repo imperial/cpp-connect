@@ -41,19 +41,19 @@ const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }
         )}
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
-            Company name
+            Company name*
           </Text>
           <TextField.Root name="name" placeholder="E.g., Imperial" required />
         </label>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
-            Website
+            Website*
           </Text>
           <TextField.Root name="website" placeholder="E.g., https://imperial.ic.ac.uk" required type="url" />
         </label>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
-            Sector
+            Sector*
           </Text>
           <TextField.Root name="sector" placeholder="E.g., Education" required />
         </label>

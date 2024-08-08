@@ -79,6 +79,7 @@ export const updateCompany = async (
     return { message: "Unauthorised.", status: "error" }
   }
   // Validate things
+  const name = formData.get("name")
   const summary = formData.get("summary")
   const website = formData.get("website")
   const sector = formData.get("sector")
@@ -87,6 +88,10 @@ export const updateCompany = async (
   const email = formData.get("email")
   const phone = formData.get("phone")
   const founded = formData.get("founded")
+
+  if (!name) {
+    return { message: "Name is required.", status: "error" }
+  }
 
   if (!website) {
     return { message: "Website is required.", status: "error" }
@@ -107,6 +112,7 @@ export const updateCompany = async (
     await prisma.companyProfile.update({
       where: { id },
       data: {
+        name: name.toString(),
         summary: summary?.toString(),
         website: website.toString(),
         sector: sector.toString(),
@@ -118,7 +124,11 @@ export const updateCompany = async (
       },
     })
   } catch (e: any) {
-    return { message: "A database error occured. Please try again later.", status: "error" }
+    if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
+      return { message: "Company already exists. Please supply a different name.", status: "error" }
+    } else {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
   }
 
   revalidatePath(`/companies/${id}`)

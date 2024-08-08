@@ -44,24 +44,36 @@ const EditCompanyForm = ({
         )}
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
+            Company Name*
+          </Text>
+          <TextField.Root
+            name="name"
+            placeholder="e.g. Imperial College London"
+            required
+            defaultValue={prevCompanyProfile.name}
+          />
+        </label>
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
             Summary
           </Text>
           <TextField.Root name="summary" placeholder="lorem ipsum..." defaultValue={prevCompanyProfile.summary} />
         </label>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
-            Website
+            Website*
           </Text>
           <TextField.Root
             name="website"
             placeholder="site@example.com"
             required
             defaultValue={prevCompanyProfile.website}
+            type="url"
           />
         </label>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
-            Sector
+            Sector*
           </Text>
           <TextField.Root
             name="sector"
