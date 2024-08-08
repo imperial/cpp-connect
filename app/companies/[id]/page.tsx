@@ -32,7 +32,20 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
 }
 
 const CompanyPage = async ({ params }: { params: { id: string } }) => {
-  const companyProfile = await prisma.companyProfile.findUnique({ where: { id: parseInt(params.id) } })
+  const companyProfile = await prisma.companyProfile.findUnique({
+    where: {
+      id: parseInt(params.id),
+    },
+    include: {
+      companyUsers: {
+        select: {
+          id: true,
+          email: true,
+          createdAt: true,
+        },
+      },
+    },
+  })
 
   if (!companyProfile) {
     notFound()

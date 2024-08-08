@@ -17,9 +17,9 @@ export const createCompany: ServerSideFormHandler = async (prevState, formData) 
     return { message: "Unauthorised.", status: "error" }
   }
   // Validate things
-  const name = formData.get("name")
-  const website = formData.get("website")
-  const sector = formData.get("sector")
+  const name = formData.get("name")?.toString().trim()
+  const website = formData.get("website")?.toString().trim()
+  const sector = formData.get("sector")?.toString().trim()
 
   if (!name) {
     return { message: "Name is required.", status: "error" }
@@ -68,7 +68,7 @@ export const createCompanyUser: ServerSideFormHandler = async (prevState, formDa
   if (!session) {
     return { message: "You must be logged in to perform this action.", status: "error" }
   }
-  const email = formData.get("email")
+  const email = formData.get("email")?.toString().trim()
   const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
   if (!email) {
     return { message: "Email is required.", status: "error" }
