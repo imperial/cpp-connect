@@ -97,7 +97,7 @@ export default {
       // Logged in users are authenticated, otherwise redirect to login page
       return !!auth
     },
-    signIn: async ({ account, user, profile, email }) => {
+    signIn: async ({ account, user, email }) => {
       // Admins always have access
       // Company users will always exist in the database
       // If the role field is not present, it means that user doesn't exist
