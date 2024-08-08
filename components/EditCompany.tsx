@@ -50,13 +50,68 @@ const EditCompanyForm = ({
         )}
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
-            Company Summary
+            Summary
+          </Text>
+          <TextField.Root name="summary" placeholder="lorem ipsum..." defaultValue={prevCompanyProfile.summary} />
+        </label>
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            Website
           </Text>
           <TextField.Root
-            name="summary"
-            placeholder="lorem ipsum..."
+            name="website"
+            placeholder="site@example.com"
             required
-            defaultValue={prevCompanyProfile.summary}
+            defaultValue={prevCompanyProfile.website}
+          />
+        </label>
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            Sector
+          </Text>
+          <TextField.Root
+            name="sector"
+            placeholder="e.g. Education"
+            required
+            defaultValue={prevCompanyProfile.sector}
+          />
+        </label>
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            Size
+          </Text>
+          <TextField.Root name="size" placeholder="e.g. 100+" defaultValue={prevCompanyProfile.size ?? undefined} />
+        </label>
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            Headquarters
+          </Text>
+          <TextField.Root name="hq" placeholder="e.g. London" defaultValue={prevCompanyProfile.hq ?? undefined} />
+        </label>
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            Contact Email
+          </Text>
+          <TextField.Root
+            name="email"
+            placeholder="mail@company.com"
+            defaultValue={prevCompanyProfile.email ?? undefined}
+          />
+        </label>
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            Contact Phone
+          </Text>
+          <TextField.Root name="phone" placeholder="07123456789" defaultValue={prevCompanyProfile.phone ?? undefined} />
+        </label>
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            Founded
+          </Text>
+          <TextField.Root
+            name="founded"
+            placeholder="e.g. 1984"
+            defaultValue={prevCompanyProfile.founded ?? undefined}
           />
         </label>
       </Flex>

@@ -18,6 +18,7 @@ export const createCompany = async (prevState: FormPassBackState, formData: Form
   if (!session.user?.role || session.user.role !== "ADMIN") {
     return { message: "Unauthorised.", status: "error" }
   }
+
   // Validate things
   const name = formData.get("name")
   const website = formData.get("website")
@@ -79,12 +80,42 @@ export const updateCompany = async (
   }
   // Validate things
   const summary = formData.get("summary")
+  const website = formData.get("website")
+  const sector = formData.get("sector")
+  const size = formData.get("size")
+  const hq = formData.get("hq")
+  const email = formData.get("email")
+  const phone = formData.get("phone")
+  const founded = formData.get("founded")
+
+  if (!website) {
+    return { message: "Website is required.", status: "error" }
+  } else {
+    try {
+      new URL(website.toString())
+    } catch (_) {
+      return { message: "Invalid website URL.", status: "error" }
+    }
+  }
+
+  if (!sector) {
+    return { message: "Sector is required.", status: "error" }
+  }
 
   // Now update the company in the database
   try {
     const res = await prisma.companyProfile.update({
       where: { id },
-      data: { summary: summary?.toString() },
+      data: {
+        summary: summary?.toString(),
+        website: website.toString(),
+        sector: sector.toString(),
+        size: size?.toString(),
+        hq: hq?.toString(),
+        email: email?.toString(),
+        phone: phone?.toString(),
+        founded: founded?.toString(),
+      },
     })
   } catch (e: any) {
     if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
