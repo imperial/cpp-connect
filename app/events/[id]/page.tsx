@@ -80,10 +80,10 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
 
         <Flex wrap="wrap">
           <Flex direction="column" gap="4" p="5" className={styles.mainContent}>
-            <Text color="gray" size="2">
-              {format(event.dateStart, "E dd/MM")}
-            </Text>
             <Box>
+              <Text color="gray" size="2">
+                {format(event.dateStart, "E dd/MM")}
+              </Text>
               <Heading size="8">{event.title}</Heading>
               <Text color="gray">
                 By <Link href={`/companies/${encodeURIComponent(event.company.name)}`}>{event.company.name}</Link>
