@@ -127,7 +127,9 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
             <Box className={styles.aboutCard}>
               <Collapsible.Root className={styles.CollapsibleRoot}>
                 <Box className={styles.summaryContainer}>
-                  <Markdown className={styles.markdownContainer}>{companyProfile.summary}</Markdown>
+                  <CompanyDetail title="Summary">
+                    <Markdown className={styles.markdownContainer}>{companyProfile.summary}</Markdown>
+                  </CompanyDetail>
 
                   <CompanyDetail title="Website">
                     <Link href={companyProfile.website} target="_blank">
