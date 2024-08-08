@@ -90,7 +90,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
               </Flex>
             )}
 
-            {companyProfile.email && (
+            {companyProfile.phone && (
               <Flex align="center" gap="2">
                 <BsTelephone />
                 <Text>{companyProfile.phone}</Text>
