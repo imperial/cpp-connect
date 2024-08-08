@@ -76,7 +76,13 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
           <Flex direction="column" gap="2">
             <Heading>Opportunity Details</Heading>
 
-            <Grid columns="min-content 1fr 1fr" gap="2" align="center">
+            <Grid
+              display="inline-grid"
+              columns="min-content auto auto"
+              gap="2"
+              align="center"
+              className={styles.opportunityDetails}
+            >
               <BsPinMap />
               <Text>Location</Text>
               <Text>{opportunity.location}</Text>
