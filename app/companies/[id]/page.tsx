@@ -1,3 +1,4 @@
+import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import prisma from "@/lib/db"
 
@@ -39,6 +40,16 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
   }
 
   const opportunities = await prisma.opportunity.findMany({
+    where: {
+      companyID: parseInt(params.id),
+    },
+    orderBy: { createdAt: "desc" },
+    include: {
+      company: true,
+    },
+  })
+
+  const events = await prisma.event.findMany({
     where: {
       companyID: parseInt(params.id),
     },
@@ -141,6 +152,11 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
           <Tabs.Content value="opportunities">
             <Box p="3em">
               <OpportunityTable opportunities={opportunities} hideCompanyName />
+            </Box>
+          </Tabs.Content>
+          <Tabs.Content value="events">
+            <Box p="3em">
+              <EventTable events={events} hideCompanyName />
             </Box>
           </Tabs.Content>
         </Tabs.Root>

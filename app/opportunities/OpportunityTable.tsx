@@ -17,7 +17,7 @@ const OpportunityTable = ({
   hideCompanyName = false,
 }: {
   opportunities: OpportunityRow[]
-  hideCompanyName: boolean
+  hideCompanyName?: boolean
 }) => {
   const columns = [
     columnHelper.accessor("company.name", {
