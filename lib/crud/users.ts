@@ -1,6 +1,3 @@
-/**
- * CRUD actions for users
- */
 "use server"
 
 import { auth } from "@/auth"
@@ -10,10 +7,6 @@ import { FormPassBackState } from "../types"
 import { Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-
-/**
- * CRUD actions for users
- */
 
 /**
  * Check if a user can be deleted
