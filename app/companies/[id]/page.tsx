@@ -152,7 +152,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
             </Box>
           </Tabs.Content>
           <Tabs.Content value="opportunities">
-            <Box p="3em">
+            <Box p="8">
               <OpportunityTable opportunities={opportunities} hideCompanyName />
             </Box>
           </Tabs.Content>
