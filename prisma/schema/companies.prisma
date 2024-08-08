@@ -4,6 +4,7 @@ model CompanyProfile {
   summary       String        @default("")
   sector        String
   logo          String        @default("")
+  banner        String        @default("")
   website       String
   size          String?
   hq            String?

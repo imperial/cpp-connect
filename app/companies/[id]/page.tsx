@@ -43,7 +43,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
-            src={companyProfile.logo}
+            src={companyProfile.banner}
             alt={`${companyProfile.name} banner`}
             width={0}
             height={0}
