@@ -37,7 +37,6 @@ declare module "next-auth" {
 }
 
 export default {
-  debug: true,
   providers: [
     MicrosoftEntraIDProfile({
       clientId: process.env.MS_ENTRA_CLIENT_ID,
@@ -98,7 +97,7 @@ export default {
     },
     signIn: async ({ account, user }) => {
       // HACK: TODO: Put a proper handler in here
-      return true
+      //return true
       // Admins always have access
       if (user.role === "ADMIN") {
         return true
