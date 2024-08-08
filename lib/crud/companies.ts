@@ -105,6 +105,8 @@ export const createCompanyUser: ServerSideFormHandler = async (prevState, formDa
     }
   }
 
+  revalidatePath(`/companies/${companyId}`)
+
   return {
     status: "success",
   }
