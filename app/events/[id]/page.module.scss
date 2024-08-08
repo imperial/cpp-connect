@@ -3,14 +3,16 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 0;
 }
 
 .banner {
   display: block;
   object-fit: cover;
-  width: 100%;
+  width: calc(100% - 2 * var(--card-padding));
   height: 8em;
   background-color: var(--gray-5);
+  margin: var(--card-padding) var(--card-padding) 0 var(--card-padding);
 }
 
 .mainContent {
