@@ -2,7 +2,7 @@ import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
 
-import { Card, Flex, Heading, Inset, Text } from "@radix-ui/themes"
+import { Box, Card, Flex, Heading, Inset, Separator, Text } from "@radix-ui/themes"
 import { format, formatDistanceStrict, isSameDay } from "date-fns"
 import Image from "next/image"
 import Link from "next/link"
@@ -85,15 +85,23 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
           />
         </Inset>
 
-        <Flex>
-          <Flex direction="column">
-            <Text>{format(event.dateStart, "E dd/MM")}</Text>
-            <Heading>{event.title}</Heading>
-            <Text>By {event.company.name}</Text>
+        <Flex wrap="wrap">
+          <Flex direction="column" gap="4" p="5" className={styles.mainContent}>
+            <Text color="gray" size="2">
+              {format(event.dateStart, "E dd/MM")}
+            </Text>
+            <Box>
+              <Heading size="8">{event.title}</Heading>
+              <Text color="gray">
+                By <Link href={`/companies/${encodeURIComponent(event.company.name)}`}>{event.company.name}</Link>
+              </Text>
+            </Box>
             <Text>{event.shortDescription}</Text>
           </Flex>
 
-          <Flex direction="column">
+          <Separator orientation="vertical" className={styles.Separator} />
+
+          <Flex direction="column" justify="center" gap="4" p="5">
             <Heading>Sign Up</Heading>
 
             <Flex align="center" gap="2">
@@ -103,7 +111,9 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
               </Link>
             </Flex>
 
-            <Text>{event.spaces} spaces</Text>
+            <Text color="gray" size="2">
+              ({event.spaces} spaces)
+            </Text>
           </Flex>
         </Flex>
       </Card>
