@@ -20,9 +20,9 @@ export const createCompany = async (prevState: FormPassBackState, formData: Form
   }
 
   // Validate things
-  const name = formData.get("name")
-  const website = formData.get("website")
-  const sector = formData.get("sector")
+  const name = formData.get("name")?.toString().trim()
+  const website = formData.get("website")?.toString().trim()
+  const sector = formData.get("sector")?.toString().trim()
 
   if (!name) {
     return { message: "Name is required.", status: "error" }
@@ -45,11 +45,7 @@ export const createCompany = async (prevState: FormPassBackState, formData: Form
   // Now add the company to the database
   try {
     const res = await prisma.companyProfile.create({
-      data: {
-        name: name.toString(),
-        website: website.toString(),
-        sector: sector.toString(),
-      },
+      data: { name, website, sector },
     })
   } catch (e: any) {
     if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
@@ -79,15 +75,15 @@ export const updateCompany = async (
     return { message: "Unauthorised.", status: "error" }
   }
   // Validate things
-  const name = formData.get("name")
-  const summary = formData.get("summary")
-  const website = formData.get("website")
-  const sector = formData.get("sector")
-  const size = formData.get("size")
-  const hq = formData.get("hq")
-  const email = formData.get("email")
-  const phone = formData.get("phone")
-  const founded = formData.get("founded")
+  const name = formData.get("name")?.toString().trim()
+  const summary = formData.get("summary")?.toString().trim()
+  const website = formData.get("website")?.toString().trim()
+  const sector = formData.get("sector")?.toString().trim()
+  const size = formData.get("size")?.toString().trim()
+  const hq = formData.get("hq")?.toString().trim()
+  const email = formData.get("email")?.toString().trim()
+  const phone = formData.get("phone")?.toString().trim()
+  const founded = formData.get("founded")?.toString().trim()
 
   if (!name) {
     return { message: "Name is required.", status: "error" }
@@ -111,17 +107,7 @@ export const updateCompany = async (
   try {
     await prisma.companyProfile.update({
       where: { id },
-      data: {
-        name: name.toString(),
-        summary: summary?.toString(),
-        website: website.toString(),
-        sector: sector.toString(),
-        size: size?.toString(),
-        hq: hq?.toString(),
-        email: email?.toString(),
-        phone: phone?.toString(),
-        founded: founded?.toString(),
-      },
+      data: { name, summary, website, sector, size, hq, email, phone, founded },
     })
   } catch (e: any) {
     if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
