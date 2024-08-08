@@ -1,5 +1,6 @@
 import prisma from "@/lib/db"
 
+import { CompanyManagement } from "./CompanyManagement"
 import styles from "./page.module.scss"
 
 import * as Collapsible from "@radix-ui/react-collapsible"
@@ -119,6 +120,8 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
           </Collapsible.Trigger>
         </Collapsible.Root>
       </Card>
+
+      <CompanyManagement />
     </Flex>
   )
 }

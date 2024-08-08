@@ -1,0 +1,6 @@
+.companyManagerCard {
+  border: solid var(--blue-9) 0.125em;
+  &::after {
+    box-shadow: unset;
+  }
+}
