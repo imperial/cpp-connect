@@ -157,7 +157,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
             </Box>
           </Tabs.Content>
           <Tabs.Content value="events">
-            <Box p="3em">
+            <Box p="8">
               <EventTable events={events} hideCompanyName />
             </Box>
           </Tabs.Content>
