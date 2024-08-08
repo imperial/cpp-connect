@@ -65,19 +65,12 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
     notFound()
   }
 
-  const companyBanner = (
-    await prisma.companyProfile.findUnique({
-      where: { id: event.companyID },
-      select: { banner: true },
-    })
-  )?.banner
-
   return (
     <Flex gap="3" direction="column">
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
-            src={companyBanner ?? ""}
+            src={event.company.banner}
             alt={`${event.company.name} banner`}
             width={0}
             height={0}
