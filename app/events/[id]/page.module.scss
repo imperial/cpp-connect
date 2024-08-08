@@ -26,3 +26,10 @@
 .signupSection {
   flex: 1 4;
 }
+
+.aboutCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-5);
+}

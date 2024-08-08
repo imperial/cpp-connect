@@ -118,31 +118,37 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
         </Flex>
       </Card>
 
-      <Card>
-        <Heading>Date & Time</Heading>
+      <Card className={styles.aboutCard}>
+        <Flex gap="2" direction="column">
+          <Heading>Date & Time</Heading>
 
-        <Flex align="center" gap="2">
-          <BsCalendar />
-          <Text>{formatEventDateTime(event.dateStart, event.dateEnd)}</Text>
-        </Flex>
-
-        <Heading>Location</Heading>
-
-        <Flex align="center" gap="2">
-          <BsPinMap />
-          <Text>{event.location}</Text>
-        </Flex>
-
-        <Link href={`https://www.google.com/maps/search/${encodeURIComponent(event.location)}`} target="_blank">
           <Flex align="center" gap="2">
-            <Text>Search in Google Maps</Text>
-            <BsBoxArrowUpRight />
+            <BsCalendar />
+            <Text>{formatEventDateTime(event.dateStart, event.dateEnd)}</Text>
           </Flex>
-        </Link>
+        </Flex>
 
-        <Heading>About</Heading>
+        <Flex gap="2" direction="column">
+          <Heading>Location</Heading>
 
-        <Markdown>{event.richSummary}</Markdown>
+          <Flex align="center" gap="2">
+            <BsPinMap />
+            <Text>{event.location}</Text>
+          </Flex>
+
+          <Link href={`https://www.google.com/maps/search/${encodeURIComponent(event.location)}`} target="_blank">
+            <Flex align="center" gap="2">
+              <Text size="2">Search in Google Maps</Text>
+              <BsBoxArrowUpRight />
+            </Flex>
+          </Link>
+        </Flex>
+
+        <Flex gap="2" direction="column">
+          <Heading>About</Heading>
+
+          <Markdown>{event.richSummary}</Markdown>
+        </Flex>
       </Card>
     </Flex>
   )
