@@ -20,7 +20,6 @@ import {
   ColumnFiltersState,
   SortDirection,
   SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -37,7 +36,6 @@ const ICON_SIZE = 20
 interface ListingTableProps<T> {
   data: T[]
   columns: ColumnDef<T, any>[]
-  columnVisibility?: VisibilityState
 }
 
 const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
@@ -54,7 +52,7 @@ const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
 /**
  * NOTE: To allow columns to be filtered, you must ensure that they have an id and a header
  */
-export default function TanstackTable<T>({ data, columns, columnVisibility }: ListingTableProps<T>) {
+export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
@@ -66,7 +64,7 @@ export default function TanstackTable<T>({ data, columns, columnVisibility }: Li
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    state: { columnFilters, sorting, pagination, columnVisibility },
+    state: { columnFilters, sorting, pagination },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -96,7 +94,7 @@ export default function TanstackTable<T>({ data, columns, columnVisibility }: Li
   )
 
   const [searchQuery, setSearchQuery] = useState("")
-  const [currentFilteredColumn, setCurrentFilteredColumn] = useState(filterableColumns[0].id ?? "")
+  const [currentFilteredColumn, setCurrentFilteredColumn] = useState(filterableColumns[0]?.id ?? "")
 
   useEffect(() => {
     table.setColumnFilters([{ id: currentFilteredColumn, value: searchQuery }])
@@ -133,7 +131,7 @@ export default function TanstackTable<T>({ data, columns, columnVisibility }: Li
         </TextField.Root>
         <Dropdown
           items={filterableColumns.map(col => ({ item: col.columnDef.header!.toString(), value: col.columnDef.id! }))}
-          defaultValue={filterableColumns[0].id ?? ""}
+          defaultValue={filterableColumns[0]?.id ?? ""}
           onValueChange={setCurrentFilteredColumn}
           triggerProps={{
             "aria-label": "Filter by column",

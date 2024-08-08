@@ -3,49 +3,52 @@
 import TanstackTable from "@/components/TanstackTable"
 
 import type { CompanyProfile, Opportunity } from "@prisma/client"
-import { createColumnHelper } from "@tanstack/react-table"
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { formatDistanceToNowStrict } from "date-fns"
 
 type OpportunityRow = {
   company: CompanyProfile
 } & Opportunity
 
+type ColumnName = "id" | "companyID" | "position" | "location" | "available" | "type" | "createdAt" | "company.name"
+
 const columnHelper = createColumnHelper<OpportunityRow>()
 
 const OpportunityTable = ({
   opportunities,
-  hideCompanyName = false,
+  keptColumns,
+  nonFilterable = [],
 }: {
   opportunities: OpportunityRow[]
-  hideCompanyName?: boolean
+  keptColumns: ColumnName[]
+  nonFilterable?: ColumnName[]
 }) => {
-  const columns = [
-    columnHelper.accessor("company.name", {
+  const columnDefsMap: Partial<Record<ColumnName, ColumnDef<OpportunityRow, any>>> = {
+    "company.name": {
       cell: info => info.getValue(),
       header: "Company",
       id: "company.name",
       sortingFn: "alphanumeric",
-      enableColumnFilter: !hideCompanyName,
-    }),
-    columnHelper.accessor("position", {
+    },
+    position: {
       cell: info => info.getValue(),
       header: "Position",
       sortingFn: "text",
       id: "position",
-    }),
-    columnHelper.accessor("location", {
+    },
+    location: {
       cell: info => info.getValue(),
       header: "Location",
       sortingFn: "text",
       id: "location",
-    }),
-    columnHelper.accessor("type", {
+    },
+    type: {
       cell: info => info.getValue(),
       header: "Type",
       sortingFn: "text",
       id: "type",
-    }),
-    columnHelper.accessor("createdAt", {
+    },
+    createdAt: {
       cell: info => (
         <time suppressHydrationWarning={true}>{formatDistanceToNowStrict(info.getValue(), { addSuffix: true })} </time>
       ),
@@ -53,12 +56,20 @@ const OpportunityTable = ({
       sortingFn: "datetime",
       id: "posted",
       enableColumnFilter: false,
-    }),
-  ]
+    },
+  }
 
-  return (
-    <TanstackTable data={opportunities} columns={columns} columnVisibility={{ "company.name": !hideCompanyName }} />
+  for (let column of nonFilterable) {
+    if (columnDefsMap[column]) {
+      columnDefsMap[column].enableColumnFilter = false
+    }
+  }
+
+  const columnDefs = keptColumns.map((columnName: ColumnName) =>
+    columnHelper.accessor(columnName, columnDefsMap[columnName] ?? {}),
   )
+
+  return <TanstackTable data={opportunities} columns={columnDefs} />
 }
 
 export default OpportunityTable

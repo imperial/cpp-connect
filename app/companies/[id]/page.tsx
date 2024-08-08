@@ -153,12 +153,19 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
           </Tabs.Content>
           <Tabs.Content value="opportunities">
             <Box p="8">
-              <OpportunityTable opportunities={opportunities} hideCompanyName />
+              <OpportunityTable
+                opportunities={opportunities}
+                keptColumns={["position", "location", "type", "createdAt"]}
+              />
             </Box>
           </Tabs.Content>
           <Tabs.Content value="events">
             <Box p="8">
-              <EventTable events={events} hideCompanyName />
+              <EventTable
+                events={events}
+                keptColumns={["title", "dateStart", "shortDescription", "location", "spaces"]}
+                nonFilterable={["company.name"]}
+              />
             </Box>
           </Tabs.Content>
         </Tabs.Root>
