@@ -4,9 +4,11 @@ import { auth } from "@/auth"
 import { FormPassBackState } from "@/types"
 
 import prisma from "../db"
+import { restrictCompany } from "../rbac"
+import { ServerSideFormHandler } from "../types"
 import { revalidatePath } from "next/cache"
 
-export const createCompany = async (prevState: FormPassBackState, formData: FormData): Promise<FormPassBackState> => {
+export const createCompany: ServerSideFormHandler = async (prevState, formData) => {
   const session = await auth()
   if (!session) {
     return { message: "You must be logged in to perform this action.", status: "error" }
@@ -55,6 +57,27 @@ export const createCompany = async (prevState: FormPassBackState, formData: Form
   }
 
   revalidatePath("/companies")
+
+  return {
+    status: "success",
+  }
+}
+
+export const createCompanyUser: ServerSideFormHandler = async (prevState, formData) => {
+  const session = await auth()
+  if (!session) {
+    return { message: "You must be logged in to perform this action.", status: "error" }
+  }
+  if (!session.user?.role || !restrictCompany(session.user.role)) {
+    return { message: "Unauthorised.", status: "error" }
+  }
+  const email = formData.get("email")
+
+  if (!email) {
+    return { message: "Email is required.", status: "error" }
+  }
+
+  // Create the user
 
   return {
     status: "success",

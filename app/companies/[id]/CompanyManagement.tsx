@@ -2,9 +2,10 @@
 
 import TanstackTable from "@/components/TanstackTable"
 
+import { AddUser } from "./AddUser"
 import styles from "./company-management.module.scss"
 
-import { User } from "@prisma/client"
+import { CompanyProfile, User } from "@prisma/client"
 import { Box, Button, Card, Flex, Heading, Text } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
 import { format } from "date-fns"
@@ -57,11 +58,15 @@ const columns = [
   }),
 ]
 
-export const CompanyManagement = () => {
+export const CompanyManagement = ({ company }: { company: CompanyProfile }) => {
   return (
     <Card className={styles.companyManagerCard}>
       <Flex direction="column" gap="3" p="4">
-        <Heading size="6">Company Management</Heading>
+        <Flex gap="3" direction="row" align="center" justify="between">
+          <Heading size="6">Company Management</Heading>
+          <AddUser company={company} />
+        </Flex>
+
         <Box pl="9" pr="9">
           <TanstackTable data={users} columns={columns} enablePagination={false} enableSearch={false} />
         </Box>

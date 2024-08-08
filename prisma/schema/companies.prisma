@@ -12,6 +12,7 @@ model CompanyProfile {
   founded       String?
   opportunities Opportunity[]
   events        Event[]
+  companyUsers  User[]
 }
 
 enum OpportunityType {

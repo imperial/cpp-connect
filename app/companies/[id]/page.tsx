@@ -121,7 +121,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
         </Collapsible.Root>
       </Card>
 
-      <CompanyManagement />
+      <CompanyManagement company={companyProfile} />
     </Flex>
   )
 }
