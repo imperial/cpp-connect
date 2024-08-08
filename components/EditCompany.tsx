@@ -5,7 +5,7 @@ import { FormPassBackState, updateCompany } from "@/lib/crud/companies"
 import { CompanyProfile } from "@prisma/client"
 import { CrossCircledIcon, ExclamationTriangleIcon, Pencil1Icon } from "@radix-ui/react-icons"
 import { Button, Callout, Dialog, Flex, IconButton, Spinner, Text, TextField } from "@radix-ui/themes"
-import React, { use, useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
 
 const EditCompanyForm = ({
@@ -34,12 +34,6 @@ const EditCompanyForm = ({
   return (
     <form onSubmit={clientSideSubmit} action={formAction}>
       <Flex direction="column" gap="3">
-        <Callout.Root>
-          <Callout.Icon>
-            <ExclamationTriangleIcon />
-          </Callout.Icon>
-          <Callout.Text>You can add company users & other details after this step.</Callout.Text>
-        </Callout.Root>
         {formState?.status === "error" && formState?.message && (
           <Callout.Root color="red">
             <Callout.Icon>

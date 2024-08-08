@@ -104,7 +104,7 @@ export const updateCompany = async (
 
   // Now update the company in the database
   try {
-    const res = await prisma.companyProfile.update({
+    await prisma.companyProfile.update({
       where: { id },
       data: {
         summary: summary?.toString(),
@@ -118,11 +118,7 @@ export const updateCompany = async (
       },
     })
   } catch (e: any) {
-    if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
-      return { message: "Company already exists. Please supply a different name.", status: "error" }
-    } else {
-      return { message: "A database error occured. Please try again later.", status: "error" }
-    }
+    return { message: "A database error occured. Please try again later.", status: "error" }
   }
 
   revalidatePath(`/companies/${id}`)

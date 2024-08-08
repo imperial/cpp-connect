@@ -5,7 +5,7 @@ import prisma from "@/lib/db"
 import styles from "./page.module.scss"
 
 import * as Collapsible from "@radix-ui/react-collapsible"
-import { Box, Button, Card, Dialog, Flex, Heading, Inset, Link, Text } from "@radix-ui/themes"
+import { Box, Card, Flex, Heading, Inset, Link, Text } from "@radix-ui/themes"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
@@ -34,13 +34,10 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
 
 const CompanyPage = async ({ params }: { params: { id: string } }) => {
   const companyProfile = await prisma.companyProfile.findUnique({ where: { id: parseInt(params.id) } })
-  const session = await auth()
 
   if (!companyProfile) {
     notFound()
   }
-
-  const currentCompanyUser = false
 
   return (
     <Flex gap="3" direction="column">
