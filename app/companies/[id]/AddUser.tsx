@@ -1,6 +1,6 @@
 "use client"
 
-import { createCompany } from "@/lib/crud/companies"
+import { createCompanyUser } from "@/lib/crud/companies"
 
 import { CompanyProfile } from "@prisma/client"
 import { CrossCircledIcon, ExclamationTriangleIcon, InfoCircledIcon, PlusIcon } from "@radix-ui/react-icons"
@@ -8,8 +8,8 @@ import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-
 import React, { use, useCallback, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
 
-const AddUserForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }) => {
-  const [formState, formAction] = useFormState(createCompany, { message: "" })
+const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) => void; companyId: number }) => {
+  const [formState, formAction] = useFormState(createCompanyUser, { message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
@@ -44,8 +44,9 @@ const AddUserForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }) =
           <Text as="div" size="2" mb="1" weight="bold">
             User email
           </Text>
-          <TextField.Root name="name" placeholder="E.g., user@company.com" required type="email" />
+          <TextField.Root name="email" placeholder="E.g., user@company.com" required type="email" />
         </label>
+        <TextField.Root name="companyId" defaultValue={companyId} required hidden />
       </Flex>
       <Flex gap="3" mt="4" justify="end">
         <Button
@@ -81,7 +82,7 @@ export const AddUser = ({ company }: { company: CompanyProfile }) => {
           Add a new user to {company.name}
         </Dialog.Description>
 
-        <AddUserForm setOpenState={setOpenState} />
+        <AddUserForm setOpenState={setOpenState} companyId={company.id} />
       </Dialog.Content>
     </Dialog.Root>
   )

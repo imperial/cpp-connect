@@ -1,11 +1,11 @@
 "use server"
 
 import { auth } from "@/auth"
-import { FormPassBackState } from "@/types"
 
 import prisma from "../db"
 import { restrictCompany } from "../rbac"
 import { ServerSideFormHandler } from "../types"
+import { Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
 export const createCompany: ServerSideFormHandler = async (prevState, formData) => {
@@ -41,7 +41,7 @@ export const createCompany: ServerSideFormHandler = async (prevState, formData) 
 
   // Now add the company to the database
   try {
-    const res = await prisma.companyProfile.create({
+    await prisma.companyProfile.create({
       data: {
         name: name.toString(),
         website: website.toString(),
@@ -68,16 +68,42 @@ export const createCompanyUser: ServerSideFormHandler = async (prevState, formDa
   if (!session) {
     return { message: "You must be logged in to perform this action.", status: "error" }
   }
-  if (!session.user?.role || !restrictCompany(session.user.role)) {
-    return { message: "Unauthorised.", status: "error" }
-  }
   const email = formData.get("email")
-
+  const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
   if (!email) {
     return { message: "Email is required.", status: "error" }
   }
 
+  // Query for the user in the database to get asscoiatedCompanyId
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.user?.id,
+    },
+    select: {
+      associatedCompanyId: true,
+      role: true,
+    },
+  })
+  if (!session.user?.role || !restrictCompany(user, companyId)) {
+    return { message: "Operation denied - unauthorised.", status: "error" }
+  }
+
   // Create the user
+  try {
+    await prisma.user.create({
+      data: {
+        email: email.toString(),
+        role: Role.COMPANY,
+        associatedCompanyId: companyId,
+      },
+    })
+  } catch (e: any) {
+    if (e?.code === "P2002" && e?.meta?.target?.includes("email")) {
+      return { message: "A user with that email already exists. Please supply a different email.", status: "error" }
+    } else {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
+  }
 
   return {
     status: "success",

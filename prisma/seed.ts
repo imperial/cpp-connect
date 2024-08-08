@@ -97,17 +97,18 @@ async function main() {
     },
   })
 
-  // Add yourself as a company
-  // await prisma.user.upsert({
-  //   where: {
-  //     email: "vader@sith.com"
-  //   },
-  //   update: {},
-  //   create: {
-  //     email: "vader@sith.com",
-  //     role: Role.COMPANY,
-  //   }
-  // })
+  //Add yourself as a company
+  await prisma.user.upsert({
+    where: {
+      email: "kishansambhi@hotmail.co.uk"
+    },
+    update: {},
+    create: {
+      email: "kishansambhi@hotmail.co.uk",
+      role: Role.COMPANY,
+      associatedCompanyId: 1,
+    }
+  })
 }
 
 
