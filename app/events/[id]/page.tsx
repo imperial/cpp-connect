@@ -2,13 +2,13 @@ import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
 
-import { Box, Card, Flex, Heading, Inset, Separator, Text } from "@radix-ui/themes"
+import { Box, Button, Card, Flex, Heading, Inset, Separator, Text } from "@radix-ui/themes"
 import { format, formatDistanceStrict, isSameDay } from "date-fns"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import React from "react"
-import { BsBoxArrowUpRight, BsCalendar, BsGlobe, BsPinMap } from "react-icons/bs"
+import { BsBoxArrowUpRight, BsCalendar, BsPinMap } from "react-icons/bs"
 import Markdown from "react-markdown"
 
 /**
@@ -94,15 +94,14 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
 
           <Separator orientation="vertical" className={styles.Separator} />
 
-          <Flex direction="column" justify="center" gap="4" p="5">
+          <Flex direction="column" justify="center" align="center" gap="4" p="5">
             <Heading>Sign Up</Heading>
 
-            <Flex align="center" gap="2">
-              <BsGlobe />
+            <Button size="3" className={styles.signupButton} asChild>
               <Link href={event.link} target="_blank">
-                {event.link}
+                Register for this event
               </Link>
-            </Flex>
+            </Button>
 
             <Text color="gray" size="2">
               ({event.spaces} spaces)
@@ -129,7 +128,11 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
             <Text>{event.location}</Text>
           </Flex>
 
-          <Link href={`https://www.google.com/maps/search/${encodeURIComponent(event.location)}`} target="_blank">
+          <Link
+            href={`https://www.google.com/maps/search/${encodeURIComponent(event.location)}`}
+            target="_blank"
+            className={styles.mapsLink}
+          >
             <Flex align="center" gap="2">
               <Text size="2">Search in Google Maps</Text>
               <BsBoxArrowUpRight />
