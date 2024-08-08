@@ -3,12 +3,14 @@ import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
 
-import { Box, Button, Card, Flex, Heading, Inset } from "@radix-ui/themes"
+import { Box, Button, Card, Flex, Grid, Heading, Inset, Text } from "@radix-ui/themes"
+import { format } from "date-fns"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import React from "react"
-import { BsBoxArrowUpRight } from "react-icons/bs"
+import { BsBoxArrowUpRight, BsBriefcase, BsCalendar, BsCheckCircle, BsPinMap, BsXCircle } from "react-icons/bs"
+import Markdown from "react-markdown"
 
 const OpportunityPage = async ({ params }: { params: { id: string } }) => {
   const opportunity = await prisma.opportunity.findUnique({
@@ -58,7 +60,46 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
         </Flex>
       </Card>
 
-      <Card className={styles.aboutCard}></Card>
+      <Card className={styles.aboutCard}>
+        <Flex direction="column" gap="3">
+          <Flex direction="column" gap="2">
+            <Heading>Full Opportunity Description</Heading>
+            <Markdown>{opportunity.description}</Markdown>
+          </Flex>
+
+          <Flex direction="column" gap="2">
+            <Heading>Opportunity Details</Heading>
+
+            <Grid columns="min-content 1fr 1fr" gap="2" align="center">
+              <BsPinMap />
+              <Text>Location</Text>
+              <Text>{opportunity.location}</Text>
+
+              <BsBriefcase />
+              <Text>Opportunity type</Text>
+              <Text>{opportunity.type}</Text>
+
+              {opportunity.available ? (
+                <>
+                  <BsCheckCircle />
+                  <Text>Availability</Text>
+                  <Text>Available</Text>
+                </>
+              ) : (
+                <>
+                  <BsXCircle />
+                  <Text>Availability</Text>
+                  <Text>Unavailable</Text>
+                </>
+              )}
+
+              <BsCalendar />
+              <Text>Added</Text>
+              <Text>{format(opportunity.createdAt, "dd/MM/yy")}</Text>
+            </Grid>
+          </Flex>
+        </Flex>
+      </Card>
     </Flex>
   )
 }
