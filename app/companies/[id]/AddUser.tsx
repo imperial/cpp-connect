@@ -46,7 +46,7 @@ const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) =
           </Text>
           <TextField.Root name="email" placeholder="E.g., user@company.com" required type="email" />
         </label>
-        <TextField.Root name="companyId" defaultValue={companyId} required hidden />
+        <input name="companyId" value={companyId} required type="hidden" readOnly />
       </Flex>
       <Flex gap="3" mt="4" justify="end">
         <Button

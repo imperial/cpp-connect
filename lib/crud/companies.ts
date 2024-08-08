@@ -84,7 +84,7 @@ export const createCompanyUser: ServerSideFormHandler = async (prevState, formDa
       role: true,
     },
   })
-  if (!session.user?.role || !restrictCompany(user, companyId)) {
+  if (!restrictCompany(user, companyId)) {
     return { message: "Operation denied - unauthorised.", status: "error" }
   }
 
