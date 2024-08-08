@@ -13,7 +13,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
     ...authConfig.providers,
-    // NOTE: If placed in the other file, the middleware wil not work
+    // NOTE: If placed in the other file, the middleware will not work
     // as NodeMailer doesn't work in the edge 
     Nodemailer({
       server: {
