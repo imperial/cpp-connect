@@ -64,3 +64,39 @@ export const createCompany = async (prevState: FormPassBackState, formData: Form
     status: "success",
   }
 }
+
+export const updateCompany = async (
+  prevState: FormPassBackState,
+  formData: FormData,
+  id: number,
+): Promise<FormPassBackState> => {
+  const session = await auth()
+  if (!session) {
+    return { message: "You must be logged in to perform this action.", status: "error" }
+  }
+  if (!session.user?.role || session.user.role !== "ADMIN") {
+    return { message: "Unauthorised.", status: "error" }
+  }
+  // Validate things
+  const summary = formData.get("summary")
+
+  // Now update the company in the database
+  try {
+    const res = await prisma.companyProfile.update({
+      where: { id },
+      data: { summary: summary?.toString() },
+    })
+  } catch (e: any) {
+    if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
+      return { message: "Company already exists. Please supply a different name.", status: "error" }
+    } else {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
+  }
+
+  revalidatePath(`/companies/${id}`)
+
+  return {
+    status: "success",
+  }
+}
