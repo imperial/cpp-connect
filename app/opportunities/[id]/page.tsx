@@ -51,12 +51,18 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
             <Chip label={opportunity.type} />
           </Flex>
 
-          <Button asChild size="4" className={styles.applyButton}>
-            <Link href={opportunity.link} target="_blank">
-              Apply Now
-              <BsBoxArrowUpRight />
-            </Link>
-          </Button>
+          {opportunity.available ? (
+            <Button asChild size="4" className={styles.applyButton}>
+              <Link href={opportunity.link} target="_blank">
+                Apply Now
+                <BsBoxArrowUpRight />
+              </Link>
+            </Button>
+          ) : (
+            <Text color="red" size="5">
+              Unavailable
+            </Text>
+          )}
         </Flex>
       </Card>
 
