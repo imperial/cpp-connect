@@ -22,7 +22,7 @@ function createFakeEvent(): Omit<Event, "id" | "companyID" | "createdAt" | "upda
     spaces: faker.number.int(1000),
     location: faker.location.city(),
     link: faker.internet.url(),
-  }
+  } 
 }
 
 
@@ -30,7 +30,7 @@ function createFakeStudent() {
   return {
     id: faker.string.uuid(),
     name: faker.person.fullName(),
-    email: faker.internet.email(),
+    email: faker.internet.email().toLowerCase(),
     role: Role.STUDENT,
     studentProfile: {
       create: {
@@ -96,7 +96,21 @@ async function main() {
       }
     },
   })
+
+  // Add yourself as a company
+  // await prisma.user.upsert({
+  //   where: {
+  //     email: "vader@sith.com"
+  //   },
+  //   update: {},
+  //   create: {
+  //     email: "vader@sith.com",
+  //     role: Role.COMPANY,
+  //   }
+  // })
 }
+
+
 
 main()
   .then(async () => {

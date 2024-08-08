@@ -1,14 +1,10 @@
 "use server"
 
 import { auth } from "@/auth"
+import { FormPassBackState } from "@/types"
 
 import prisma from "../db"
 import { revalidatePath } from "next/cache"
-
-export interface FormPassBackState {
-  message?: string
-  status?: "success" | "error"
-}
 
 export const createCompany = async (prevState: FormPassBackState, formData: FormData): Promise<FormPassBackState> => {
   const session = await auth()
