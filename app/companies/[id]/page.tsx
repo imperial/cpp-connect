@@ -1,3 +1,4 @@
+import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -36,6 +37,16 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
   if (!companyProfile) {
     notFound()
   }
+
+  const opportunities = await prisma.opportunity.findMany({
+    where: {
+      companyID: parseInt(params.id),
+    },
+    orderBy: { createdAt: "desc" },
+    include: {
+      company: true,
+    },
+  })
 
   return (
     <Flex gap="3" direction="column">
@@ -118,6 +129,9 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
             <Text size="2">Read more...</Text>
           </Collapsible.Trigger>
         </Collapsible.Root>
+      </Card>
+      <Card>
+        <OpportunityTable opportunities={opportunities} />
       </Card>
     </Flex>
   )
