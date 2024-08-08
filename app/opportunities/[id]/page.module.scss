@@ -15,6 +15,10 @@
   margin: var(--card-padding) var(--card-padding) 0 var(--card-padding);
 }
 
+.applyButton {
+  width: fit-content;
+}
+
 .aboutCard {
   display: flex;
   flex-direction: column;
