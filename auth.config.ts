@@ -1,9 +1,10 @@
+import prisma from "./lib/db"
+import { getDepartment } from "./lib/graph"
+
 import { Prisma, Role } from "@prisma/client"
 import { DefaultSession, NextAuthConfig } from "next-auth"
 import MicrosoftEntraIDProfile from "next-auth/providers/microsoft-entra-id"
 import Nodemailer from "next-auth/providers/nodemailer"
-import prisma from "./lib/db"
-import { getDepartment } from "./lib/graph"
 
 const ALLOWED_ADMINS = process.env.CPP_ALLOWED_ADMINS?.split(",") ?? []
 const ALLOWED_DEPARTMENTS = process.env.CPP_ALLOWED_DEPARTMENTS?.split(",") ?? ["Computing"]
@@ -16,7 +17,7 @@ declare module "@auth/core/adapters" {
 
 declare module "@auth/core/jwt" {
   interface JWT extends DefaultJWT {
-    role: Role,
+    role: Role
     id: string
   }
 }
@@ -26,12 +27,12 @@ declare module "next-auth" {
   }
   interface Session {
     user: {
-      role: Role,
+      role: Role
       id: string
     } & DefaultSession["user"]
   }
   interface JWT {
-    role: Role,
+    role: Role
     id: string
   }
 }
@@ -45,10 +46,9 @@ export default {
       authorization: {
         params: {
           scope: "offline_access openid profile email User.Read",
-        }
+        },
       },
       async profile(profile) {
-
         // By default the role is STUDENT unless in admins
         const role: Role = ALLOWED_ADMINS.includes(profile.email) ? "ADMIN" : "STUDENT"
 
@@ -77,11 +77,14 @@ export default {
           role,
           name: profile.name,
           email: profile.email,
-          studentProfile: (role === "STUDENT") ? {
-            create: {
-              studentShortcode: profile.preferred_username.split("@")[0],
-            }
-          } : undefined
+          studentProfile:
+            role === "STUDENT"
+              ? {
+                  create: {
+                    studentShortcode: profile.preferred_username.split("@")[0],
+                  },
+                }
+              : undefined,
         }
 
         return user
@@ -89,22 +92,24 @@ export default {
     }),
   ],
 
-
   callbacks: {
     authorized: async ({ auth }) => {
       // Logged in users are authenticated, otherwise redirect to login page
       return !!auth
     },
-    signIn: async ({ account, user }) => {
-      // HACK: TODO: Put a proper handler in here
-      //return true
+    signIn: async ({ account, user, profile, email }) => {
       // Admins always have access
-      if (user.role === "ADMIN") {
+      // Company users will always exist in the database
+      // If the role field is not present, it means that user doesn't exist
+      if (user.role === "ADMIN" || user.role === "COMPANY") {
         return true
-      } else if (!account?.access_token) {
+        // if email.verificationRequest is true, it means the user is signing in for the first time
+        // using magic sign in
+        // If they are allowed to do that the COMPANY check will have already passed
+      } else if (!account?.access_token || email?.verificationRequest) {
         return false
       }
-      const department = await getDepartment(account?.access_token);
+      const department = await getDepartment(account?.access_token)
       return department && ALLOWED_DEPARTMENTS.includes(department)
     },
     jwt({ token, user }) {
