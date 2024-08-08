@@ -45,7 +45,6 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
   return (
     <Flex gap="3" direction="column">
       <Card className={styles.headerCard}>
-        <EditCompany prevCompanyProfile={companyProfile} />
         <Inset clip="padding-box" p="0" side="top">
           <Image
             src={companyProfile.logo}
@@ -58,11 +57,12 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
 
         <Flex direction="column">
           <Flex gap="3" direction="column" className={styles.companyInfo} p="4" pt="0">
-            <Box className={styles.companyLogoContainer}>
+            <Flex className={styles.companyLogoContainer} justify="between">
               <Card className={styles.companyLogo}>
                 <Image src={companyProfile.logo} alt={`${companyProfile.name} logo`} width={0} height={0} />
               </Card>
-            </Box>
+              <EditCompany prevCompanyProfile={companyProfile} />
+            </Flex>
 
             <Heading color="blue" size="7" mt="4">
               {companyProfile.name}

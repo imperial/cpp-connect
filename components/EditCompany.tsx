@@ -3,8 +3,8 @@
 import { FormPassBackState, updateCompany } from "@/lib/crud/companies"
 
 import { CompanyProfile } from "@prisma/client"
-import { CrossCircledIcon, ExclamationTriangleIcon, PlusIcon } from "@radix-ui/react-icons"
-import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
+import { CrossCircledIcon, ExclamationTriangleIcon, Pencil1Icon } from "@radix-ui/react-icons"
+import { Button, Callout, Dialog, Flex, IconButton, Spinner, Text, TextField } from "@radix-ui/themes"
 import React, { use, useCallback, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
 
@@ -138,10 +138,9 @@ export const EditCompany = ({ prevCompanyProfile }: { prevCompanyProfile: Compan
   return (
     <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={true}>
       <Dialog.Trigger>
-        <Button size="3">
-          <PlusIcon />
-          <Text>Edit Company Profile Details</Text>
-        </Button>
+        <IconButton size="3" mt="3">
+          <Pencil1Icon />
+        </IconButton>
       </Dialog.Trigger>
       <Dialog.Content maxWidth="60vw">
         <Dialog.Title>Edit company</Dialog.Title>
