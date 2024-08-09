@@ -46,7 +46,7 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
           <Text>Delete</Text>
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content maxWidth="40vw" className={styles.deleteDialog}>
+      <Dialog.Content className={styles.deleteDialog}>
         <Dialog.Title>Are you sure?</Dialog.Title>
         <Flex gap="4" direction="column">
           {serverMessage && (
