@@ -61,7 +61,7 @@ const OpportunityTable = ({
 
   for (let column of nonFilterable) {
     if (columnDefsMap[column]) {
-      columnDefsMap[column].enableColumnFilter = false
+      columnDefsMap[column]!.enableColumnFilter = false
     }
   }
 

@@ -35,52 +35,28 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
 
 const CompanyPage = async ({ params }: { params: { name: string } }) => {
   const companyProfile = await prisma.companyProfile.findFirst({
-     where: { 
-      name: decodeURIComponent(params.name) 
+    where: {
+      name: decodeURIComponent(params.name),
     },
     include: {
       opportunities: {
         orderBy: { createdAt: "desc" },
         include: {
           company: true,
-        }
+        },
       },
       events: {
         orderBy: { createdAt: "desc" },
         include: {
           company: true,
-        }
-      }
-    }
+        },
+      },
+    },
   })
 
   if (!companyProfile) {
     notFound()
   }
-
-  // const opportunities = await prisma.opportunity.findMany({
-  //   where: {
-  //     company: {
-  //       name: companyProfile.name,
-  //     }
-  //   },
-  //   orderBy: { createdAt: "desc" },
-  //   include: {
-  //     company: true,
-  //   },
-  // })
-
-  // const events = await prisma.event.findMany({
-  //   where: {
-  //     company: {
-  //       name: companyProfile.name,
-  //     }
-  //   },
-  //   orderBy: { createdAt: "desc" },
-  //   include: {
-  //     company: true,
-  //   },
-  // })
 
   return (
     <Flex gap="3" direction="column">
