@@ -1,9 +1,9 @@
 import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
-import { DeleteCompany } from "@/components/DeleteCompany"
 import { EditCompany } from "@/components/EditCompany"
 import prisma from "@/lib/db"
 
+import { CompanyManagement } from "./CompanyManagement"
 import styles from "./page.module.scss"
 
 import * as Collapsible from "@radix-ui/react-collapsible"
@@ -52,6 +52,13 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
           company: true,
         },
       },
+      companyUsers: {
+        select: {
+          id: true,
+          email: true,
+          createdAt: true,
+        },
+      },
     },
   })
 
@@ -61,7 +68,6 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
 
   return (
     <Flex gap="3" direction="column">
-      <DeleteCompany name={companyProfile.name} />
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
@@ -172,6 +178,8 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
           </Tabs.Content>
         </Tabs.Root>
       </Card>
+
+      <CompanyManagement company={companyProfile} />
     </Flex>
   )
 }

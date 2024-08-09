@@ -1,13 +1,16 @@
 "use server"
 
 import { auth } from "@/auth"
-import { FormPassBackState } from "@/lib/types"
 
 import prisma from "../db"
+import { restrictCompany } from "../rbac"
+import { FormPassBackState, ServerSideFormHandler } from "../types"
+import { encodeSignInUrl } from "../util/signInTokens"
+import { Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-export const createCompany = async (prevState: FormPassBackState, formData: FormData): Promise<FormPassBackState> => {
+export const createCompany: ServerSideFormHandler = async (prevState, formData) => {
   const session = await auth()
   if (!session) {
     return { message: "You must be logged in to perform this action.", status: "error" }
@@ -41,8 +44,12 @@ export const createCompany = async (prevState: FormPassBackState, formData: Form
 
   // Now add the company to the database
   try {
-    const res = await prisma.companyProfile.create({
-      data: { name, website, sector },
+    await prisma.companyProfile.create({
+      data: {
+        name: name.toString(),
+        website: website.toString(),
+        sector: sector.toString(),
+      },
     })
   } catch (e: any) {
     if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
@@ -56,6 +63,64 @@ export const createCompany = async (prevState: FormPassBackState, formData: Form
 
   return {
     status: "success",
+  }
+}
+
+export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = async (
+  prevState,
+  formData,
+) => {
+  const session = await auth()
+  if (!session) {
+    return { message: "You must be logged in to perform this action.", status: "error" }
+  }
+  const email = formData.get("email")?.toString().trim()
+  const baseUrl = formData.get("baseUrl")?.toString().trim()
+  const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
+  if (!email) {
+    return { message: "Email is required.", status: "error" }
+  }
+  if (!baseUrl) {
+    return { message: "Base URL is required.", status: "error" }
+  }
+
+  // Query for the user in the database to get asscoiatedCompanyId
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.user?.id,
+    },
+    select: {
+      associatedCompanyId: true,
+      role: true,
+    },
+  })
+  console.log(session.user)
+  if (!restrictCompany(user, companyId)) {
+    return { message: "Operation denied - unauthorised.", status: "error" }
+  }
+
+  // Create the user
+  try {
+    await prisma.user.create({
+      data: {
+        email: email.toString(),
+        role: Role.COMPANY,
+        associatedCompanyId: companyId,
+      },
+    })
+  } catch (e: any) {
+    if (e?.code === "P2002" && e?.meta?.target?.includes("email")) {
+      return { message: "A user with that email already exists. Please supply a different email.", status: "error" }
+    } else {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
+  }
+
+  revalidatePath(`/companies/${companyId}`)
+
+  return {
+    status: "success",
+    signInURL: encodeSignInUrl(email, baseUrl),
   }
 }
 
