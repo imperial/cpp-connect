@@ -16,7 +16,6 @@ import { useFormState } from "react-dom"
 const Auth = () => {
   const { data: session } = useSession()
   const searchParams = useSearchParams()
-  console.log(searchParams.get("token"))
   const [formState, formAction] = useFormState(signInWithMagicLink, { message: "" })
   return session?.user ? (
     <>
