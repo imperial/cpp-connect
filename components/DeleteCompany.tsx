@@ -5,15 +5,16 @@ import { FormPassBackState } from "@/lib/types"
 
 import styles from "./deletecompany.module.scss"
 
-import { CrossCircledIcon, ExclamationTriangleIcon, TrashIcon } from "@radix-ui/react-icons"
+import { CrossCircledIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons"
 import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
 import React, { useCallback, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
+import { FaTrash } from "react-icons/fa"
 
-interface DeleteCompanyFormProps { 
-  setOpenState: (v: boolean) => void,
-  name: string,
-  id: number,
+interface DeleteCompanyFormProps {
+  setOpenState: (v: boolean) => void
+  name: string
+  id: number
 }
 
 const DeleteCompanyForm = ({ setOpenState, name, id }: DeleteCompanyFormProps) => {
@@ -76,18 +77,18 @@ const DeleteCompanyForm = ({ setOpenState, name, id }: DeleteCompanyFormProps) =
   )
 }
 
-export const DeleteCompany = ({ name, id }: { name: string, id: number }) => {
+export const DeleteCompany = ({ name, id }: { name: string; id: number }) => {
   const [openState, setOpenState] = useState(false)
 
   return (
     <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
       <Dialog.Trigger>
         <Button size="3" color="red" className={styles.dangerButton}>
-          <TrashIcon />
+          <FaTrash color="white" />
           <Text>Delete Company</Text>
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content maxWidth="60vw">
+      <Dialog.Content className="deleteDialog">
         <Dialog.Title>Delete company, {name}?</Dialog.Title>
         <Dialog.Description size="2" mb="4">
           Are you sure you want to delete this company?

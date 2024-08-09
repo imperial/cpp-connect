@@ -66,7 +66,7 @@ export const createCompany: ServerSideFormHandler = async (prevState, formData) 
   }
 }
 
-const checkAuthorizedForCompanyCRUD = async (companyId: number): Promise<FormPassBackState>  => {
+const checkAuthorizedForCompanyCRUD = async (companyId: number): Promise<FormPassBackState> => {
   const session = await auth()
   if (!session) {
     return { message: "You must be logged in to perform this action.", status: "error" }
@@ -83,7 +83,7 @@ const checkAuthorizedForCompanyCRUD = async (companyId: number): Promise<FormPas
   if (!restrictCompany(user, companyId)) {
     return { message: "Operation denied - unauthorised.", status: "error" }
   }
-  return {status: "success"}
+  return { status: "success" }
 }
 
 export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = async (
@@ -202,6 +202,8 @@ export const deleteCompany = async (
   if (res.status === "error") {
     return res
   }
+
+  if (!name) return { message: "Server error: company name is null.", status: "error" }
 
   const enteredName = formData.get("name")?.toString().trim()
   if (!enteredName) {
