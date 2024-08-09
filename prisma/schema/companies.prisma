@@ -23,7 +23,7 @@ enum OpportunityType {
 
 model Opportunity {
   id          Int            @id @default(autoincrement())
-  company     CompanyProfile @relation(fields: [companyID], references: [id])
+  company     CompanyProfile @relation(fields: [companyID], references: [id], onDelete: Cascade)
   companyID   Int
   position    String
   location    String
@@ -36,7 +36,7 @@ model Opportunity {
 
 model Event {
   id        Int            @id @default(autoincrement())
-  company   CompanyProfile @relation(fields: [companyID], references: [id])
+  company   CompanyProfile @relation(fields: [companyID], references: [id], onDelete: Cascade)
   companyID Int
   title     String
   dateStart DateTime
