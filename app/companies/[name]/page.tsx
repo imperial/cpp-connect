@@ -1,3 +1,5 @@
+import { auth } from "@/auth"
+import { EditCompany } from "@/components/EditCompany"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -52,11 +54,12 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
 
         <Flex direction="column">
           <Flex gap="3" direction="column" className={styles.companyInfo} p="4" pt="0">
-            <Box className={styles.companyLogoContainer}>
+            <Flex className={styles.companyLogoContainer} justify="between">
               <Card className={styles.companyLogo}>
                 <Image src={companyProfile.logo} alt={`${companyProfile.name} logo`} width={0} height={0} />
               </Card>
-            </Box>
+              <EditCompany prevCompanyProfile={companyProfile} />
+            </Flex>
 
             <Heading color="blue" size="7" mt="4">
               {companyProfile.name}
@@ -84,7 +87,7 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
               </Flex>
             )}
 
-            {companyProfile.email && (
+            {companyProfile.phone && (
               <Flex align="center" gap="2">
                 <BsTelephone />
                 <Text>{companyProfile.phone}</Text>
