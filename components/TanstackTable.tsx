@@ -174,7 +174,7 @@ export default function TanstackTable<T>({
           ))}
         </Table.Header>
 
-        <Table.Body>
+        <Table.Body className={styles.tanstackBody}>
           {table.getRowModel().rows.map(row => (
             <Table.Row key={row.id}>
               {row
