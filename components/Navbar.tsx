@@ -1,10 +1,10 @@
 import { auth } from "@/auth"
-import getStudentShortcode from "@/lib/getStudentShortcode"
+import ProfileDropdown from "@/components/ProfileDropdown"
 
 import UserAvatar from "./UserAvatar"
 import styles from "./navbar.module.scss"
 
-import { DropdownMenu, Flex, Link } from "@radix-ui/themes"
+import { Flex, Link } from "@radix-ui/themes"
 import Image from "next/image"
 import React from "react"
 
@@ -42,20 +42,7 @@ const Navbar = async () => {
 
         {session?.user ? (
           session.user.role === "STUDENT" ? (
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger>
-                <button className={styles.avatarButton}>
-                  <UserAvatar user={session.user} size="4" />
-                </button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content>
-                <DropdownMenu.Item>
-                  <Link href={`/students/${await getStudentShortcode(session.user)}`} className={styles.link}>
-                    Profile
-                  </Link>
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Root>
+            <ProfileDropdown user={session.user} />
           ) : (
             <UserAvatar user={session.user} size="4" />
           )
