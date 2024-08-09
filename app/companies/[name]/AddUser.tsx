@@ -140,7 +140,7 @@ export const AddUser = ({ company }: { company: CompanyProfile }) => {
           <Text>Add User</Text>
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content maxWidth="40vw">
+      <Dialog.Content>
         <Dialog.Title>Add new user</Dialog.Title>
         <Dialog.Description size="2" mb="4">
           Add a new user to {company.name}
