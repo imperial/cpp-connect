@@ -60,7 +60,13 @@ const formatEventDateTime = (dateStart: Date, dateEnd: Date | null) => {
 }
 
 const EventPage = async ({ params }: { params: { id: string } }) => {
-  const event = await prisma.event.findUnique({ where: { id: parseInt(params.id) }, include: { company: true } })
+  const id = parseInt(params.id, 10)
+
+  if (isNaN(id) || id.toString() !== params.id) {
+    notFound()
+  }
+
+  const event = await prisma.event.findUnique({ where: { id }, include: { company: true } })
   if (!event) {
     notFound()
   }
