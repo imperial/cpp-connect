@@ -15,6 +15,13 @@ model User {
   updatedAt        DateTime @updatedAt
 
   studentProfile   StudentProfile? // Student Profile
+
+  // We use a custom SQL Check constraint to ensure that the associatedCompanyId is only set
+  // when the role is COMPANY
+  // and not set when the role is STUDENT or ADMIN.
+  // This CHECK is included in the migration for it.
+  associatedCompanyId Int?
+  associatedCompany CompanyProfile? @relation(fields: [associatedCompanyId], references: [id])
 }
 
 enum Role {

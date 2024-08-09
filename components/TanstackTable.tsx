@@ -33,9 +33,11 @@ import { useMediaQuery } from "react-responsive"
 
 const ICON_SIZE = 20
 
-interface ListingTableProps<T> {
+interface TanstackTableProps<T> {
   data: T[]
   columns: ColumnDef<T, any>[]
+  enablePagination?: boolean
+  enableSearch?: boolean
 }
 
 const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
@@ -52,7 +54,12 @@ const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
 /**
  * NOTE: To allow columns to be filtered, you must ensure that they have an id and a header
  */
-export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>) {
+export default function TanstackTable<T>({
+  data,
+  columns,
+  enablePagination = true,
+  enableSearch = true,
+}: TanstackTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
@@ -68,9 +75,10 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
+    getPaginationRowModel: enablePagination ? getPaginationRowModel() : undefined,
+    onPaginationChange: enablePagination ? setPagination : undefined,
     onColumnFiltersChange: setColumnFilters,
+    enableColumnFilters: enableSearch,
   })
 
   // Under 900px, wrap the pagination
@@ -113,32 +121,34 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
 
   return (
     <Flex gap="4" direction="column">
-      <Flex direction="row" gap="3" className={styles.searchBarContainer}>
-        <TextField.Root
-          placeholder={`Search by ${table.getColumn(currentFilteredColumn)?.columnDef.header?.toString() ?? "..."}`}
-          className={styles.searchBar}
-          onChange={e => setSearchQuery(e.target.value)}
-          value={searchQuery}
-        >
-          <TextField.Slot>
-            <MagnifyingGlassIcon height="16" width="16" />
-          </TextField.Slot>
-          <TextField.Slot>
-            <Button variant="ghost" onClick={() => setSearchQuery("")}>
-              Reset
-            </Button>
-          </TextField.Slot>
-        </TextField.Root>
-        <Dropdown
-          items={filterableColumns.map(col => ({ item: col.columnDef.header!.toString(), value: col.columnDef.id! }))}
-          defaultValue={filterableColumns[0]?.id ?? ""}
-          onValueChange={setCurrentFilteredColumn}
-          triggerProps={{
-            "aria-label": "Filter by column",
-            title: "Filter by column",
-          }}
-        />
-      </Flex>
+      {enableSearch && (
+        <Flex direction="row" gap="3" className={styles.searchBarContainer}>
+          <TextField.Root
+            placeholder={`Search by ${table.getColumn(currentFilteredColumn)?.columnDef.header?.toString() ?? "..."}`}
+            className={styles.searchBar}
+            onChange={e => setSearchQuery(e.target.value)}
+            value={searchQuery}
+          >
+            <TextField.Slot>
+              <MagnifyingGlassIcon height="16" width="16" />
+            </TextField.Slot>
+            <TextField.Slot>
+              <Button variant="ghost" onClick={() => setSearchQuery("")}>
+                Reset
+              </Button>
+            </TextField.Slot>
+          </TextField.Root>
+          <Dropdown
+            items={filterableColumns.map(col => ({ item: col.columnDef.header!.toString(), value: col.columnDef.id! }))}
+            defaultValue={filterableColumns[0].id ?? ""}
+            onValueChange={setCurrentFilteredColumn}
+            triggerProps={{
+              "aria-label": "Filter by column",
+              title: "Filter by column",
+            }}
+          />
+        </Flex>
+      )}
 
       <Table.Root size="2">
         <Table.Header>
@@ -164,7 +174,7 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
           ))}
         </Table.Header>
 
-        <Table.Body>
+        <Table.Body className={styles.tanstackBody}>
           {table.getRowModel().rows.map(row => (
             <Table.Row key={row.id}>
               {row
@@ -183,48 +193,50 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
         </Table.Body>
       </Table.Root>
 
-      <Pagination
-        totalPages={table.getPageCount()}
-        middlePagesSiblingCount={isLowWidth ? 1 : 2}
-        edgePageCount={0}
-        currentPage={table.getState().pagination.pageIndex}
-        setCurrentPage={table.setPageIndex}
-        truncableText="..."
-      >
-        <nav className={styles.tablePagination}>
-          <FooterWrapper columns="3" gap="3" width="100%" direction="column" align="center">
-            <Box />
-            <ul>
-              <IconButton variant="outline" disabled={!table.getCanPreviousPage()} onClick={table.firstPage}>
-                <DoubleArrowLeftIcon />
-              </IconButton>
-              <Pagination.PrevButton className="" as={<IconButton variant="outline" />}>
-                <ChevronLeftIcon />
-              </Pagination.PrevButton>
-              <Pagination.PageButton
-                as={<Button variant="outline" />}
-                activeClassName={styles.activePage}
-                inactiveClassName=""
-                className=""
-              />
-              <Pagination.NextButton as={<IconButton variant="outline" />}>
-                <ChevronRightIcon />
-              </Pagination.NextButton>
-              <IconButton variant="outline" disabled={!table.getCanNextPage()} onClick={table.lastPage}>
-                <DoubleArrowRightIcon />
-              </IconButton>
-            </ul>
-            <Flex justify="end" gap="3">
-              <Dropdown
-                items={["1", "5", "15", "25", "50"].map(i => ({ item: i, value: i }))}
-                defaultValue={table.getState().pagination.pageSize.toString()}
-                onValueChange={newPageSize => table.setPageSize(parseInt(newPageSize))}
-              />
-              <Text className={styles.inlineFlexCenter}>records per page</Text>
-            </Flex>
-          </FooterWrapper>
-        </nav>
-      </Pagination>
+      {enablePagination && (
+        <Pagination
+          totalPages={table.getPageCount()}
+          middlePagesSiblingCount={isLowWidth ? 1 : 2}
+          edgePageCount={0}
+          currentPage={table.getState().pagination.pageIndex}
+          setCurrentPage={table.setPageIndex}
+          truncableText="..."
+        >
+          <nav className={styles.tablePagination}>
+            <FooterWrapper columns="3" gap="3" width="100%" direction="column" align="center">
+              <Box />
+              <ul>
+                <IconButton variant="outline" disabled={!table.getCanPreviousPage()} onClick={table.firstPage}>
+                  <DoubleArrowLeftIcon />
+                </IconButton>
+                <Pagination.PrevButton className="" as={<IconButton variant="outline" />}>
+                  <ChevronLeftIcon />
+                </Pagination.PrevButton>
+                <Pagination.PageButton
+                  as={<Button variant="outline" />}
+                  activeClassName={styles.activePage}
+                  inactiveClassName=""
+                  className=""
+                />
+                <Pagination.NextButton as={<IconButton variant="outline" />}>
+                  <ChevronRightIcon />
+                </Pagination.NextButton>
+                <IconButton variant="outline" disabled={!table.getCanNextPage()} onClick={table.lastPage}>
+                  <DoubleArrowRightIcon />
+                </IconButton>
+              </ul>
+              <Flex justify="end" gap="3">
+                <Dropdown
+                  items={["1", "5", "15", "25", "50"].map(i => ({ item: i, value: i }))}
+                  defaultValue={table.getState().pagination.pageSize.toString()}
+                  onValueChange={newPageSize => table.setPageSize(parseInt(newPageSize))}
+                />
+                <Text className={styles.inlineFlexCenter}>records per page</Text>
+              </Flex>
+            </FooterWrapper>
+          </nav>
+        </Pagination>
+      )}
     </Flex>
   )
 }

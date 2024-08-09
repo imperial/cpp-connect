@@ -3,6 +3,7 @@ import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import { EditCompany } from "@/components/EditCompany"
 import prisma from "@/lib/db"
 
+import { CompanyManagement } from "./CompanyManagement"
 import styles from "./page.module.scss"
 
 import * as Collapsible from "@radix-ui/react-collapsible"
@@ -49,6 +50,13 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
         orderBy: { createdAt: "desc" },
         include: {
           company: true,
+        },
+      },
+      companyUsers: {
+        select: {
+          id: true,
+          email: true,
+          createdAt: true,
         },
       },
     },
@@ -170,6 +178,8 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
           </Tabs.Content>
         </Tabs.Root>
       </Card>
+
+      <CompanyManagement company={companyProfile} />
     </Flex>
   )
 }

@@ -1,0 +1,15 @@
+@import "@/styling/breakpoints.scss";
+.companyManagerCard {
+  border: solid var(--blue-9) 0.125em;
+  &::after {
+    box-shadow: unset;
+  }
+}
+
+.addUsersWrapper {
+  padding: 0 var(--space-9);
+
+  @include phablet {
+    padding: 0 0;
+  }
+}
