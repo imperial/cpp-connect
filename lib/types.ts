@@ -3,4 +3,7 @@ export interface FormPassBackState {
   status?: "success" | "error"
 }
 
-export type ServerSideFormHandler = (prevState: FormPassBackState, formData: FormData) => Promise<FormPassBackState>
+export type ServerSideFormHandler<T extends FormPassBackState = FormPassBackState> = (
+  prevState: T,
+  formData: FormData,
+) => Promise<T>

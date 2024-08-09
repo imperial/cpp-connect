@@ -2,20 +2,73 @@
 
 import { createCompanyUser } from "@/lib/crud/companies"
 
+import styles from "./add-user.module.scss"
+
 import { CompanyProfile } from "@prisma/client"
-import { CrossCircledIcon, ExclamationTriangleIcon, InfoCircledIcon, PlusIcon } from "@radix-ui/react-icons"
-import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
-import React, { use, useCallback, useEffect, useState } from "react"
+import { CheckCircledIcon, CopyIcon, CrossCircledIcon, InfoCircledIcon, PlusIcon } from "@radix-ui/react-icons"
+import { Button, Callout, Dialog, Flex, IconButton, Spinner, Strong, Text, TextField, Tooltip } from "@radix-ui/themes"
+import React, { useCallback, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
+
+const UserSignUpSuccess: React.FC<{ signInURL?: string }> = ({ signInURL }) => {
+  const [toolTipOpen, setToolTipOpen] = useState(false)
+  const copyPasteLink: React.MouseEventHandler<HTMLButtonElement> = useCallback(
+    e => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      // Copy to clipboard
+      if (signInURL) navigator.clipboard.writeText(signInURL)
+
+      // Show tooltip
+      setToolTipOpen(true)
+
+      // Hide tooltip after 2 seconds
+      setTimeout(() => setToolTipOpen(false), 2000)
+    },
+    [signInURL],
+  )
+  return (
+    <>
+      {signInURL ? (
+        <Callout.Root color="green">
+          <Callout.Icon>
+            <CheckCircledIcon />
+          </Callout.Icon>
+          <Callout.Text>User successfully created! Copy and send them their sign-in link below.</Callout.Text>
+        </Callout.Root>
+      ) : (
+        <Callout.Root color="red">
+          <Callout.Icon>
+            <CrossCircledIcon />
+          </Callout.Icon>
+          <Callout.Text>Server did not generate a sign-in link. Please try again later.</Callout.Text>
+        </Callout.Root>
+      )}
+
+      {signInURL && (
+        <Strong>
+          <TextField.Root value={signInURL} className={styles.boldInput} readOnly>
+            <TextField.Slot />
+            <TextField.Slot>
+              <Tooltip content="Copied to clipboard!" open={toolTipOpen} defaultOpen={false}>
+                <IconButton variant="ghost" onClick={copyPasteLink}>
+                  <CopyIcon />
+                </IconButton>
+              </Tooltip>
+            </TextField.Slot>
+          </TextField.Root>
+        </Strong>
+      )}
+    </>
+  )
+}
 
 const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) => void; companyId: number }) => {
   const [formState, formAction] = useFormState(createCompanyUser, { message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    if (formState?.status === "success") {
-      setOpenState(false)
-    }
     setIsSubmitting(false)
   }, [formState, setOpenState])
 
@@ -26,27 +79,34 @@ const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) =
   return (
     <form onSubmit={clientSideSubmit} action={formAction}>
       <Flex direction="column" gap="3">
-        <Callout.Root>
-          <Callout.Icon>
-            <InfoCircledIcon />
-          </Callout.Icon>
-          <Callout.Text>We will give you a link for them to sign in with.</Callout.Text>
-        </Callout.Root>
-        {formState?.status === "error" && formState?.message && (
-          <Callout.Root color="red">
-            <Callout.Icon>
-              <CrossCircledIcon />
-            </Callout.Icon>
-            <Callout.Text>{formState.message}</Callout.Text>
-          </Callout.Root>
+        {formState?.status === "success" ? (
+          <UserSignUpSuccess signInURL={formState.signInURL} />
+        ) : (
+          <>
+            <Callout.Root>
+              <Callout.Icon>
+                <InfoCircledIcon />
+              </Callout.Icon>
+              <Callout.Text>We will give you a link for them to sign in with.</Callout.Text>
+            </Callout.Root>
+            {formState?.status === "error" && formState?.message && (
+              <Callout.Root color="red">
+                <Callout.Icon>
+                  <CrossCircledIcon />
+                </Callout.Icon>
+                <Callout.Text>{formState.message}</Callout.Text>
+              </Callout.Root>
+            )}
+            <label>
+              <Text as="div" size="2" mb="1" weight="bold">
+                User email
+              </Text>
+              <TextField.Root name="email" placeholder="E.g., user@company.com" required type="email" />
+            </label>
+            <input name="companyId" value={companyId} required type="hidden" readOnly />
+            <input name="baseUrl" value={window.location.origin} required type="hidden" readOnly />
+          </>
         )}
-        <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            User email
-          </Text>
-          <TextField.Root name="email" placeholder="E.g., user@company.com" required type="email" />
-        </label>
-        <input name="companyId" value={companyId} required type="hidden" readOnly />
       </Flex>
       <Flex gap="3" mt="4" justify="end">
         <Button
@@ -59,7 +119,11 @@ const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) =
         >
           Cancel
         </Button>
-        <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
+        {formState?.status === "success" ? (
+          <Button onClick={() => setOpenState(false)}>Close</Button>
+        ) : (
+          <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
+        )}
       </Flex>
     </form>
   )

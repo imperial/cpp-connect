@@ -4,7 +4,7 @@ import { auth } from "@/auth"
 
 import prisma from "../db"
 import { restrictCompany } from "../rbac"
-import { ServerSideFormHandler } from "../types"
+import { FormPassBackState, ServerSideFormHandler } from "../types"
 import { Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
@@ -63,15 +63,27 @@ export const createCompany: ServerSideFormHandler = async (prevState, formData) 
   }
 }
 
-export const createCompanyUser: ServerSideFormHandler = async (prevState, formData) => {
+const encodeSignInUrl = (email: string, baseUrl: string): string =>
+  new URL(`/login?token=${encodeURIComponent(btoa(email))}`, baseUrl).toString()
+
+const decodeSignInToken = (token: string): string => atob(decodeURIComponent(token))
+
+export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = async (
+  prevState,
+  formData,
+) => {
   const session = await auth()
   if (!session) {
     return { message: "You must be logged in to perform this action.", status: "error" }
   }
   const email = formData.get("email")?.toString().trim()
+  const baseUrl = formData.get("baseUrl")?.toString().trim()
   const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
   if (!email) {
     return { message: "Email is required.", status: "error" }
+  }
+  if (!baseUrl) {
+    return { message: "Base URL is required.", status: "error" }
   }
 
   // Query for the user in the database to get asscoiatedCompanyId
@@ -109,5 +121,6 @@ export const createCompanyUser: ServerSideFormHandler = async (prevState, formDa
 
   return {
     status: "success",
+    signInURL: encodeSignInUrl(email, baseUrl),
   }
 }
