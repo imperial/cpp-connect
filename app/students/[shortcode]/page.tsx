@@ -51,7 +51,7 @@ const StudentWebsiteLink = ({ href, icon: Icon }: { href?: string | null; icon: 
 
 const StudentProfilePage = async ({ params }: { params: { shortcode: string } }) => {
   const studentProfile = await prisma.studentProfile.findFirst({
-    where: { studentShortcode: params.shortcode },
+    where: { studentShortcode: decodeURIComponent(params.shortcode) },
     include: {
       user: true,
     },
