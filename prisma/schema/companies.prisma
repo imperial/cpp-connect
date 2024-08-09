@@ -23,15 +23,16 @@ enum OpportunityType {
 }
 
 model Opportunity {
-  id        Int            @id @default(autoincrement())
-  company   CompanyProfile @relation(fields: [companyID], references: [id])
-  companyID Int
-  position  String
-  location  String
-  available Boolean
-  type      OpportunityType
-  createdAt DateTime       @default(now())
-  // TODO: Add Link
+  id          Int            @id @default(autoincrement())
+  company     CompanyProfile @relation(fields: [companyID], references: [id])
+  companyID   Int
+  position    String
+  location    String
+  available   Boolean
+  type        OpportunityType
+  createdAt   DateTime       @default(now())
+  link        String
+  description String
 }
 
 model Event {

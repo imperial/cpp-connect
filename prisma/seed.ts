@@ -9,6 +9,8 @@ function createFakeOpportunity() {
     type: faker.helpers.arrayElement([OpportunityType.Internship, OpportunityType.Graduate, OpportunityType.Placement]),
     location: faker.location.city(),
     available: faker.datatype.boolean(0.75),
+    description: faker.lorem.paragraphs(5),
+    link: faker.internet.url(),
   }
 }
 
@@ -22,7 +24,7 @@ function createFakeEvent(): Omit<Event, "id" | "companyID" | "createdAt" | "upda
     spaces: faker.number.int(1000),
     location: faker.location.city(),
     link: faker.internet.url(),
-  } 
+  }
 }
 
 

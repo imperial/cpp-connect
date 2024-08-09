@@ -1,4 +1,4 @@
-import { AddUser } from "@/app/companies/[id]/AddUser"
+import { AddUser } from "@/app/companies/[name]/AddUser"
 import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 
 import UsersTable, { UsersTableRow } from "./UsersTable"
