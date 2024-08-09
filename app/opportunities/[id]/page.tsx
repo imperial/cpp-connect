@@ -13,8 +13,14 @@ import { BsBoxArrowUpRight, BsBriefcase, BsCalendar, BsCheckCircle, BsPinMap, Bs
 import Markdown from "react-markdown"
 
 const OpportunityPage = async ({ params }: { params: { id: string } }) => {
+  const id = parseInt(params.id, 10)
+
+  if (isNaN(id) || id.toString() !== params.id) {
+    notFound()
+  }
+
   const opportunity = await prisma.opportunity.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id },
     include: { company: true },
   })
   if (!opportunity) {

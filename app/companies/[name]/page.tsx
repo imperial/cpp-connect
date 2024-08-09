@@ -30,8 +30,8 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
   }
 }
 
-const CompanyPage = async ({ params }: { params: { id: string } }) => {
-  const companyProfile = await prisma.companyProfile.findUnique({ where: { id: parseInt(params.id) } })
+const CompanyPage = async ({ params }: { params: { name: string } }) => {
+  const companyProfile = await prisma.companyProfile.findFirst({ where: { name: decodeURIComponent(params.name) } })
 
   if (!companyProfile) {
     notFound()
