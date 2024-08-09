@@ -13,12 +13,12 @@ export const CompanyManagement = ({ company }: { company: CompanyProfile & { com
     <RestrictedAreaCompany companyId={company.id} showMessage={false}>
       <Card className={styles.companyManagerCard}>
         <Flex direction="column" gap="3" p="4">
-          <Flex gap="3" direction="row" align="center" justify="between">
+          <Flex gap="3" direction="row" align="center" justify="between" wrap={"wrap"}>
             <Heading size="6">Company Management</Heading>
             <AddUser company={company} />
           </Flex>
 
-          <Box pl="9" pr="9">
+          <Box className={styles.addUsersWrapper}>
             <UsersTable users={company.companyUsers} />
           </Box>
         </Flex>

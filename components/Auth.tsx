@@ -17,6 +17,7 @@ const Auth = () => {
   const { data: session } = useSession()
   const searchParams = useSearchParams()
   const [formState, formAction] = useFormState(signInWithMagicLink, { message: "" })
+  const token = searchParams.get("token")
   return session?.user ? (
     <>
       Signed in as {session.user.email} with role {session.user.role} <br />
@@ -33,7 +34,7 @@ const Auth = () => {
           name="email"
           type="email"
           required
-          defaultValue={!!searchParams.get("token") ? decodeSignInToken(searchParams.get("token") ?? "") : ""}
+          defaultValue={!!token ? decodeSignInToken(token ?? "") : ""}
         />
         <button type="submit">Sign In with magic link</button>
       </form>
