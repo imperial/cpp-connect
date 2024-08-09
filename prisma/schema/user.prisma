@@ -21,7 +21,7 @@ model User {
   // and not set when the role is STUDENT or ADMIN.
   // This CHECK is included in the migration for it.
   associatedCompanyId Int?
-  associatedCompany CompanyProfile? @relation(fields: [associatedCompanyId], references: [id])
+  associatedCompany CompanyProfile? @relation(fields: [associatedCompanyId], references: [id], onDelete: Cascade)
 }
 
 enum Role {

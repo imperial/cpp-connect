@@ -8,6 +8,7 @@ import { FormPassBackState, ServerSideFormHandler } from "../types"
 import { encodeSignInUrl } from "../util/signInTokens"
 import { Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 
 export const createCompany: ServerSideFormHandler = async (prevState, formData) => {
   const session = await auth()
@@ -65,25 +66,11 @@ export const createCompany: ServerSideFormHandler = async (prevState, formData) 
   }
 }
 
-export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = async (
-  prevState,
-  formData,
-) => {
+const checkAuthorizedForCompanyCRUD = async (companyId: number): Promise<FormPassBackState> => {
   const session = await auth()
   if (!session) {
     return { message: "You must be logged in to perform this action.", status: "error" }
   }
-  const email = formData.get("email")?.toString().trim()
-  const baseUrl = formData.get("baseUrl")?.toString().trim()
-  const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
-  if (!email) {
-    return { message: "Email is required.", status: "error" }
-  }
-  if (!baseUrl) {
-    return { message: "Base URL is required.", status: "error" }
-  }
-
-  // Query for the user in the database to get asscoiatedCompanyId
   const user = await prisma.user.findUnique({
     where: {
       id: session.user?.id,
@@ -95,6 +82,28 @@ export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { sign
   })
   if (!restrictCompany(user, companyId)) {
     return { message: "Operation denied - unauthorised.", status: "error" }
+  }
+  return { status: "success" }
+}
+
+export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = async (
+  prevState,
+  formData,
+) => {
+  const email = formData.get("email")?.toString().trim()
+  const baseUrl = formData.get("baseUrl")?.toString().trim()
+  const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
+  if (!email) {
+    return { message: "Email is required.", status: "error" }
+  }
+  if (!baseUrl) {
+    return { message: "Base URL is required.", status: "error" }
+  }
+
+  const res = await checkAuthorizedForCompanyCRUD(companyId)
+
+  if (res.status === "error") {
+    return res
   }
 
   // Create the user
@@ -127,12 +136,10 @@ export const updateCompany = async (
   formData: FormData,
   id: number,
 ): Promise<FormPassBackState> => {
-  const session = await auth()
-  if (!session) {
-    return { message: "You must be logged in to perform this action.", status: "error" }
-  }
-  if (!session.user?.role || session.user.role !== "ADMIN") {
-    return { message: "Unauthorised.", status: "error" }
+  const res = await checkAuthorizedForCompanyCRUD(id)
+
+  if (res.status === "error") {
+    return res
   }
   // Validate things
   const name = formData.get("name")?.toString().trim()
@@ -182,4 +189,37 @@ export const updateCompany = async (
   return {
     status: "success",
   }
+}
+
+export const deleteCompany = async (
+  prevState: FormPassBackState,
+  formData: FormData,
+  name: string,
+  id: number,
+): Promise<FormPassBackState> => {
+  const res = await checkAuthorizedForCompanyCRUD(id)
+
+  if (res.status === "error") {
+    return res
+  }
+
+  if (!name) return { message: "Server error: company name is null.", status: "error" }
+
+  const enteredName = formData.get("name")?.toString().trim()
+  if (!enteredName) {
+    return { message: "Enter the company name to confirm deletion.", status: "error" }
+  }
+  if (enteredName.toLowerCase() !== name.toLowerCase()) {
+    return { message: "Entered name did not match company name. Please try again.", status: "error" }
+  }
+
+  // Now add the company to the database
+  try {
+    await prisma.companyProfile.delete({
+      where: { name },
+    })
+  } catch (e: any) {
+    return { message: "A database error occured. Please try again later.", status: "error" }
+  }
+  redirect("/companies")
 }

@@ -2,8 +2,6 @@
 
 import { deleteUser } from "@/lib/crud/users"
 
-import styles from "./delete-user.module.scss"
-
 import { User } from "@prisma/client"
 import { CrossCircledIcon } from "@radix-ui/react-icons"
 import { Button, Callout, Dialog, Flex, Spinner, Text } from "@radix-ui/themes"
@@ -46,7 +44,7 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
           <Text>Delete</Text>
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content className={styles.deleteDialog}>
+      <Dialog.Content className="deleteDialog">
         <Dialog.Title>Are you sure?</Dialog.Title>
         <Flex gap="4" direction="column">
           {serverMessage && (

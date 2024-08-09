@@ -1,4 +1,5 @@
 import { AddUser } from "@/app/companies/[name]/AddUser"
+import { DeleteCompany } from "@/components/DeleteCompany"
 import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 
 import UsersTable, { UsersTableRow } from "./UsersTable"
@@ -15,7 +16,10 @@ export const CompanyManagement = ({ company }: { company: CompanyProfile & { com
         <Flex direction="column" gap="3" p="4">
           <Flex gap="3" direction="row" align="center" justify="between" wrap={"wrap"}>
             <Heading size="6">Company Management</Heading>
-            <AddUser company={company} />
+            <Flex gap="2">
+              <AddUser company={company} />
+              <DeleteCompany name={company.name} id={company.id} />
+            </Flex>
           </Flex>
 
           <Box className={styles.addUsersWrapper}>
