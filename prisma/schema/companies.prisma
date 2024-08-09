@@ -4,6 +4,7 @@ model CompanyProfile {
   summary       String        @default("")
   sector        String
   logo          String        @default("")
+  banner        String        @default("")
   website       String
   size          String?
   hq            String?
@@ -21,15 +22,16 @@ enum OpportunityType {
 }
 
 model Opportunity {
-  id        Int            @id @default(autoincrement())
-  company   CompanyProfile @relation(fields: [companyID], references: [id])
-  companyID Int
-  position  String
-  location  String
-  available Boolean
-  type      OpportunityType
-  createdAt DateTime       @default(now())
-  // TODO: Add Link
+  id          Int            @id @default(autoincrement())
+  company     CompanyProfile @relation(fields: [companyID], references: [id])
+  companyID   Int
+  position    String
+  location    String
+  available   Boolean
+  type        OpportunityType
+  createdAt   DateTime       @default(now())
+  link        String
+  description String
 }
 
 model Event {

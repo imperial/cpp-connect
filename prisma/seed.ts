@@ -9,6 +9,8 @@ function createFakeOpportunity() {
     type: faker.helpers.arrayElement([OpportunityType.Internship, OpportunityType.Graduate, OpportunityType.Placement]),
     location: faker.location.city(),
     available: faker.datatype.boolean(0.75),
+    description: faker.lorem.paragraphs(5),
+    link: faker.internet.url(),
   }
 }
 
@@ -30,7 +32,7 @@ function createFakeStudent() {
   return {
     id: faker.string.uuid(),
     name: faker.person.fullName(),
-    email: faker.internet.email(),
+    email: faker.internet.email().toLowerCase(),
     role: Role.STUDENT,
     studentProfile: {
       create: {
@@ -96,7 +98,21 @@ async function main() {
       }
     },
   })
+
+  // Add yourself as a company
+  // await prisma.user.upsert({
+  //   where: {
+  //     email: "vader@sith.com"
+  //   },
+  //   update: {},
+  //   create: {
+  //     email: "vader@sith.com",
+  //     role: Role.COMPANY,
+  //   }
+  // })
 }
+
+
 
 main()
   .then(async () => {

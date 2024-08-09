@@ -1,5 +1,6 @@
 import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
+import { EditCompany } from "@/components/EditCompany"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -32,39 +33,61 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
   }
 }
 
-const CompanyPage = async ({ params }: { params: { id: string } }) => {
-  const companyProfile = await prisma.companyProfile.findUnique({ where: { id: parseInt(params.id) } })
+const CompanyPage = async ({ params }: { params: { name: string } }) => {
+  const companyProfile = await prisma.companyProfile.findFirst({
+     where: { 
+      name: decodeURIComponent(params.name) 
+    },
+    include: {
+      opportunities: {
+        orderBy: { createdAt: "desc" },
+        include: {
+          company: true,
+        }
+      },
+      events: {
+        orderBy: { createdAt: "desc" },
+        include: {
+          company: true,
+        }
+      }
+    }
+  })
 
   if (!companyProfile) {
     notFound()
   }
 
-  const opportunities = await prisma.opportunity.findMany({
-    where: {
-      companyID: parseInt(params.id),
-    },
-    orderBy: { createdAt: "desc" },
-    include: {
-      company: true,
-    },
-  })
+  // const opportunities = await prisma.opportunity.findMany({
+  //   where: {
+  //     company: {
+  //       name: companyProfile.name,
+  //     }
+  //   },
+  //   orderBy: { createdAt: "desc" },
+  //   include: {
+  //     company: true,
+  //   },
+  // })
 
-  const events = await prisma.event.findMany({
-    where: {
-      companyID: parseInt(params.id),
-    },
-    orderBy: { createdAt: "desc" },
-    include: {
-      company: true,
-    },
-  })
+  // const events = await prisma.event.findMany({
+  //   where: {
+  //     company: {
+  //       name: companyProfile.name,
+  //     }
+  //   },
+  //   orderBy: { createdAt: "desc" },
+  //   include: {
+  //     company: true,
+  //   },
+  // })
 
   return (
     <Flex gap="3" direction="column">
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
-            src={companyProfile.logo}
+            src={companyProfile.banner}
             alt={`${companyProfile.name} banner`}
             width={0}
             height={0}
@@ -74,11 +97,12 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
 
         <Flex direction="column">
           <Flex gap="3" direction="column" className={styles.companyInfo} p="4" pt="0">
-            <Box className={styles.companyLogoContainer}>
+            <Flex className={styles.companyLogoContainer} justify="between">
               <Card className={styles.companyLogo}>
                 <Image src={companyProfile.logo} alt={`${companyProfile.name} logo`} width={0} height={0} />
               </Card>
-            </Box>
+              <EditCompany prevCompanyProfile={companyProfile} />
+            </Flex>
 
             <Heading color="blue" size="7" mt="4">
               {companyProfile.name}
@@ -106,7 +130,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
               </Flex>
             )}
 
-            {companyProfile.email && (
+            {companyProfile.phone && (
               <Flex align="center" gap="2">
                 <BsTelephone />
                 <Text>{companyProfile.phone}</Text>
@@ -154,7 +178,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
           <Tabs.Content value="opportunities">
             <Box p="8">
               <OpportunityTable
-                opportunities={opportunities}
+                opportunities={companyProfile.opportunities}
                 keptColumns={["position", "location", "type", "createdAt"]}
               />
             </Box>
@@ -162,7 +186,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
           <Tabs.Content value="events">
             <Box p="8">
               <EventTable
-                events={events}
+                events={companyProfile.events}
                 columns={["title", "dateStart", "shortDescription", "location", "spaces"]}
                 nonFilterable={["company.name"]}
               />

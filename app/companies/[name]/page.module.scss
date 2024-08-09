@@ -28,6 +28,7 @@
 
 .companyLogoContainer {
   height: calc(var(--profile-image-size) / 2);
+  width: 100%;
 }
 
 .headerCard {
@@ -39,7 +40,6 @@
 }
 
 .banner {
-  height: auto;
   display: block;
   object-fit: cover;
   width: 100%;
