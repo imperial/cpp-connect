@@ -10,9 +10,15 @@ import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-
 import React, { useCallback, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
 
-const DeleteCompanyForm = ({ setOpenState, name }: { setOpenState: (v: boolean) => void; name: string }) => {
+interface DeleteCompanyFormProps { 
+  setOpenState: (v: boolean) => void,
+  name: string,
+  id: number,
+}
+
+const DeleteCompanyForm = ({ setOpenState, name, id }: DeleteCompanyFormProps) => {
   const deleteCompanyWithName = async (prevState: FormPassBackState, formData: FormData) =>
-    deleteCompany(prevState, formData, name)
+    deleteCompany(prevState, formData, name, id)
   const [formState, formAction] = useFormState(deleteCompanyWithName, { message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -70,7 +76,7 @@ const DeleteCompanyForm = ({ setOpenState, name }: { setOpenState: (v: boolean) 
   )
 }
 
-export const DeleteCompany = ({ name }: { name: string }) => {
+export const DeleteCompany = ({ name, id }: { name: string, id: number }) => {
   const [openState, setOpenState] = useState(false)
 
   return (
@@ -87,7 +93,7 @@ export const DeleteCompany = ({ name }: { name: string }) => {
           Are you sure you want to delete this company?
         </Dialog.Description>
 
-        <DeleteCompanyForm setOpenState={setOpenState} name={name} />
+        <DeleteCompanyForm setOpenState={setOpenState} name={name} id={id} />
       </Dialog.Content>
     </Dialog.Root>
   )

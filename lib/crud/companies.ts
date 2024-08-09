@@ -66,14 +66,30 @@ export const createCompany: ServerSideFormHandler = async (prevState, formData) 
   }
 }
 
-export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = async (
-  prevState,
-  formData,
-) => {
+const checkAuthorizedForCompanyCRUD = async (companyId: number): Promise<FormPassBackState>  => {
   const session = await auth()
   if (!session) {
     return { message: "You must be logged in to perform this action.", status: "error" }
   }
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.user?.id,
+    },
+    select: {
+      associatedCompanyId: true,
+      role: true,
+    },
+  })
+  if (!restrictCompany(user, companyId)) {
+    return { message: "Operation denied - unauthorised.", status: "error" }
+  }
+  return {status: "success"}
+}
+
+export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = async (
+  prevState,
+  formData,
+) => {
   const email = formData.get("email")?.toString().trim()
   const baseUrl = formData.get("baseUrl")?.toString().trim()
   const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
@@ -84,19 +100,10 @@ export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { sign
     return { message: "Base URL is required.", status: "error" }
   }
 
-  // Query for the user in the database to get asscoiatedCompanyId
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.user?.id,
-    },
-    select: {
-      associatedCompanyId: true,
-      role: true,
-    },
-  })
-  console.log(session.user)
-  if (!restrictCompany(user, companyId)) {
-    return { message: "Operation denied - unauthorised.", status: "error" }
+  const res = await checkAuthorizedForCompanyCRUD(companyId)
+
+  if (res.status === "error") {
+    return res
   }
 
   // Create the user
@@ -129,12 +136,10 @@ export const updateCompany = async (
   formData: FormData,
   id: number,
 ): Promise<FormPassBackState> => {
-  const session = await auth()
-  if (!session) {
-    return { message: "You must be logged in to perform this action.", status: "error" }
-  }
-  if (!session.user?.role || session.user.role !== "ADMIN") {
-    return { message: "Unauthorised.", status: "error" }
+  const res = await checkAuthorizedForCompanyCRUD(id)
+
+  if (res.status === "error") {
+    return res
   }
   // Validate things
   const name = formData.get("name")?.toString().trim()
@@ -190,8 +195,13 @@ export const deleteCompany = async (
   prevState: FormPassBackState,
   formData: FormData,
   name: string,
+  id: number,
 ): Promise<FormPassBackState> => {
-  console.log(name)
+  const res = await checkAuthorizedForCompanyCRUD(id)
+
+  if (res.status === "error") {
+    return res
+  }
 
   const enteredName = formData.get("name")?.toString().trim()
   if (!enteredName) {
@@ -209,6 +219,5 @@ export const deleteCompany = async (
   } catch (e: any) {
     return { message: "A database error occured. Please try again later.", status: "error" }
   }
-
   redirect("/companies")
 }

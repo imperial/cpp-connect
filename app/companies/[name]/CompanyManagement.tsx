@@ -18,7 +18,7 @@ export const CompanyManagement = ({ company }: { company: CompanyProfile & { com
             <Heading size="6">Company Management</Heading>
             <Flex gap="2">
               <AddUser company={company} />
-              <DeleteCompany name={company.name} />
+              <DeleteCompany name={company.name} id={company.id} />
             </Flex>
           </Flex>
 
