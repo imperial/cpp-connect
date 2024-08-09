@@ -1,10 +1,13 @@
+import EventTable from "@/app/events/EventTable"
+import OpportunityTable from "@/app/opportunities/OpportunityTable"
+import { EditCompany } from "@/components/EditCompany"
 import prisma from "@/lib/db"
 
 import { CompanyManagement } from "./CompanyManagement"
 import styles from "./page.module.scss"
 
 import * as Collapsible from "@radix-ui/react-collapsible"
-import { Box, Card, Flex, Heading, Inset, Link, Text } from "@radix-ui/themes"
+import { Box, Card, Flex, Heading, Inset, Link, Tabs, Text } from "@radix-ui/themes"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
@@ -33,8 +36,22 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
 
 const CompanyPage = async ({ params }: { params: { name: string } }) => {
   const companyProfile = await prisma.companyProfile.findFirst({
-    where: { name: decodeURIComponent(params.name) },
+    where: {
+      name: decodeURIComponent(params.name),
+    },
     include: {
+      opportunities: {
+        orderBy: { createdAt: "desc" },
+        include: {
+          company: true,
+        },
+      },
+      events: {
+        orderBy: { createdAt: "desc" },
+        include: {
+          company: true,
+        },
+      },
       companyUsers: {
         select: {
           id: true,
@@ -64,11 +81,12 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
 
         <Flex direction="column">
           <Flex gap="3" direction="column" className={styles.companyInfo} p="4" pt="0">
-            <Box className={styles.companyLogoContainer}>
+            <Flex className={styles.companyLogoContainer} justify="between">
               <Card className={styles.companyLogo}>
                 <Image src={companyProfile.logo} alt={`${companyProfile.name} logo`} width={0} height={0} />
               </Card>
-            </Box>
+              <EditCompany prevCompanyProfile={companyProfile} />
+            </Flex>
 
             <Heading color="blue" size="7" mt="4">
               {companyProfile.name}
@@ -96,7 +114,7 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
               </Flex>
             )}
 
-            {companyProfile.email && (
+            {companyProfile.phone && (
               <Flex align="center" gap="2">
                 <BsTelephone />
                 <Text>{companyProfile.phone}</Text>
@@ -106,30 +124,59 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
         </Flex>
       </Card>
 
-      <Card className={styles.aboutCard}>
-        <Collapsible.Root className={styles.CollapsibleRoot}>
-          <Heading size="6">About</Heading>
-          <Box className={styles.summaryContainer}>
-            <Markdown className={styles.markdownContainer}>{companyProfile.summary}</Markdown>
+      <Card>
+        <Tabs.Root defaultValue="about">
+          <Tabs.List>
+            <Tabs.Trigger value="about">About</Tabs.Trigger>
+            <Tabs.Trigger value="opportunities">Opportunities</Tabs.Trigger>
+            <Tabs.Trigger value="events">Events</Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="about">
+            <Box className={styles.aboutCard}>
+              <Collapsible.Root className={styles.CollapsibleRoot}>
+                <Box className={styles.summaryContainer}>
+                  <CompanyDetail title="Summary">
+                    <Markdown className={styles.markdownContainer}>{companyProfile.summary}</Markdown>
+                  </CompanyDetail>
 
-            <CompanyDetail title="Website">
-              <Link href={companyProfile.website} target="_blank">
-                {companyProfile.website}
-              </Link>
-            </CompanyDetail>
+                  <CompanyDetail title="Website">
+                    <Link href={companyProfile.website} target="_blank">
+                      {companyProfile.website}
+                    </Link>
+                  </CompanyDetail>
 
-            <CompanyDetail title="Sector">{companyProfile.sector}</CompanyDetail>
+                  <CompanyDetail title="Sector">{companyProfile.sector}</CompanyDetail>
 
-            <CompanyDetail title="Headquarters">{companyProfile.hq}</CompanyDetail>
+                  <CompanyDetail title="Headquarters">{companyProfile.hq}</CompanyDetail>
 
-            <CompanyDetail title="Founded">{companyProfile.founded}</CompanyDetail>
+                  <CompanyDetail title="Founded">{companyProfile.founded}</CompanyDetail>
 
-            <CompanyDetail title="Size">{companyProfile.size}</CompanyDetail>
-          </Box>
-          <Collapsible.Trigger className={styles.CollapsibleTrigger} asChild>
-            <Text size="2">Read more...</Text>
-          </Collapsible.Trigger>
-        </Collapsible.Root>
+                  <CompanyDetail title="Size">{companyProfile.size}</CompanyDetail>
+                </Box>
+                <Collapsible.Trigger className={styles.CollapsibleTrigger} asChild>
+                  <Text size="2">Read more...</Text>
+                </Collapsible.Trigger>
+              </Collapsible.Root>
+            </Box>
+          </Tabs.Content>
+          <Tabs.Content value="opportunities">
+            <Box p="8">
+              <OpportunityTable
+                opportunities={companyProfile.opportunities}
+                keptColumns={["position", "location", "type", "createdAt"]}
+              />
+            </Box>
+          </Tabs.Content>
+          <Tabs.Content value="events">
+            <Box p="8">
+              <EventTable
+                events={companyProfile.events}
+                columns={["title", "dateStart", "shortDescription", "location", "spaces"]}
+                nonFilterable={["company.name"]}
+              />
+            </Box>
+          </Tabs.Content>
+        </Tabs.Root>
       </Card>
 
       <CompanyManagement company={companyProfile} />
