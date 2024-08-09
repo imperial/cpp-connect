@@ -40,23 +40,24 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
           />
         </Inset>
 
-        <Flex wrap="wrap" direction="column" p="5" gap="5">
-          <Box>
-            <Heading size="8">{opportunity.position}</Heading>
-
+        <Flex justify="between" align="end" p="5" gap="5" wrap="wrap">
+          <Flex wrap="wrap" direction="column" gap="5">
             <Box>
-              At{" "}
-              <Link href={`/companies/${encodeURIComponent(opportunity.company.name)}`}>
-                {opportunity.company.name}
-              </Link>
+              <Heading size="8">{opportunity.position}</Heading>
+
+              <Box>
+                At{" "}
+                <Link href={`/companies/${encodeURIComponent(opportunity.company.name)}`}>
+                  {opportunity.company.name}
+                </Link>
+              </Box>
             </Box>
-          </Box>
 
-          <Flex gap="1" wrap="wrap">
-            <Chip label={opportunity.location} />
-            <Chip label={opportunity.type} />
+            <Flex gap="1" wrap="wrap">
+              <Chip label={opportunity.location} />
+              <Chip label={opportunity.type} />
+            </Flex>
           </Flex>
-
           {opportunity.available ? (
             <Button asChild size="4" className={styles.applyButton}>
               <Link href={opportunity.link} target="_blank">
@@ -83,7 +84,7 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
             <Heading>Opportunity Details</Heading>
 
             <Grid
-              display="inline-grid"
+              // display="inline-grid"
               columns="min-content auto auto"
               gap="2"
               align="center"
