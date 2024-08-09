@@ -3,6 +3,8 @@
 import { deleteCompany } from "@/lib/crud/companies"
 import { FormPassBackState } from "@/lib/types"
 
+import styles from "./deletecompany.module.scss"
+
 import { CrossCircledIcon, ExclamationTriangleIcon, TrashIcon } from "@radix-ui/react-icons"
 import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
 import React, { useCallback, useEffect, useState } from "react"
@@ -60,7 +62,7 @@ const DeleteCompanyForm = ({ setOpenState, name }: { setOpenState: (v: boolean) 
         >
           Cancel
         </Button>
-        <Button type="submit" color="red">
+        <Button type="submit" color="red" className={styles.dangerButton}>
           {isSubmitting ? <Spinner /> : "Delete"}
         </Button>
       </Flex>
@@ -74,7 +76,7 @@ export const DeleteCompany = ({ name }: { name: string }) => {
   return (
     <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
       <Dialog.Trigger>
-        <Button size="3" color="red">
+        <Button size="3" color="red" className={styles.dangerButton}>
           <TrashIcon />
           <Text>Delete Company</Text>
         </Button>
