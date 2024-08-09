@@ -10,7 +10,7 @@ type OpportunityRow = {
   company: CompanyProfile
 } & Opportunity
 
-type ColumnName = "id" | "companyID" | "position" | "location" | "available" | "type" | "createdAt" | "company.name"
+type ColumnName = keyof OpportunityRow | `company.${keyof CompanyProfile}`
 
 const columnHelper = createColumnHelper<OpportunityRow>()
 
@@ -66,7 +66,17 @@ const OpportunityTable = ({
   }
 
   const columnDefs = keptColumns.map((columnName: ColumnName) =>
-    columnHelper.accessor(columnName, columnDefsMap[columnName] ?? {}),
+    columnHelper.accessor(
+      columnName,
+      columnDefsMap[columnName] ?? {
+        // default column definition, so that all company values are also accessible
+        cell: info => info.getValue(),
+        header: columnName,
+        sortingFn: "alphanumeric",
+        id: columnName,
+        enableColumnFilter: !(columnName in nonFilterable),
+      },
+    ),
   )
 
   return <TanstackTable data={opportunities} columns={columnDefs} />

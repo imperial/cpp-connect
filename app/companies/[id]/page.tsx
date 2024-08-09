@@ -163,7 +163,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
             <Box p="8">
               <EventTable
                 events={events}
-                keptColumns={["title", "dateStart", "shortDescription", "location", "spaces"]}
+                columns={["title", "dateStart", "shortDescription", "location", "spaces"]}
                 nonFilterable={["company.name"]}
               />
             </Box>

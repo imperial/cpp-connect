@@ -4,7 +4,7 @@ import TanstackTable from "@/components/TanstackTable"
 
 import type { CompanyProfile, Event } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { format, getDate, intlFormat } from "date-fns"
+import { format } from "date-fns"
 
 type EventRow = {
   company: CompanyProfile
@@ -12,28 +12,15 @@ type EventRow = {
 
 const columnHelper = createColumnHelper<EventRow>()
 
-type ColumnName =
-  | "link"
-  | "id"
-  | "companyID"
-  | "title"
-  | "dateStart"
-  | "dateEnd"
-  | "shortDescription"
-  | "richSummary"
-  | "spaces"
-  | "location"
-  | "createdAt"
-  | "updatedAt"
-  | "company.name"
+type ColumnName = keyof EventRow | `company.${keyof CompanyProfile}`
 
 const EventTable = ({
   events,
-  keptColumns,
+  columns,
   nonFilterable = [],
 }: {
   events: EventRow[]
-  keptColumns: ColumnName[]
+  columns: ColumnName[]
   nonFilterable?: ColumnName[]
 }) => {
   const columnDefsMap: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
@@ -83,8 +70,18 @@ const EventTable = ({
     }
   }
 
-  const columnDefs = keptColumns.map((columnName: ColumnName) =>
-    columnHelper.accessor(columnName, columnDefsMap[columnName] ?? {}),
+  const columnDefs = columns.map((columnName: ColumnName) =>
+    columnHelper.accessor(
+      columnName,
+      columnDefsMap[columnName] ?? {
+        // default column definition, so that all company values are also accessible
+        cell: info => info.getValue(),
+        header: columnName,
+        sortingFn: "alphanumeric",
+        id: columnName,
+        enableColumnFilter: !(columnName in nonFilterable),
+      },
+    ),
   )
 
   return <TanstackTable data={events} columns={columnDefs} />

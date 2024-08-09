@@ -17,7 +17,7 @@ const EventsPage = async () => {
     <RestrictedArea allowedRoles={["STUDENT"]}>
       <EventTable
         events={events}
-        keptColumns={["company.name", "title", "dateStart", "shortDescription", "location", "spaces"]}
+        columns={["company.name", "title", "dateStart", "shortDescription", "location", "spaces"]}
       />
     </RestrictedArea>
   )
