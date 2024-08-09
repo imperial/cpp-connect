@@ -1,10 +1,11 @@
 "use server"
 
 import { auth } from "@/auth"
-import { FormPassBackState } from "@/types"
+import { FormPassBackState } from "@/lib/types"
 
 import prisma from "../db"
 import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 
 export const createCompany = async (prevState: FormPassBackState, formData: FormData): Promise<FormPassBackState> => {
   const session = await auth()
@@ -59,4 +60,31 @@ export const createCompany = async (prevState: FormPassBackState, formData: Form
   return {
     status: "success",
   }
+}
+
+export const deleteCompany = async (
+  prevState: FormPassBackState,
+  formData: FormData,
+  name: string,
+): Promise<FormPassBackState> => {
+  console.log(name)
+
+  const enteredName = formData.get("name")?.toString().trim()
+  if (!enteredName) {
+    return { message: "Enter the company name to confirm deletion.", status: "error" }
+  }
+  if (enteredName.toLowerCase() !== name.toLowerCase()) {
+    return { message: "Entered name did not match company name. Please try again.", status: "error" }
+  }
+
+  // Now add the company to the database
+  try {
+    await prisma.companyProfile.delete({
+      where: { name },
+    })
+  } catch (e: any) {
+    return { message: "A database error occured. Please try again later.", status: "error" }
+  }
+
+  redirect("/companies")
 }

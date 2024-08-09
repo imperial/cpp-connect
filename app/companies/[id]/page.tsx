@@ -1,3 +1,4 @@
+import { DeleteCompany } from "@/components/DeleteCompany"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -39,6 +40,7 @@ const CompanyPage = async ({ params }: { params: { id: string } }) => {
 
   return (
     <Flex gap="3" direction="column">
+      <DeleteCompany name={companyProfile.name} />
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
