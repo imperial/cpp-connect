@@ -3,8 +3,8 @@
 import TanstackTable from "@/components/TanstackTable"
 
 import type { CompanyProfile, Event } from "@prisma/client"
-import { createColumnHelper } from "@tanstack/react-table"
-import { format, getDate, intlFormat } from "date-fns"
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import { format } from "date-fns"
 
 type EventRow = {
   company: CompanyProfile
@@ -12,54 +12,79 @@ type EventRow = {
 
 const columnHelper = createColumnHelper<EventRow>()
 
-const columns = [
-  columnHelper.accessor("company.name", {
-    cell: info => info.getValue(),
-    header: "Company",
-    id: "company.name",
-    sortingFn: "alphanumeric",
-  }),
+type ColumnName = keyof EventRow | `company.${keyof CompanyProfile}`
 
-  columnHelper.accessor("title", {
-    cell: info => info.getValue(),
-    header: "Title",
-    sortingFn: "alphanumeric",
-    id: "title",
-  }),
+const EventTable = ({
+  events,
+  columns,
+  nonFilterable = [],
+}: {
+  events: EventRow[]
+  columns: ColumnName[]
+  nonFilterable?: ColumnName[]
+}) => {
+  const columnDefsMap: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
+    "company.name": {
+      cell: info => info.getValue(),
+      header: "Company",
+      id: "company.name",
+      sortingFn: "alphanumeric",
+    },
+    title: {
+      cell: info => info.getValue(),
+      header: "Title",
+      sortingFn: "alphanumeric",
+      id: "title",
+    },
+    dateStart: {
+      cell: info => <time suppressHydrationWarning={true}>{format(info.getValue(), "eeee, MMMM eo 'at' HH:mm ")}</time>,
+      header: "Start Date",
+      sortingFn: "datetime",
+      id: "dateStart",
+      enableColumnFilter: false,
+    },
+    shortDescription: {
+      cell: info => info.getValue(),
+      header: "Description",
+      sortingFn: "text",
+      id: "shortDescription",
+    },
+    location: {
+      cell: info => info.getValue(),
+      header: "Location",
+      sortingFn: "text",
+      id: "location",
+    },
+    spaces: {
+      cell: info => info.getValue(),
+      header: "Spaces",
+      sortingFn: "alphanumeric",
+      id: "spaces",
+      enableColumnFilter: false,
+    },
+  }
 
-  columnHelper.accessor("dateStart", {
-    cell: info => <time suppressHydrationWarning={true}>{format(info.getValue(), "eeee, MMMM eo 'at' HH:mm ")}</time>,
-    header: "Start Date",
-    sortingFn: "datetime",
-    id: "dateStart",
-    enableColumnFilter: false,
-  }),
+  for (let column of nonFilterable) {
+    if (columnDefsMap[column]) {
+      columnDefsMap[column]!.enableColumnFilter = false
+    }
+  }
 
-  columnHelper.accessor("shortDescription", {
-    cell: info => info.getValue(),
-    header: "Description",
-    sortingFn: "text",
-    id: "shortDescription",
-  }),
+  const columnDefs = columns.map((columnName: ColumnName) =>
+    columnHelper.accessor(
+      columnName,
+      columnDefsMap[columnName] ?? {
+        // default column definition, so that all company values are also accessible
+        cell: info => info.getValue(),
+        header: columnName,
+        sortingFn: "alphanumeric",
+        id: columnName,
+        enableColumnFilter: !(columnName in nonFilterable),
+      },
+    ),
+  )
 
-  columnHelper.accessor("location", {
-    cell: info => info.getValue(),
-    header: "Location",
-    sortingFn: "text",
-    id: "location",
-  }),
-
-  columnHelper.accessor("spaces", {
-    cell: info => info.getValue(),
-    header: "Spaces",
-    sortingFn: "alphanumeric",
-    id: "spaces",
-    enableColumnFilter: false,
-  }),
-]
-
-const EventTable = ({ events }: { events: EventRow[] }) => {
-  return <TanstackTable data={events} columns={columns} />
+  return <TanstackTable data={events} columns={columnDefs} />
 }
 
 export default EventTable

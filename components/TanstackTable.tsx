@@ -94,7 +94,7 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
   )
 
   const [searchQuery, setSearchQuery] = useState("")
-  const [currentFilteredColumn, setCurrentFilteredColumn] = useState(filterableColumns[0].id ?? "")
+  const [currentFilteredColumn, setCurrentFilteredColumn] = useState(filterableColumns[0]?.id ?? "")
 
   useEffect(() => {
     table.setColumnFilters([{ id: currentFilteredColumn, value: searchQuery }])
@@ -131,7 +131,7 @@ export default function TanstackTable<T>({ data, columns }: ListingTableProps<T>
         </TextField.Root>
         <Dropdown
           items={filterableColumns.map(col => ({ item: col.columnDef.header!.toString(), value: col.columnDef.id! }))}
-          defaultValue={filterableColumns[0].id ?? ""}
+          defaultValue={filterableColumns[0]?.id ?? ""}
           onValueChange={setCurrentFilteredColumn}
           triggerProps={{
             "aria-label": "Filter by column",
