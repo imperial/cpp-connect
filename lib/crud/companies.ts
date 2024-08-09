@@ -5,6 +5,7 @@ import { auth } from "@/auth"
 import prisma from "../db"
 import { restrictCompany } from "../rbac"
 import { FormPassBackState, ServerSideFormHandler } from "../types"
+import { encodeSignInUrl } from "../util/signInTokens"
 import { Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
@@ -62,11 +63,6 @@ export const createCompany: ServerSideFormHandler = async (prevState, formData) 
     status: "success",
   }
 }
-
-const encodeSignInUrl = (email: string, baseUrl: string): string =>
-  new URL(`/login?token=${encodeURIComponent(btoa(email))}`, baseUrl).toString()
-
-const decodeSignInToken = (token: string): string => atob(decodeURIComponent(token))
 
 export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = async (
   prevState,

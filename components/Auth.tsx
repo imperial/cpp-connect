@@ -1,10 +1,12 @@
 "use client"
 
 import { signInWithMagicLink } from "@/lib/authActions"
+import { decodeSignInToken } from "@/lib/util/signInTokens"
 
 import { CrossCircledIcon } from "@radix-ui/react-icons"
 import { Callout } from "@radix-ui/themes"
 import { signIn, signOut, useSession } from "next-auth/react"
+import { useSearchParams } from "next/navigation"
 import React from "react"
 import { useFormState } from "react-dom"
 
@@ -13,6 +15,8 @@ import { useFormState } from "react-dom"
  */
 const Auth = () => {
   const { data: session } = useSession()
+  const searchParams = useSearchParams()
+  console.log(searchParams.get("token"))
   const [formState, formAction] = useFormState(signInWithMagicLink, { message: "" })
   return session?.user ? (
     <>
@@ -25,7 +29,13 @@ const Auth = () => {
       <button onClick={() => signIn()}>Sign in</button>
       <form action={formAction}>
         <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" required />
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          defaultValue={!!searchParams.get("token") ? decodeSignInToken(searchParams.get("token") ?? "") : ""}
+        />
         <button type="submit">Sign In with magic link</button>
       </form>
       {formState?.status === "error" && formState?.message && (
