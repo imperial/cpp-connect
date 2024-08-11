@@ -4,9 +4,10 @@ import styles from "@/components/profileDropdown.module.scss"
 import getStudentShortcode from "@/lib/getStudentShortcode"
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
-import { Button, Link } from "@radix-ui/themes"
+import { Button, Link, Text } from "@radix-ui/themes"
 import { Session } from "next-auth"
 import React from "react"
+import { BsPersonCircle } from "react-icons/bs"
 
 const ProfileDropdown = async ({ user }: { user: Session["user"] }) => {
   return (
@@ -19,8 +20,11 @@ const ProfileDropdown = async ({ user }: { user: Session["user"] }) => {
       <DropdownMenu.Content className={styles.DropdownMenuContent}>
         <DropdownCard user={user}>
           {user.role === "STUDENT" && (
-            <Button asChild>
-              <Link href={`/students/${(await getStudentShortcode(user)) ?? ""}`}>Profile</Link>
+            <Button variant="outline" asChild>
+              <Link href={`/students/${(await getStudentShortcode(user)) ?? ""}`} underline="none">
+                <BsPersonCircle />
+                <Text>Your Profile</Text>
+              </Link>
             </Button>
           )}
         </DropdownCard>

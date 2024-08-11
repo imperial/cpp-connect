@@ -1,7 +1,7 @@
 "use client"
 
 import UserAvatar from "@/components/UserAvatar"
-import styles from "@/components/profileDropdown.module.scss"
+import styles from "@/components/dropdownCard.module.scss"
 
 import { Button, Flex, Heading, Text } from "@radix-ui/themes"
 import { Session } from "next-auth"
@@ -11,15 +11,17 @@ import { BsBoxArrowRight } from "react-icons/bs"
 
 export const DropdownCard = ({ user, children }: { user: Session["user"]; children?: React.ReactNode }) => {
   return (
-    <Flex className={styles.DropdownCard} gap="3">
-      <UserAvatar user={user} size="6" />
-      <Flex direction="column">
+    <Flex className={styles.DropdownCard} gap="4" align="stretch">
+      <Flex align="center">
+        <UserAvatar user={user} size="6" />
+      </Flex>
+      <Flex direction="column" gap="2" justify="between">
         <Heading>{user.name}</Heading>
         {children}
-        <Button color="red" onClick={() => signOut()} style={{ color: "white" }}>
+        <Button color="red" onClick={() => signOut()} variant="outline">
           <Flex gap="2" align="center">
-            <Text>Sign out</Text>
             <BsBoxArrowRight />
+            <Text>Sign out</Text>
           </Flex>
         </Button>
       </Flex>
