@@ -1,7 +1,6 @@
 import { auth } from "@/auth"
 import ProfileDropdown from "@/components/ProfileDropdown"
 
-import UserAvatar from "./UserAvatar"
 import styles from "./navbar.module.scss"
 
 import { Flex, Link } from "@radix-ui/themes"
@@ -41,11 +40,7 @@ const Navbar = async () => {
         </Flex>
 
         {session?.user ? (
-          session.user.role === "STUDENT" ? (
-            <ProfileDropdown user={session.user} />
-          ) : (
-            <UserAvatar user={session.user} size="4" />
-          )
+          <ProfileDropdown user={session.user} />
         ) : (
           <Link href="/login" className={styles.link}>
             <span>Log In</span>
