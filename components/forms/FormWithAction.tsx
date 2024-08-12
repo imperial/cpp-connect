@@ -10,9 +10,18 @@ interface FormWithActionProps {
   children: React.ReactNode
   defaultState?: FormPassBackState
   actionsSection?: React.ReactNode
+  onSuccess?: (formState: FormPassBackState) => void
+  submitButton?: (formState: FormPassBackState, isSubmitting: boolean) => React.ReactNode
 }
 
-export const FormWithAction: React.FC<FormWithActionProps> = ({ action, children, defaultState, actionsSection }) => {
+export const FormWithAction: React.FC<FormWithActionProps> = ({
+  action,
+  children,
+  defaultState,
+  actionsSection,
+  onSuccess,
+  submitButton,
+}) => {
   const [isPending, startTransition] = useTransition()
   const wrappedAction = useCallback(
     (prevState: FormPassBackState, formData: FormData): Promise<FormPassBackState> => {
@@ -20,6 +29,9 @@ export const FormWithAction: React.FC<FormWithActionProps> = ({ action, children
         startTransition(async () => {
           try {
             const res = await action(prevState, formData)
+            if (res.status === "success") {
+              onSuccess?.(res)
+            }
             resolve(res)
           } catch (e) {
             reject(e)
@@ -27,7 +39,7 @@ export const FormWithAction: React.FC<FormWithActionProps> = ({ action, children
         })
       })
     },
-    [action],
+    [action, onSuccess],
   )
   const [formState, formAction] = useFormState(wrappedAction, defaultState ?? { message: "" })
 
@@ -39,7 +51,7 @@ export const FormWithAction: React.FC<FormWithActionProps> = ({ action, children
       </Flex>
       <Flex gap="3" mt="4" justify="end">
         {actionsSection}
-        <Button type="submit">{isPending ? <Spinner /> : "Save"}</Button>
+        {submitButton?.(formState, isPending) ?? <Button type="submit">{isPending ? <Spinner /> : "Save"}</Button>}
       </Flex>
     </form>
   )
@@ -49,37 +61,25 @@ interface FormInModalProps extends FormWithActionProps {
   close: () => void
 }
 
-export const FormInModal: React.FC<FormInModalProps> = ({ action, children, defaultState, actionsSection, close }) => {
+export const FormInModal: React.FC<FormInModalProps> = props => {
   const AdditionalButtons = (
     <>
-      {actionsSection}
+      {props.actionsSection}
       <Button
         variant="soft"
         color="gray"
         onClick={e => {
           e.preventDefault()
-          close()
+          props.close?.()
         }}
       >
         Cancel
       </Button>
     </>
   )
-
-  const wrappedAction: ServerSideFormHandler = useCallback(
-    async (prevState, formData) => {
-      const res = await action(prevState, formData)
-
-      if (res.status === "success") {
-        close()
-      }
-      return res
-    },
-    [action, close],
-  )
   return (
-    <FormWithAction action={wrappedAction} defaultState={defaultState} actionsSection={AdditionalButtons}>
-      {children}
+    <FormWithAction onSuccess={() => close()} {...props} actionsSection={AdditionalButtons}>
+      {props.children}
     </FormWithAction>
   )
 }

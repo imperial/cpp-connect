@@ -1,6 +1,7 @@
 "use client"
 
 import { ErrorCallout, InfoCallout, SuccessCallout } from "@/components/Callouts"
+import { FormInModal } from "@/components/forms/FormWithAction"
 import { createCompanyUser } from "@/lib/crud/companies"
 
 import styles from "./add-user.module.scss"
@@ -67,11 +68,26 @@ const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) =
     setIsSubmitting(true)
   }, [])
 
+  const [formReturn, setFormReturn] = useState<Awaited<ReturnType<typeof createCompanyUser>> | undefined>(undefined)
+
   return (
-    <form onSubmit={clientSideSubmit} action={formAction}>
-      <Flex direction="column" gap="3">
-        {formState?.status === "success" ? (
-          <UserSignUpSuccess signInURL={formState.signInURL} />
+    <>
+      <FormInModal
+        action={createCompanyUser}
+        onSuccess={formState => {
+          setFormReturn(formState)
+        }}
+        close={() => setOpenState(false)}
+        submitButton={(formState, isSubmitting) =>
+          formState?.status === "success" ? (
+            <Button onClick={() => setOpenState(false)}>Close</Button>
+          ) : (
+            <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
+          )
+        }
+      >
+        {formReturn ? (
+          <UserSignUpSuccess signInURL={formReturn.signInURL} />
         ) : (
           <>
             <InfoCallout message="We will give you a link for them to sign in with." />
@@ -86,25 +102,8 @@ const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) =
             <input name="baseUrl" value={window.location.origin} required type="hidden" readOnly />
           </>
         )}
-      </Flex>
-      <Flex gap="3" mt="4" justify="end">
-        <Button
-          variant="soft"
-          color="gray"
-          onClick={e => {
-            e.preventDefault()
-            setOpenState(false)
-          }}
-        >
-          Cancel
-        </Button>
-        {formState?.status === "success" ? (
-          <Button onClick={() => setOpenState(false)}>Close</Button>
-        ) : (
-          <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
-        )}
-      </Flex>
-    </form>
+      </FormInModal>
+    </>
   )
 }
 
