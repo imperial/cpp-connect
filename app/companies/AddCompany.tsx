@@ -1,66 +1,36 @@
 "use client"
 
-import { ErrorCallout, InfoCallout } from "@/components/Callouts"
+import { InfoCallout } from "@/components/Callouts"
+import { FormInModal } from "@/components/forms/FormWithAction"
 import { createCompany } from "@/lib/crud/companies"
 
 import { PlusIcon } from "@radix-ui/react-icons"
-import { Button, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
-import React, { useCallback, useEffect, useState } from "react"
-import { useFormState } from "react-dom"
+import { Button, Dialog, Text, TextField } from "@radix-ui/themes"
+import { useState } from "react"
 
 const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }) => {
-  const [formState, formAction] = useFormState(createCompany, { message: "" })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  useEffect(() => {
-    if (formState?.status === "success") {
-      setOpenState(false)
-    }
-    setIsSubmitting(false)
-  }, [formState, setOpenState])
-
-  const clientSideSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true)
-  }, [])
-
   return (
-    <form onSubmit={clientSideSubmit} action={formAction}>
-      <Flex direction="column" gap="3">
-        <InfoCallout message="You can add company users & other details after this step." />
-        {formState?.status === "error" && formState?.message && <ErrorCallout message={formState.message} />}
-        <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            Company name*
-          </Text>
-          <TextField.Root name="name" placeholder="E.g., Imperial" required />
-        </label>
-        <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            Website*
-          </Text>
-          <TextField.Root name="website" placeholder="E.g., https://imperial.ic.ac.uk" required type="url" />
-        </label>
-        <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            Sector*
-          </Text>
-          <TextField.Root name="sector" placeholder="E.g., Education" required />
-        </label>
-      </Flex>
-      <Flex gap="3" mt="4" justify="end">
-        <Button
-          variant="soft"
-          color="gray"
-          onClick={e => {
-            e.preventDefault()
-            setOpenState(false)
-          }}
-        >
-          Cancel
-        </Button>
-        <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
-      </Flex>
-    </form>
+    <FormInModal action={createCompany} close={() => setOpenState(false)}>
+      <InfoCallout message="You can add company users & other details after this step." />
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Company name*
+        </Text>
+        <TextField.Root name="name" placeholder="E.g., Imperial" required />
+      </label>
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Website*
+        </Text>
+        <TextField.Root name="website" placeholder="E.g., https://imperial.ic.ac.uk" required type="url" />
+      </label>
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Sector*
+        </Text>
+        <TextField.Root name="sector" placeholder="E.g., Education" required />
+      </label>
+    </FormInModal>
   )
 }
 
