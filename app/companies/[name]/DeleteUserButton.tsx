@@ -2,6 +2,7 @@
 
 import { ErrorCallout } from "@/components/Callouts"
 import { DeleteButton } from "@/components/DeleteButton"
+import { DangerModalContent } from "@/components/modals/DangerModalContent"
 import { deleteUser } from "@/lib/crud/users"
 
 import { User } from "@prisma/client"
@@ -43,7 +44,7 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
           }
         />
       </Dialog.Trigger>
-      <Dialog.Content className="deleteDialog">
+      <DangerModalContent>
         <Dialog.Title>Are you sure?</Dialog.Title>
         <Flex gap="4" direction="column">
           {serverMessage && <ErrorCallout message={serverMessage} />}
@@ -67,7 +68,7 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
             {isPending ? <Spinner /> : serverMessage ? "Retry" : "Delete User"}
           </Button>
         </Flex>
-      </Dialog.Content>
+      </DangerModalContent>
     </Dialog.Root>
   )
 }

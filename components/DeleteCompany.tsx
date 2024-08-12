@@ -7,6 +7,7 @@ import { SevereWarningCallout } from "./Callouts"
 import { DeleteButton } from "./DeleteButton"
 import styles from "./deletecompany.module.scss"
 import { FormInModal } from "./forms/FormInModal"
+import { DangerModalContent } from "./modals/DangerModalContent"
 
 import { Button, Dialog, Spinner, Text, TextField } from "@radix-ui/themes"
 import { useState } from "react"
@@ -52,14 +53,14 @@ export const DeleteCompany = ({ name, id }: { name: string; id: number }) => {
       <Dialog.Trigger>
         <DeleteButton text="Delete Company" size="3" className={styles.dangerButton} />
       </Dialog.Trigger>
-      <Dialog.Content className="deleteDialog">
+      <DangerModalContent>
         <Dialog.Title>Delete company, {name}?</Dialog.Title>
         <Dialog.Description size="2" mb="4">
           Are you sure you want to delete this company?
         </Dialog.Description>
 
         <DeleteCompanyForm setOpenState={setOpenState} name={name} id={id} />
-      </Dialog.Content>
+      </DangerModalContent>
     </Dialog.Root>
   )
 }
