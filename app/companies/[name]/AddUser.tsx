@@ -7,10 +7,9 @@ import { createCompanyUser } from "@/lib/crud/companies"
 import styles from "./add-user.module.scss"
 
 import { CompanyProfile } from "@prisma/client"
-import { CheckCircledIcon, CopyIcon, CrossCircledIcon, InfoCircledIcon, PlusIcon } from "@radix-ui/react-icons"
-import { Button, Callout, Dialog, Flex, IconButton, Spinner, Strong, Text, TextField, Tooltip } from "@radix-ui/themes"
-import React, { useCallback, useEffect, useState } from "react"
-import { useFormState } from "react-dom"
+import { CopyIcon, PlusIcon } from "@radix-ui/react-icons"
+import { Button, Dialog, IconButton, Spinner, Strong, Text, TextField, Tooltip } from "@radix-ui/themes"
+import React, { useCallback, useState } from "react"
 
 const UserSignUpSuccess: React.FC<{ signInURL?: string }> = ({ signInURL }) => {
   const [toolTipOpen, setToolTipOpen] = useState(false)
@@ -57,53 +56,39 @@ const UserSignUpSuccess: React.FC<{ signInURL?: string }> = ({ signInURL }) => {
 }
 
 const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) => void; companyId: number }) => {
-  const [formState, formAction] = useFormState(createCompanyUser, { message: "" })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  useEffect(() => {
-    setIsSubmitting(false)
-  }, [formState, setOpenState])
-
-  const clientSideSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true)
-  }, [])
-
   const [formReturn, setFormReturn] = useState<Awaited<ReturnType<typeof createCompanyUser>> | undefined>(undefined)
 
   return (
-    <>
-      <FormInModal
-        action={createCompanyUser}
-        onSuccess={formState => {
-          setFormReturn(formState)
-        }}
-        close={() => setOpenState(false)}
-        submitButton={(formState, isSubmitting) =>
-          formState?.status === "success" ? (
-            <Button onClick={() => setOpenState(false)}>Close</Button>
-          ) : (
-            <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
-          )
-        }
-      >
-        {formReturn ? (
-          <UserSignUpSuccess signInURL={formReturn.signInURL} />
+    <FormInModal
+      action={createCompanyUser}
+      onSuccess={formState => {
+        setFormReturn(formState)
+      }}
+      close={() => setOpenState(false)}
+      submitButton={(formState, isSubmitting) =>
+        formState?.status === "success" ? (
+          <Button onClick={() => setOpenState(false)}>Close</Button>
         ) : (
-          <>
-            <InfoCallout message="We will give you a link for them to sign in with." />
-            {formState?.status === "error" && formState?.message && <ErrorCallout message={formState.message} />}
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                User email
-              </Text>
-              <TextField.Root name="email" placeholder="E.g., user@company.com" required type="email" />
-            </label>
-            <input name="companyId" value={companyId} required type="hidden" readOnly />
-            <input name="baseUrl" value={window.location.origin} required type="hidden" readOnly />
-          </>
-        )}
-      </FormInModal>
-    </>
+          <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
+        )
+      }
+    >
+      {formReturn ? (
+        <UserSignUpSuccess signInURL={formReturn.signInURL} />
+      ) : (
+        <>
+          <InfoCallout message="We will give you a link for them to sign in with." />
+          <label>
+            <Text as="div" size="2" mb="1" weight="bold">
+              User email
+            </Text>
+            <TextField.Root name="email" placeholder="E.g., user@company.com" required type="email" />
+          </label>
+          <input name="companyId" value={companyId} required type="hidden" readOnly />
+          <input name="baseUrl" value={window.location.origin} required type="hidden" readOnly />
+        </>
+      )}
+    </FormInModal>
   )
 }
 
