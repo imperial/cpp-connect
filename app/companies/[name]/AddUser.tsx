@@ -1,5 +1,6 @@
 "use client"
 
+import { ErrorCallout, InfoCallout, SuccessCallout } from "@/components/Callouts"
 import { createCompanyUser } from "@/lib/crud/companies"
 
 import styles from "./add-user.module.scss"
@@ -31,19 +32,9 @@ const UserSignUpSuccess: React.FC<{ signInURL?: string }> = ({ signInURL }) => {
   return (
     <>
       {signInURL ? (
-        <Callout.Root color="green">
-          <Callout.Icon>
-            <CheckCircledIcon />
-          </Callout.Icon>
-          <Callout.Text>User successfully created! Copy and send them their sign-in link below.</Callout.Text>
-        </Callout.Root>
+        <SuccessCallout message="User successfully created! Copy and send them their sign-in link below." />
       ) : (
-        <Callout.Root color="red">
-          <Callout.Icon>
-            <CrossCircledIcon />
-          </Callout.Icon>
-          <Callout.Text>Server did not generate a sign-in link. Please try again later.</Callout.Text>
-        </Callout.Root>
+        <ErrorCallout message="Server did not generate a sign-in link. Please try again later." />
       )}
 
       {signInURL && (
@@ -83,20 +74,8 @@ const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) =
           <UserSignUpSuccess signInURL={formState.signInURL} />
         ) : (
           <>
-            <Callout.Root>
-              <Callout.Icon>
-                <InfoCircledIcon />
-              </Callout.Icon>
-              <Callout.Text>We will give you a link for them to sign in with.</Callout.Text>
-            </Callout.Root>
-            {formState?.status === "error" && formState?.message && (
-              <Callout.Root color="red">
-                <Callout.Icon>
-                  <CrossCircledIcon />
-                </Callout.Icon>
-                <Callout.Text>{formState.message}</Callout.Text>
-              </Callout.Root>
-            )}
+            <InfoCallout message="We will give you a link for them to sign in with." />
+            {formState?.status === "error" && formState?.message && <ErrorCallout message={formState.message} />}
             <label>
               <Text as="div" size="2" mb="1" weight="bold">
                 User email

@@ -2,6 +2,8 @@
 
 import { FormPassBackState, updateCompany } from "@/lib/crud/companies"
 
+import { ErrorCallout } from "./Callouts"
+
 import { CompanyProfile } from "@prisma/client"
 import { CrossCircledIcon, ExclamationTriangleIcon, Pencil1Icon } from "@radix-ui/react-icons"
 import { Button, Callout, Dialog, Flex, IconButton, Spinner, Text, TextField } from "@radix-ui/themes"
@@ -34,14 +36,7 @@ const EditCompanyForm = ({
   return (
     <form onSubmit={clientSideSubmit} action={formAction}>
       <Flex direction="column" gap="3">
-        {formState?.status === "error" && formState?.message && (
-          <Callout.Root color="red">
-            <Callout.Icon>
-              <CrossCircledIcon />
-            </Callout.Icon>
-            <Callout.Text>{formState.message}</Callout.Text>
-          </Callout.Root>
-        )}
+        {formState?.status === "error" && formState?.message && <ErrorCallout message={formState.message} />}
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
             Company Name*

@@ -3,6 +3,8 @@
 import { signInWithMagicLink } from "@/lib/authActions"
 import { decodeSignInToken } from "@/lib/util/signInTokens"
 
+import { ErrorCallout } from "./Callouts"
+
 import { CrossCircledIcon } from "@radix-ui/react-icons"
 import { Callout } from "@radix-ui/themes"
 import { signIn, signOut, useSession } from "next-auth/react"
@@ -38,14 +40,7 @@ const Auth = () => {
         />
         <button type="submit">Sign In with magic link</button>
       </form>
-      {formState?.status === "error" && formState?.message && (
-        <Callout.Root color="red">
-          <Callout.Icon>
-            <CrossCircledIcon />
-          </Callout.Icon>
-          <Callout.Text>{formState.message}</Callout.Text>
-        </Callout.Root>
-      )}
+      {formState?.status === "error" && formState?.message && <ErrorCallout message={formState.message} />}
     </>
   )
 }
