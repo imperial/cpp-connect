@@ -1,6 +1,8 @@
 "use client"
 
 import { ErrorCallout } from "@/components/Callouts"
+import { DeleteButton } from "@/components/buttons/DeleteButton"
+import { DangerModalContent } from "@/components/modals/DangerModalContent"
 import { deleteUser } from "@/lib/crud/users"
 
 import { User } from "@prisma/client"
@@ -31,8 +33,8 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
   return (
     <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
       <Dialog.Trigger>
-        <Button
-          color="red"
+        <DeleteButton
+          text="Delete"
           variant="outline"
           disabled={session?.user.id === user.id}
           title={
@@ -40,12 +42,9 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
               ? "You can't delete yourself - contact the admins for help."
               : `Delete user ${user.email}`
           }
-        >
-          <FaTrash />
-          <Text>Delete</Text>
-        </Button>
+        />
       </Dialog.Trigger>
-      <Dialog.Content className="deleteDialog">
+      <DangerModalContent>
         <Dialog.Title>Are you sure?</Dialog.Title>
         <Flex gap="4" direction="column">
           {serverMessage && <ErrorCallout message={serverMessage} />}
@@ -69,7 +68,7 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
             {isPending ? <Spinner /> : serverMessage ? "Retry" : "Delete User"}
           </Button>
         </Flex>
-      </Dialog.Content>
+      </DangerModalContent>
     </Dialog.Root>
   )
 }

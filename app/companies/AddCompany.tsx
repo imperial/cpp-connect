@@ -1,16 +1,16 @@
 "use client"
 
 import { InfoCallout } from "@/components/Callouts"
+import { PlusButton } from "@/components/buttons/PlusButton"
 import { FormInModal } from "@/components/forms/FormInModal"
+import { GenericFormModal } from "@/components/modals/GenericFormModal"
 import { createCompany } from "@/lib/crud/companies"
 
-import { PlusIcon } from "@radix-ui/react-icons"
-import { Button, Dialog, Text, TextField } from "@radix-ui/themes"
-import { useState } from "react"
+import { Text, TextField } from "@radix-ui/themes"
 
-const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }) => {
+const AddCompanyForm = ({ close }: { close: () => void }) => {
   return (
-    <FormInModal action={createCompany} close={() => setOpenState(false)}>
+    <FormInModal action={createCompany} close={close}>
       <InfoCallout message="You can add company users & other details after this step." />
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
@@ -35,24 +35,11 @@ const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }
 }
 
 export const AddCompany = () => {
-  const [openState, setOpenState] = useState(false)
-
   return (
-    <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
-      <Dialog.Trigger>
-        <Button size="3">
-          <PlusIcon />
-          <Text>Add Company</Text>
-        </Button>
-      </Dialog.Trigger>
-      <Dialog.Content maxWidth="60vw">
-        <Dialog.Title>Add new company</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
-          Add a new company profile
-        </Dialog.Description>
-
-        <AddCompanyForm setOpenState={setOpenState} />
-      </Dialog.Content>
-    </Dialog.Root>
+    <GenericFormModal title="Add new company" description="Add a new company profile" form={AddCompanyForm}>
+      <PlusButton>
+        <Text>Add Company</Text>
+      </PlusButton>
+    </GenericFormModal>
   )
 }

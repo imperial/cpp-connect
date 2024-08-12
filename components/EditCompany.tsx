@@ -4,24 +4,18 @@ import { updateCompany } from "@/lib/crud/companies"
 import { ServerSideFormHandler } from "@/lib/types"
 
 import { FormInModal } from "./forms/FormInModal"
+import { GenericFormModal } from "./modals/GenericFormModal"
 
 import { CompanyProfile } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
-import { Dialog, IconButton, Text, TextField } from "@radix-ui/themes"
-import { useState } from "react"
+import { IconButton, Text, TextField } from "@radix-ui/themes"
 
-const EditCompanyForm = ({
-  setOpenState,
-  prevCompanyProfile,
-}: {
-  setOpenState: (v: boolean) => void
-  prevCompanyProfile: CompanyProfile
-}) => {
+const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; prevCompanyProfile: CompanyProfile }) => {
   const updateCompanyWithID: ServerSideFormHandler = (prevState, formData) =>
     updateCompany(prevState, formData, prevCompanyProfile.id)
 
   return (
-    <FormInModal action={updateCompanyWithID} close={() => setOpenState(false)}>
+    <FormInModal action={updateCompanyWithID} close={close}>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Company Name*
@@ -96,19 +90,15 @@ const EditCompanyForm = ({
 }
 
 export const EditCompany = ({ prevCompanyProfile }: { prevCompanyProfile: CompanyProfile }) => {
-  const [openState, setOpenState] = useState(false)
+  const formRenderer = ({ close }: { close: () => void }) => (
+    <EditCompanyForm close={close} prevCompanyProfile={prevCompanyProfile} />
+  )
 
   return (
-    <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={true}>
-      <Dialog.Trigger>
-        <IconButton size="3" mt="3">
-          <Pencil1Icon />
-        </IconButton>
-      </Dialog.Trigger>
-      <Dialog.Content maxWidth="60vw">
-        <Dialog.Title>Edit company</Dialog.Title>
-        <EditCompanyForm setOpenState={setOpenState} prevCompanyProfile={prevCompanyProfile} />
-      </Dialog.Content>
-    </Dialog.Root>
+    <GenericFormModal title="Edit company" form={formRenderer}>
+      <IconButton size="3" mt="3">
+        <Pencil1Icon />
+      </IconButton>
+    </GenericFormModal>
   )
 }

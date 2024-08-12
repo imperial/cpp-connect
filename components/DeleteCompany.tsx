@@ -4,27 +4,28 @@ import { deleteCompany } from "@/lib/crud/companies"
 import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
+import { DeleteButton } from "./buttons/DeleteButton"
 import styles from "./deletecompany.module.scss"
 import { FormInModal } from "./forms/FormInModal"
+import { GenericFormModal } from "./modals/GenericFormModal"
 
-import { Button, Dialog, Spinner, Text, TextField } from "@radix-ui/themes"
-import { useState } from "react"
-import { FaTrash } from "react-icons/fa"
+import { Button, Spinner, Text, TextField } from "@radix-ui/themes"
+import { useCallback } from "react"
 
 interface DeleteCompanyFormProps {
-  setOpenState: (v: boolean) => void
+  close: () => void
   name: string
   id: number
 }
 
-const DeleteCompanyForm = ({ setOpenState, name, id }: DeleteCompanyFormProps) => {
+const DeleteCompanyForm = ({ close, name, id }: DeleteCompanyFormProps) => {
   const deleteCompanyWithName = async (prevState: FormPassBackState, formData: FormData) =>
     deleteCompany(prevState, formData, name, id)
 
   return (
     <FormInModal
       action={deleteCompanyWithName}
-      close={() => setOpenState(false)}
+      close={close}
       submitButton={(_, isSubmitting) => {
         return (
           <Button type="submit" color="red" className={styles.dangerButton}>
@@ -45,24 +46,18 @@ const DeleteCompanyForm = ({ setOpenState, name, id }: DeleteCompanyFormProps) =
 }
 
 export const DeleteCompany = ({ name, id }: { name: string; id: number }) => {
-  const [openState, setOpenState] = useState(false)
+  const formRenderer = useCallback(
+    ({ close }: { close: () => void }) => <DeleteCompanyForm close={close} name={name} id={id} />,
+    [name, id],
+  )
 
   return (
-    <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
-      <Dialog.Trigger>
-        <Button size="3" color="red" className={styles.dangerButton}>
-          <FaTrash color="white" />
-          <Text>Delete Company</Text>
-        </Button>
-      </Dialog.Trigger>
-      <Dialog.Content className="deleteDialog">
-        <Dialog.Title>Delete company, {name}?</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
-          Are you sure you want to delete this company?
-        </Dialog.Description>
-
-        <DeleteCompanyForm setOpenState={setOpenState} name={name} id={id} />
-      </Dialog.Content>
-    </Dialog.Root>
+    <GenericFormModal
+      title={`Delete company, ${name}?`}
+      description="Are you sure you want to delete this company?"
+      form={formRenderer}
+    >
+      <DeleteButton text="Delete Company" size="3" className={styles.dangerButton} />
+    </GenericFormModal>
   )
 }

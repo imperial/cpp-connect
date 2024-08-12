@@ -1,14 +1,16 @@
 "use client"
 
 import { ErrorCallout, InfoCallout, SuccessCallout } from "@/components/Callouts"
+import { PlusButton } from "@/components/buttons/PlusButton"
 import { FormInModal } from "@/components/forms/FormInModal"
+import { GenericFormModal } from "@/components/modals/GenericFormModal"
 import { createCompanyUser } from "@/lib/crud/companies"
 
 import styles from "./add-user.module.scss"
 
 import { CompanyProfile } from "@prisma/client"
-import { CopyIcon, PlusIcon } from "@radix-ui/react-icons"
-import { Button, Dialog, IconButton, Spinner, Strong, Text, TextField, Tooltip } from "@radix-ui/themes"
+import { CopyIcon } from "@radix-ui/react-icons"
+import { Button, IconButton, Spinner, Strong, Text, TextField, Tooltip } from "@radix-ui/themes"
 import React, { useCallback, useState } from "react"
 
 const UserSignUpSuccess: React.FC<{ signInURL?: string }> = ({ signInURL }) => {
@@ -55,7 +57,7 @@ const UserSignUpSuccess: React.FC<{ signInURL?: string }> = ({ signInURL }) => {
   )
 }
 
-const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) => void; companyId: number }) => {
+const AddUserForm = ({ close, companyId }: { close: () => void; companyId: number }) => {
   const [formReturn, setFormReturn] = useState<Awaited<ReturnType<typeof createCompanyUser>> | undefined>(undefined)
 
   return (
@@ -64,10 +66,10 @@ const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) =
       onSuccess={formState => {
         setFormReturn(formState)
       }}
-      close={() => setOpenState(false)}
+      close={close}
       submitButton={(formState, isSubmitting) =>
         formState?.status === "success" ? (
-          <Button onClick={() => setOpenState(false)}>Close</Button>
+          <Button onClick={close}>Close</Button>
         ) : (
           <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
         )
@@ -93,24 +95,16 @@ const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) =
 }
 
 export const AddUser = ({ company }: { company: CompanyProfile }) => {
-  const [openState, setOpenState] = useState(false)
+  const formRenderer = useCallback(
+    ({ close }: { close: () => void }) => <AddUserForm close={close} companyId={company.id} />,
+    [company.id],
+  )
 
   return (
-    <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
-      <Dialog.Trigger>
-        <Button size="3">
-          <PlusIcon />
-          <Text>Add User</Text>
-        </Button>
-      </Dialog.Trigger>
-      <Dialog.Content>
-        <Dialog.Title>Add new user</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
-          Add a new user to {company.name}
-        </Dialog.Description>
-
-        <AddUserForm setOpenState={setOpenState} companyId={company.id} />
-      </Dialog.Content>
-    </Dialog.Root>
+    <GenericFormModal title="Add new user" description={`Add a new user to ${company.name}`} form={formRenderer}>
+      <PlusButton>
+        <Text>Add User</Text>
+      </PlusButton>
+    </GenericFormModal>
   )
 }
