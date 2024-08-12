@@ -3,13 +3,12 @@
 import { deleteCompany } from "@/lib/crud/companies"
 import { FormPassBackState } from "@/lib/types"
 
-import { ErrorCallout, SevereWarningCallout, WarningCallout } from "./Callouts"
+import { SevereWarningCallout } from "./Callouts"
 import styles from "./deletecompany.module.scss"
+import { FormInModal } from "./forms/FormInModal"
 
-import { CrossCircledIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons"
-import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
-import React, { useCallback, useEffect, useState } from "react"
-import { useFormState } from "react-dom"
+import { Button, Dialog, Spinner, Text, TextField } from "@radix-ui/themes"
+import { useState } from "react"
 import { FaTrash } from "react-icons/fa"
 
 interface DeleteCompanyFormProps {
@@ -21,48 +20,27 @@ interface DeleteCompanyFormProps {
 const DeleteCompanyForm = ({ setOpenState, name, id }: DeleteCompanyFormProps) => {
   const deleteCompanyWithName = async (prevState: FormPassBackState, formData: FormData) =>
     deleteCompany(prevState, formData, name, id)
-  const [formState, formAction] = useFormState(deleteCompanyWithName, { message: "" })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  useEffect(() => {
-    if (formState?.status === "success") {
-      setOpenState(false)
-    }
-    setIsSubmitting(false)
-  }, [formState, setOpenState])
-
-  const clientSideSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true)
-  }, [])
 
   return (
-    <form onSubmit={clientSideSubmit} action={formAction}>
-      <Flex direction="column" gap="3">
-        <SevereWarningCallout message="This action is irreversible." />
-        {formState?.status === "error" && formState?.message && <ErrorCallout message={formState.message} />}
-        <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            Enter the company name to confirm ({name}):
-          </Text>
-          <TextField.Root name="name" placeholder={name} required />
-        </label>
-      </Flex>
-      <Flex gap="3" mt="4" justify="end">
-        <Button
-          variant="soft"
-          color="gray"
-          onClick={e => {
-            e.preventDefault()
-            setOpenState(false)
-          }}
-        >
-          Cancel
-        </Button>
-        <Button type="submit" color="red" className={styles.dangerButton}>
-          {isSubmitting ? <Spinner /> : "Delete"}
-        </Button>
-      </Flex>
-    </form>
+    <FormInModal
+      action={deleteCompanyWithName}
+      close={() => setOpenState(false)}
+      submitButton={(_, isSubmitting) => {
+        return (
+          <Button type="submit" color="red" className={styles.dangerButton}>
+            {isSubmitting ? <Spinner /> : "Delete"}
+          </Button>
+        )
+      }}
+    >
+      <SevereWarningCallout message="This action is irreversible." />
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Enter the company name to confirm ({name}):
+        </Text>
+        <TextField.Root name="name" placeholder={name} required />
+      </label>
+    </FormInModal>
   )
 }
 
