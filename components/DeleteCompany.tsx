@@ -3,6 +3,7 @@
 import { deleteCompany } from "@/lib/crud/companies"
 import { FormPassBackState } from "@/lib/types"
 
+import { ErrorCallout, SevereWarningCallout, WarningCallout } from "./Callouts"
 import styles from "./deletecompany.module.scss"
 
 import { CrossCircledIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons"
@@ -37,20 +38,8 @@ const DeleteCompanyForm = ({ setOpenState, name, id }: DeleteCompanyFormProps) =
   return (
     <form onSubmit={clientSideSubmit} action={formAction}>
       <Flex direction="column" gap="3">
-        <Callout.Root color="red">
-          <Callout.Icon>
-            <ExclamationTriangleIcon />
-          </Callout.Icon>
-          <Callout.Text>This action is irreversible.</Callout.Text>
-        </Callout.Root>
-        {formState?.status === "error" && formState?.message && (
-          <Callout.Root color="red">
-            <Callout.Icon>
-              <CrossCircledIcon />
-            </Callout.Icon>
-            <Callout.Text>{formState.message}</Callout.Text>
-          </Callout.Root>
-        )}
+        <SevereWarningCallout message="This action is irreversible." />
+        {formState?.status === "error" && formState?.message && <ErrorCallout message={formState.message} />}
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
             Enter the company name to confirm ({name}):

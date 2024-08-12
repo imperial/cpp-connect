@@ -1,5 +1,6 @@
 "use client"
 
+import { ErrorCallout } from "@/components/Callouts"
 import { deleteUser } from "@/lib/crud/users"
 
 import { User } from "@prisma/client"
@@ -47,14 +48,7 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
       <Dialog.Content className="deleteDialog">
         <Dialog.Title>Are you sure?</Dialog.Title>
         <Flex gap="4" direction="column">
-          {serverMessage && (
-            <Callout.Root color="red">
-              <Callout.Icon>
-                <CrossCircledIcon />
-              </Callout.Icon>
-              <Callout.Text>{serverMessage}</Callout.Text>
-            </Callout.Root>
-          )}
+          {serverMessage && <ErrorCallout message={serverMessage} />}
           <Dialog.Description size="2" mb="4">
             This action can not be undone - delete user with email <strong>{user.email}</strong>?
           </Dialog.Description>
