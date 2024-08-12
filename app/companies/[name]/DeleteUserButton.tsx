@@ -1,7 +1,7 @@
 "use client"
 
 import { ErrorCallout } from "@/components/Callouts"
-import { DeleteButton } from "@/components/DeleteButton"
+import { DeleteButton } from "@/components/buttons/DeleteButton"
 import { DangerModalContent } from "@/components/modals/DangerModalContent"
 import { deleteUser } from "@/lib/crud/users"
 

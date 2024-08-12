@@ -4,7 +4,7 @@ import { deleteCompany } from "@/lib/crud/companies"
 import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
-import { DeleteButton } from "./DeleteButton"
+import { DeleteButton } from "./buttons/DeleteButton"
 import styles from "./deletecompany.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 import { DangerModalContent } from "./modals/DangerModalContent"
