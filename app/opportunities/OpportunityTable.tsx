@@ -3,8 +3,10 @@
 import TanstackTable from "@/components/TanstackTable"
 
 import type { CompanyProfile, Opportunity } from "@prisma/client"
+import { Link as RadixLink } from "@radix-ui/themes"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { formatDistanceToNowStrict } from "date-fns"
+import Link from "next/link"
 
 type OpportunityRow = {
   company: CompanyProfile
@@ -25,13 +27,21 @@ const OpportunityTable = ({
 }) => {
   const columnDefsMap: Partial<Record<ColumnName, ColumnDef<OpportunityRow, any>>> = {
     "company.name": {
-      cell: info => info.getValue(),
+      cell: info => (
+        <RadixLink asChild>
+          <Link href={`/companies/${info.getValue()}`}>{info.getValue()}</Link>
+        </RadixLink>
+      ),
       header: "Company",
       id: "company.name",
       sortingFn: "alphanumeric",
     },
     position: {
-      cell: info => info.getValue(),
+      cell: info => (
+        <RadixLink asChild>
+          <Link href={`/opportunities/${info.row.original.id}`}>{info.getValue()}</Link>
+        </RadixLink>
+      ),
       header: "Position",
       sortingFn: "text",
       id: "position",

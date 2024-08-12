@@ -3,18 +3,24 @@
 import TanstackTable from "@/components/TanstackTable"
 
 import { StudentProfile, User } from "@prisma/client"
+import { Link as RadixLink } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
 import { formatDistanceToNowStrict } from "date-fns"
+import Link from "next/link"
 
 type StudentRow = {
   user: Pick<User, "name" | "updatedAt">
-} & Pick<StudentProfile, "graduationDate" | "course">
+} & Pick<StudentProfile, "graduationDate" | "course" | "studentShortcode">
 
 const columnHelper = createColumnHelper<StudentRow>()
 
 const columns = [
   columnHelper.accessor("user.name", {
-    cell: info => info.getValue(),
+    cell: info => (
+      <RadixLink asChild>
+        <Link href={`/students/${info.row.original.studentShortcode}`}>{info.getValue()}</Link>
+      </RadixLink>
+    ),
     header: "Name",
     id: "name",
     sortingFn: "text",

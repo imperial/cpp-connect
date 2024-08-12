@@ -5,6 +5,7 @@ import TanstackTable from "@/components/TanstackTable"
 import styles from "./table.module.scss"
 
 import type { CompanyProfile } from "@prisma/client"
+import { Link as RadixLink } from "@radix-ui/themes"
 import { Box } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
 import Image from "next/image"
@@ -24,7 +25,11 @@ const columns = [
     header: "",
   }),
   columnHelper.accessor("name", {
-    cell: info => info.getValue(),
+    cell: info => (
+      <RadixLink asChild>
+        <Link href={`/companies/${info.getValue()}`}>{info.getValue()}</Link>
+      </RadixLink>
+    ),
     header: "Company",
     id: "name",
     sortingFn: "text",
@@ -33,13 +38,6 @@ const columns = [
     cell: info => info.getValue(),
     header: "Sector",
     id: "sector",
-    sortingFn: "text",
-  }),
-  columnHelper.accessor("website", {
-    cell: info => <Link href={info.getValue()}>{info.getValue()}</Link>,
-    header: "Website",
-    id: "website",
-    enableColumnFilter: false,
     sortingFn: "text",
   }),
   columnHelper.accessor("size", {

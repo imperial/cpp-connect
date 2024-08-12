@@ -3,8 +3,10 @@
 import TanstackTable from "@/components/TanstackTable"
 
 import type { CompanyProfile, Event } from "@prisma/client"
+import { Link as RadixLink } from "@radix-ui/themes"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { format } from "date-fns"
+import Link from "next/link"
 
 type EventRow = {
   company: CompanyProfile
@@ -25,13 +27,21 @@ const EventTable = ({
 }) => {
   const columnDefsMap: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
     "company.name": {
-      cell: info => info.getValue(),
+      cell: info => (
+        <RadixLink asChild>
+          <Link href={`/companies/${info.row.original.company.name}`}>{info.getValue()}</Link>
+        </RadixLink>
+      ),
       header: "Company",
       id: "company.name",
       sortingFn: "alphanumeric",
     },
     title: {
-      cell: info => info.getValue(),
+      cell: info => (
+        <RadixLink asChild>
+          <Link href={`/events/${info.row.original.id}`}>{info.getValue()}</Link>
+        </RadixLink>
+      ),
       header: "Title",
       sortingFn: "alphanumeric",
       id: "title",
