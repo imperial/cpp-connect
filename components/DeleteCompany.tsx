@@ -22,27 +22,25 @@ const DeleteCompanyForm = ({ setOpenState, name, id }: DeleteCompanyFormProps) =
     deleteCompany(prevState, formData, name, id)
 
   return (
-    <>
-      <FormInModal
-        action={deleteCompanyWithName}
-        close={() => setOpenState(false)}
-        submitButton={(_, isSubmitting) => {
-          return (
-            <Button type="submit" color="red" className={styles.dangerButton}>
-              {isSubmitting ? <Spinner /> : "Delete"}
-            </Button>
-          )
-        }}
-      >
-        <SevereWarningCallout message="This action is irreversible." />
-        <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            Enter the company name to confirm ({name}):
-          </Text>
-          <TextField.Root name="name" placeholder={name} required />
-        </label>
-      </FormInModal>
-    </>
+    <FormInModal
+      action={deleteCompanyWithName}
+      close={() => setOpenState(false)}
+      submitButton={(_, isSubmitting) => {
+        return (
+          <Button type="submit" color="red" className={styles.dangerButton}>
+            {isSubmitting ? <Spinner /> : "Delete"}
+          </Button>
+        )
+      }}
+    >
+      <SevereWarningCallout message="This action is irreversible." />
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Enter the company name to confirm ({name}):
+        </Text>
+        <TextField.Root name="name" placeholder={name} required />
+      </label>
+    </FormInModal>
   )
 }
 
