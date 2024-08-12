@@ -1,6 +1,6 @@
-import { FormPassBackState, ServerSideFormHandler } from "@/lib/types"
+"use client"
 
-import { FormInModalProps } from "./FormInModal"
+import { FormPassBackState, ServerSideFormHandler } from "@/lib/types"
 
 import { ErrorCallout } from "../Callouts"
 import { Button, Flex, Spinner } from "@radix-ui/themes"

@@ -9,8 +9,8 @@ import { createCompanyUser } from "@/lib/crud/companies"
 import styles from "./add-user.module.scss"
 
 import { CompanyProfile } from "@prisma/client"
-import { CopyIcon, PlusIcon } from "@radix-ui/react-icons"
-import { Button, Dialog, IconButton, Spinner, Strong, Text, TextField, Tooltip } from "@radix-ui/themes"
+import { CopyIcon } from "@radix-ui/react-icons"
+import { Button, IconButton, Spinner, Strong, Text, TextField, Tooltip } from "@radix-ui/themes"
 import React, { useCallback, useState } from "react"
 
 const UserSignUpSuccess: React.FC<{ signInURL?: string }> = ({ signInURL }) => {

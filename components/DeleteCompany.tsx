@@ -7,11 +7,10 @@ import { SevereWarningCallout } from "./Callouts"
 import { DeleteButton } from "./buttons/DeleteButton"
 import styles from "./deletecompany.module.scss"
 import { FormInModal } from "./forms/FormInModal"
-import { DangerModalContent } from "./modals/DangerModalContent"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
-import { Button, Dialog, Spinner, Text, TextField } from "@radix-ui/themes"
-import { useCallback, useState } from "react"
+import { Button, Spinner, Text, TextField } from "@radix-ui/themes"
+import { useCallback } from "react"
 
 interface DeleteCompanyFormProps {
   close: () => void

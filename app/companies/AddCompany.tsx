@@ -6,9 +6,7 @@ import { FormInModal } from "@/components/forms/FormInModal"
 import { GenericFormModal } from "@/components/modals/GenericFormModal"
 import { createCompany } from "@/lib/crud/companies"
 
-import { PlusIcon } from "@radix-ui/react-icons"
-import { Button, Dialog, Text, TextField } from "@radix-ui/themes"
-import { useState } from "react"
+import { Text, TextField } from "@radix-ui/themes"
 
 const AddCompanyForm = ({ close }: { close: () => void }) => {
   return (
