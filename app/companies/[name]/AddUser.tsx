@@ -1,7 +1,7 @@
 "use client"
 
 import { ErrorCallout, InfoCallout, SuccessCallout } from "@/components/Callouts"
-import { FormInModal } from "@/components/forms/FormWithAction"
+import { FormInModal } from "@/components/forms/FormInModal"
 import { createCompanyUser } from "@/lib/crud/companies"
 
 import styles from "./add-user.module.scss"

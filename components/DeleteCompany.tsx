@@ -5,7 +5,7 @@ import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
 import styles from "./deletecompany.module.scss"
-import { FormInModal } from "./forms/FormWithAction"
+import { FormInModal } from "./forms/FormInModal"
 
 import { Button, Dialog, Spinner, Text, TextField } from "@radix-ui/themes"
 import { useState } from "react"

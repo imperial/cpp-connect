@@ -1,7 +1,7 @@
 "use client"
 
 import { InfoCallout } from "@/components/Callouts"
-import { FormInModal } from "@/components/forms/FormWithAction"
+import { FormInModal } from "@/components/forms/FormInModal"
 import { createCompany } from "@/lib/crud/companies"
 
 import { PlusIcon } from "@radix-ui/react-icons"

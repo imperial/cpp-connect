@@ -4,8 +4,9 @@ import { ErrorCallout } from "../Callouts"
 import { Button, Flex, Spinner } from "@radix-ui/themes"
 import React, { useCallback, useTransition } from "react"
 import { useFormState } from "react-dom"
+import { FormInModalProps } from "./FormInModal"
 
-interface FormWithActionProps {
+export interface FormWithActionProps {
   action: ServerSideFormHandler
   children: React.ReactNode
   defaultState?: FormPassBackState
@@ -54,32 +55,5 @@ export const FormWithAction: React.FC<FormWithActionProps> = ({
         {submitButton?.(formState, isPending) ?? <Button type="submit">{isPending ? <Spinner /> : "Save"}</Button>}
       </Flex>
     </form>
-  )
-}
-
-interface FormInModalProps extends FormWithActionProps {
-  close: () => void
-}
-
-export const FormInModal: React.FC<FormInModalProps> = props => {
-  const AdditionalButtons = (
-    <>
-      {props.actionsSection}
-      <Button
-        variant="soft"
-        color="gray"
-        onClick={e => {
-          e.preventDefault()
-          props.close?.()
-        }}
-      >
-        Cancel
-      </Button>
-    </>
-  )
-  return (
-    <FormWithAction onSuccess={() => close()} {...props} actionsSection={AdditionalButtons}>
-      {props.children}
-    </FormWithAction>
   )
 }

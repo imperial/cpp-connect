@@ -3,7 +3,7 @@
 import { updateCompany } from "@/lib/crud/companies"
 import { ServerSideFormHandler } from "@/lib/types"
 
-import { FormInModal } from "./forms/FormWithAction"
+import { FormInModal } from "./forms/FormInModal"
 
 import { CompanyProfile } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
