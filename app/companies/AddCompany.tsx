@@ -1,6 +1,7 @@
 "use client"
 
 import { createCompany } from "@/lib/crud/companies"
+import { FormPassBackState } from "@/lib/types"
 
 import { CrossCircledIcon, ExclamationTriangleIcon, PlusIcon } from "@radix-ui/react-icons"
 import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
@@ -8,7 +9,7 @@ import React, { use, useCallback, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
 
 const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }) => {
-  const [formState, formAction] = useFormState(createCompany, { message: "" })
+  const [formState, formAction] = useFormState(createCompany, { message: "", status: "error" } as FormPassBackState)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {

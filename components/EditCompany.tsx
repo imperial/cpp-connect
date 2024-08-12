@@ -1,6 +1,7 @@
 "use client"
 
-import { FormPassBackState, updateCompany } from "@/lib/crud/companies"
+import { updateCompany } from "@/lib/crud/companies"
+import { FormPassBackState } from "@/lib/types"
 
 import { CompanyProfile } from "@prisma/client"
 import { CrossCircledIcon, ExclamationTriangleIcon, Pencil1Icon } from "@radix-ui/react-icons"
@@ -17,7 +18,10 @@ const EditCompanyForm = ({
 }) => {
   const updateCompanyWithID = (prevState: FormPassBackState, formData: FormData) =>
     updateCompany(prevState, formData, prevCompanyProfile.id)
-  const [formState, formAction] = useFormState(updateCompanyWithID, { message: "" })
+  const [formState, formAction] = useFormState(updateCompanyWithID, {
+    message: "",
+    status: "error",
+  } as FormPassBackState)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {

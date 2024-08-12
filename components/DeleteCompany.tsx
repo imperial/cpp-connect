@@ -20,7 +20,10 @@ interface DeleteCompanyFormProps {
 const DeleteCompanyForm = ({ setOpenState, name, id }: DeleteCompanyFormProps) => {
   const deleteCompanyWithName = async (prevState: FormPassBackState, formData: FormData) =>
     deleteCompany(prevState, formData, name, id)
-  const [formState, formAction] = useFormState(deleteCompanyWithName, { message: "" })
+  const [formState, formAction] = useFormState(deleteCompanyWithName, {
+    message: "",
+    status: "error",
+  } as FormPassBackState)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 "use client"
 
 import { createCompanyUser } from "@/lib/crud/companies"
+import { FormPassBackState } from "@/lib/types"
 
 import styles from "./add-user.module.scss"
 
@@ -65,7 +66,10 @@ const UserSignUpSuccess: React.FC<{ signInURL?: string }> = ({ signInURL }) => {
 }
 
 const AddUserForm = ({ setOpenState, companyId }: { setOpenState: (v: boolean) => void; companyId: number }) => {
-  const [formState, formAction] = useFormState(createCompanyUser, { message: "" })
+  const [formState, formAction] = useFormState(createCompanyUser, {
+    message: "",
+    status: "error",
+  } as FormPassBackState & { signInURL?: string })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
