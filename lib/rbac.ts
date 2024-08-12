@@ -1,6 +1,9 @@
 /**
  * RBAC helper functions
  */
+import { auth } from "@/auth"
+import { FormPassBackState, ServerActionDecorator, ServerSideFormHandler } from "@/lib/types"
+
 import { Role, User } from "@prisma/client"
 
 const roleIs = (roleToCheck: Role, role: Role | Role[]): boolean => {
@@ -33,3 +36,40 @@ export const restrictCompany = (
   }
 }
 export const restrictUser = (role: Role): boolean => roleIs(role, [Role.STUDENT, Role.ADMIN])
+
+function protectedAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = []>(
+  allowedRoles: Role[],
+): ServerActionDecorator<T, Args> {
+  function actionDecorator(action: ServerSideFormHandler<T, Args>) {
+    async function actionCaller(prevState: T, formData: FormData, ...args: Args): Promise<T> {
+      const session = await auth()
+      if (
+        typeof session?.user.role !== "undefined" &&
+        (session.user.role === Role.ADMIN || allowedRoles.includes(session.user.role))
+      ) {
+        return await action(prevState, formData, ...args)
+      }
+      return { ...prevState, message: "Operation denied - unauthorized.", status: "error" }
+    }
+    return actionCaller
+  }
+  return actionDecorator
+}
+
+export function studentOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = []>(
+  action: ServerSideFormHandler<T, Args>,
+) {
+  return protectedAction<T, Args>([Role.STUDENT])(action)
+}
+
+export function companyOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = []>(
+  action: ServerSideFormHandler<T, Args>,
+) {
+  return protectedAction<T, Args>([Role.COMPANY])(action)
+}
+
+export function adminOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = []>(
+  action: ServerSideFormHandler<T, Args>,
+) {
+  return protectedAction<T, Args>([Role.ADMIN])(action)
+}
