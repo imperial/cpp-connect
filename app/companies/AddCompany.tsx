@@ -1,10 +1,11 @@
 "use client"
 
+import { ErrorCallout, InfoCallout } from "@/components/Callouts"
 import { createCompany } from "@/lib/crud/companies"
 
-import { CrossCircledIcon, ExclamationTriangleIcon, PlusIcon } from "@radix-ui/react-icons"
-import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
-import React, { use, useCallback, useEffect, useState } from "react"
+import { PlusIcon } from "@radix-ui/react-icons"
+import { Button, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
+import React, { useCallback, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
 
 const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }) => {
@@ -25,20 +26,8 @@ const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }
   return (
     <form onSubmit={clientSideSubmit} action={formAction}>
       <Flex direction="column" gap="3">
-        <Callout.Root>
-          <Callout.Icon>
-            <ExclamationTriangleIcon />
-          </Callout.Icon>
-          <Callout.Text>You can add company users & other details after this step.</Callout.Text>
-        </Callout.Root>
-        {formState?.status === "error" && formState?.message && (
-          <Callout.Root color="red">
-            <Callout.Icon>
-              <CrossCircledIcon />
-            </Callout.Icon>
-            <Callout.Text>{formState.message}</Callout.Text>
-          </Callout.Root>
-        )}
+        <InfoCallout message="You can add company users & other details after this step." />
+        {formState?.status === "error" && formState?.message && <ErrorCallout message={formState.message} />}
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
             Company name*
