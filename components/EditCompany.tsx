@@ -1,11 +1,14 @@
 "use client"
 
-import { FormPassBackState, updateCompany } from "@/lib/crud/companies"
+import MdEditor from "@/components/MdEditor"
+import { updateCompany } from "@/lib/crud/companies"
+import { FormPassBackState } from "@/lib/types"
 
+import { MDXEditorMethods } from "@mdxeditor/editor"
 import { CompanyProfile } from "@prisma/client"
 import { CrossCircledIcon, ExclamationTriangleIcon, Pencil1Icon } from "@radix-ui/react-icons"
-import { Button, Callout, Dialog, Flex, IconButton, Spinner, Text, TextField } from "@radix-ui/themes"
-import React, { useCallback, useEffect, useState } from "react"
+import { Button, Callout, Card, Dialog, Flex, IconButton, Spinner, Text, TextField } from "@radix-ui/themes"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useFormState } from "react-dom"
 
 const EditCompanyForm = ({
@@ -19,6 +22,7 @@ const EditCompanyForm = ({
     updateCompany(prevState, formData, prevCompanyProfile.id)
   const [formState, formAction] = useFormState(updateCompanyWithID, { message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const mdxEditorRef = React.useRef<MDXEditorMethods>(null)
 
   useEffect(() => {
     if (formState?.status === "success") {
@@ -57,7 +61,9 @@ const EditCompanyForm = ({
           <Text as="div" size="2" mb="1" weight="bold">
             Summary
           </Text>
-          <TextField.Root name="summary" placeholder="lorem ipsum..." defaultValue={prevCompanyProfile.summary} />
+          <Card>
+            <MdEditor markdown={prevCompanyProfile.summary} />
+          </Card>
         </label>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
