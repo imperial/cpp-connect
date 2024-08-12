@@ -1,0 +1,13 @@
+.DropdownCard {
+  background-color: var(--color-panel-solid);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: var(--space-4);
+  margin: 0 var(--space-1) 0 var(--space-1);
+  border-radius: var(--radius-4);
+  max-width: calc(100vw - 2 * var(--space-1));
+  text-align: left;
+
+  button {
+    cursor: pointer;
+  }
+}
