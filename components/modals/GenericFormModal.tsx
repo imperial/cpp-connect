@@ -7,7 +7,7 @@ interface GenericFormModalProps {
   /** Children here should be the trigger for the modal */
   children: React.ReactNode
   title: string | React.ReactNode
-  description: string | React.ReactNode
+  description?: string | React.ReactNode
   /** A form should accept a function to close a modal so it can close the modal on submit. You should probably wrap this in a useCallback() before passing it to us. */
   form: React.FC<{ close: () => void }>
 }
@@ -23,11 +23,13 @@ export const GenericFormModal: React.FC<GenericFormModalProps> = ({ children, ti
   return (
     <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
       <Dialog.Trigger>{children}</Dialog.Trigger>
-      <Dialog.Content maxWidth="60vw">
+      <Dialog.Content>
         <Dialog.Title>{title}</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
-          {description}
-        </Dialog.Description>
+        {description && (
+          <Dialog.Description size="2" mb="4">
+            {description}
+          </Dialog.Description>
+        )}
         <Form close={close} />
       </Dialog.Content>
     </Dialog.Root>
