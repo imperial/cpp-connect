@@ -4,12 +4,12 @@ import { deleteCompany } from "@/lib/crud/companies"
 import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
+import { DeleteButton } from "./DeleteButton"
 import styles from "./deletecompany.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 
 import { Button, Dialog, Spinner, Text, TextField } from "@radix-ui/themes"
 import { useState } from "react"
-import { FaTrash } from "react-icons/fa"
 
 interface DeleteCompanyFormProps {
   setOpenState: (v: boolean) => void
@@ -50,10 +50,7 @@ export const DeleteCompany = ({ name, id }: { name: string; id: number }) => {
   return (
     <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
       <Dialog.Trigger>
-        <Button size="3" color="red" className={styles.dangerButton}>
-          <FaTrash color="white" />
-          <Text>Delete Company</Text>
-        </Button>
+        <DeleteButton text="Delete Company" size="3" className={styles.dangerButton} />
       </Dialog.Trigger>
       <Dialog.Content className="deleteDialog">
         <Dialog.Title>Delete company, {name}?</Dialog.Title>
