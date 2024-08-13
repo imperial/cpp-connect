@@ -30,8 +30,8 @@ const CompanyTable = ({
 }) => {
   const { data: session } = useSession()
 
-  const columnDefsMap: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = useMemo(
-    () => ({
+  const columnDefsMap = useMemo(() => {
+    const columnDefsMap_: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = {
       logo: {
         cell: info => (
           <Box width="4em" height="2.5em">
@@ -71,15 +71,16 @@ const CompanyTable = ({
         id: "hq",
         sortingFn: "text",
       },
-    }),
-    [],
-  )
-
-  for (const column of nonFilterable) {
-    if (columnDefsMap[column]) {
-      columnDefsMap[column]!.enableColumnFilter = false
     }
-  }
+
+    for (const column of nonFilterable) {
+      if (columnDefsMap_[column]) {
+        columnDefsMap_[column]!.enableColumnFilter = false
+      }
+    }
+
+    return columnDefsMap_
+  }, [nonFilterable])
 
   const columnDefs = useMemo(
     () =>
