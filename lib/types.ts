@@ -7,3 +7,8 @@ export type ServerSideFormHandler<T extends FormPassBackState = FormPassBackStat
   prevState: T,
   formData: FormData,
 ) => Promise<T>
+
+export enum FileCategory {
+  IMAGE,
+  DOCUMENT,
+}
