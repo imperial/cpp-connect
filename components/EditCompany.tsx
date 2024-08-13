@@ -1,6 +1,5 @@
 "use client"
 
-import MdEditor from "@/components/MdEditor"
 import { updateCompany } from "@/lib/crud/companies"
 import { FormPassBackState } from "@/lib/types"
 
@@ -8,8 +7,11 @@ import { MDXEditorMethods } from "@mdxeditor/editor"
 import { CompanyProfile } from "@prisma/client"
 import { CrossCircledIcon, ExclamationTriangleIcon, Pencil1Icon } from "@radix-ui/react-icons"
 import { Button, Callout, Card, Dialog, Flex, IconButton, Spinner, Text, TextField } from "@radix-ui/themes"
+import dynamic from "next/dynamic"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useFormState } from "react-dom"
+
+const MdEditor = dynamic(() => import("@/components/MdEditor"), { ssr: false })
 
 const EditCompanyForm = ({
   setOpenState,

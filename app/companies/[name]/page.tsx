@@ -13,6 +13,9 @@ import { notFound } from "next/navigation"
 import React from "react"
 import { BsEnvelope, BsGlobe, BsTelephone } from "react-icons/bs"
 import Markdown from "react-markdown"
+import rehypeRaw from "rehype-raw"
+import remarkBreaks from "remark-breaks"
+import remarkGfm from "remark-gfm"
 
 /**
  * Conditional rendering of company detail. Will only render if children are truthy.
@@ -136,7 +139,13 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
               <Collapsible.Root className={styles.CollapsibleRoot}>
                 <Box className={styles.summaryContainer}>
                   <CompanyDetail title="Summary">
-                    <Markdown className={styles.markdownContainer}>{companyProfile.summary}</Markdown>
+                    <Markdown
+                      className={styles.markdownContainer}
+                      remarkPlugins={[remarkGfm, remarkBreaks]}
+                      rehypePlugins={[rehypeRaw]}
+                    >
+                      {companyProfile.summary}
+                    </Markdown>
                   </CompanyDetail>
 
                   <CompanyDetail title="Website">
