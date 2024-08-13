@@ -1,17 +1,16 @@
 "use client"
 
+import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 
 import styles from "./table.module.scss"
 
 import type { CompanyProfile } from "@prisma/client"
-import { Link as RadixLink } from "@radix-ui/themes"
 import { Box } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
 import Image from "next/image"
-import Link from "next/link"
 
-type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "website" | "size" | "hq">
+type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "size" | "hq">
 
 const columnHelper = createColumnHelper<CompanyRow>()
 
@@ -25,11 +24,7 @@ const columns = [
     header: "",
   }),
   columnHelper.accessor("name", {
-    cell: info => (
-      <RadixLink asChild>
-        <Link href={`/companies/${info.getValue()}`}>{info.getValue()}</Link>
-      </RadixLink>
-    ),
+    cell: info => <Link href={`/companies/${info.getValue()}`}>{info.getValue()}</Link>,
     header: "Company",
     id: "name",
     sortingFn: "text",

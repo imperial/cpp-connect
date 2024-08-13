@@ -1,12 +1,11 @@
 "use client"
 
+import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 
 import { StudentProfile, User } from "@prisma/client"
-import { Link as RadixLink } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
 import { formatDistanceToNowStrict } from "date-fns"
-import Link from "next/link"
 
 type StudentRow = {
   user: Pick<User, "name" | "updatedAt">
@@ -16,11 +15,7 @@ const columnHelper = createColumnHelper<StudentRow>()
 
 const columns = [
   columnHelper.accessor("user.name", {
-    cell: info => (
-      <RadixLink asChild>
-        <Link href={`/students/${info.row.original.studentShortcode}`}>{info.getValue()}</Link>
-      </RadixLink>
-    ),
+    cell: info => <Link href={`/students/${info.row.original.studentShortcode}`}>{info.getValue()}</Link>,
     header: "Name",
     id: "name",
     sortingFn: "text",
