@@ -1,9 +1,10 @@
 import { auth } from "@/auth"
+import Link from "@/components/Link"
 import ProfileDropdown from "@/components/ProfileDropdown"
 
 import styles from "./navbar.module.scss"
 
-import { Flex, Link } from "@radix-ui/themes"
+import { Flex } from "@radix-ui/themes"
 import Image from "next/image"
 import React from "react"
 
