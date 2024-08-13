@@ -35,7 +35,7 @@ const columnDefsMap: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = {
   },
   // shown only if admin
   slug: {
-  cell: info => info.getValue(),
+    cell: info => info.getValue(),
     header: "Slug",
     id: "slug",
     sortingFn: "text",
@@ -59,7 +59,6 @@ const columnDefsMap: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = {
     sortingFn: "text",
   },
 }
-
 
 const CompanyTable = ({
   companies,
@@ -96,8 +95,8 @@ const CompanyTable = ({
     session?.user?.role === "ADMIN"
       ? undefined
       : {
-        slug: false,
-      }
+          slug: false,
+        }
 
   return <TanstackTable data={companies} columns={columnDefs} invisibleColumns={invisibleColumns} />
 }
