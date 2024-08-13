@@ -247,7 +247,7 @@ export const deleteCompany = async (
   // Now add the company to the database
   try {
     await prisma.companyProfile.delete({
-      where: { name },
+      where: { id },
     })
   } catch (e: any) {
     return { message: "A database error occured. Please try again later.", status: "error" }
