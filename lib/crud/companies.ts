@@ -153,6 +153,7 @@ export const updateCompany = async (
   }
   // Validate things
   const name = formData.get("name")?.toString().trim()
+  const slug = formData.get("slug")?.toString().trim()
   const summary = formData.get("summary")?.toString().trim()
   const website = formData.get("website")?.toString().trim()
   const sector = formData.get("sector")?.toString().trim()
@@ -164,6 +165,10 @@ export const updateCompany = async (
 
   if (!name) {
     return { message: "Name is required.", status: "error" }
+  }
+
+  if (!slug) {
+    return { message: "Slug is required.", status: "error" }
   }
 
   if (!website) {
@@ -182,9 +187,20 @@ export const updateCompany = async (
 
   // Now update the company in the database
   try {
+    // Get previous slug
+    const prevCompany = await prisma.companyProfile.findUnique({
+      where: { id },
+      select: { slug: true },
+    })
+    if (!prevCompany) {
+      return { message: "Company not found.", status: "error" }
+    }
+
+    var prevSlug = prevCompany.slug
+
     await prisma.companyProfile.update({
       where: { id },
-      data: { name, summary, website, sector, size, hq, email, phone, founded },
+      data: { name, summary, website, sector, size, hq, email, phone, founded, slug },
     })
   } catch (e: any) {
     if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
@@ -194,7 +210,12 @@ export const updateCompany = async (
     }
   }
 
-  revalidatePath(`/companies/${id}`)
+  // If slug changed, redirect
+  if (prevSlug !== slug) {
+    redirect(`/companies/${slug}`)
+  } else {
+    revalidatePath(`/companies/${id}`)
+  }
 
   return {
     status: "success",

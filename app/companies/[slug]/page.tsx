@@ -34,10 +34,10 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
   }
 }
 
-const CompanyPage = async ({ params }: { params: { name: string } }) => {
+const CompanyPage = async ({ params }: { params: { slug: string } }) => {
   const companyProfile = await prisma.companyProfile.findFirst({
     where: {
-      name: decodeURIComponent(params.name),
+      slug: decodeURIComponent(params.slug),
     },
     include: {
       opportunities: {
@@ -71,7 +71,7 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
-            src={companyProfile.banner}
+            src={companyProfile.banner ?? ""}
             alt={`${companyProfile.name} banner`}
             width={0}
             height={0}

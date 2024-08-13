@@ -13,11 +13,9 @@ import { useState } from "react"
 
 const AddCompanyForm = ({ close }: { close: () => void }) => {
   const [companyName, setCompanyName] = useState("")
-
-  const router = useRouter()
+  const [slug, setSlug] = useState(companyName.toLowerCase().replace(/\s/g, "-"))
 
   const SLUG_START = "https://" + window.location.host + "/companies/"
-  const [slug, setSlug] = useState(companyName.toLowerCase().replace(/\s/g, "-"))
   const slugComputer = (companyName: string) => companyName.toLowerCase().replace(/\s/g, "-")
 
   return (
