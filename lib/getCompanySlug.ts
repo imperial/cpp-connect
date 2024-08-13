@@ -16,7 +16,7 @@ const getCompanySlug = async (user: Session["user"]) => {
         associatedCompany: {
           select: {
             slug: true,
-          }
+          },
         },
       },
     })
