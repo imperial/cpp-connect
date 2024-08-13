@@ -14,11 +14,13 @@ const getCompanySlug = async (user: Session["user"]) => {
       },
       select: {
         associatedCompany: {
-          slug: true,
+          select: {
+            slug: true,
+          }
         },
       },
     })
-  )?.slug
+  )?.associatedCompany?.slug
 }
 
 export default getCompanySlug
