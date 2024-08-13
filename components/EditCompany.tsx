@@ -67,7 +67,7 @@ const EditCompanyForm = ({
           <Card>
             <MdEditor markdown={summary} editorRef={mdxEditorRef} onChange={setSummary} />
           </Card>
-          <input type="hidden" readOnly name="summary" value={summary.replace(/\n\n/g, "\\\n")} />
+          <input type="hidden" readOnly name="summary" value={summary} />
         </label>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">

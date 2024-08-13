@@ -83,6 +83,7 @@
   table {
     width: 100%;
     border-collapse: collapse;
+    margin: 1em 0;
   }
   table,
   th,
@@ -97,6 +98,5 @@
   code {
     background-color: var(--gray-4);
     padding: 0.3em;
-    border-radius: 10%;
   }
 }
