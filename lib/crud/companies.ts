@@ -147,8 +147,6 @@ export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { sign
     }
   }
 
-  // get
-
   revalidatePath(getCompanyLink(company))
 
   return {
