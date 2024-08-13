@@ -9,7 +9,7 @@ services:
       - database
     environment:
       - DATABASE_URL=postgres://user:pass@database:5432/cpp-connect
-      - UPLOAD_DIR=/uploads
+      - UPLOAD_DIR=uploads
     ports:
       - "3000:3000"
     volumes:

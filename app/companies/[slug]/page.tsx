@@ -72,7 +72,8 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
-            src={companyProfile.banner ?? ""}
+            unoptimized
+            src={companyProfile.banner ? `/api/uploads/${companyProfile.banner}` : ""}
             alt={`${companyProfile.name} banner`}
             width={0}
             height={0}
@@ -84,7 +85,13 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
           <Flex gap="3" direction="column" className={styles.companyInfo} p="4" pt="0">
             <Flex className={styles.companyLogoContainer} justify="between">
               <Card className={styles.companyLogo}>
-                <Image src={companyProfile.logo} alt={`${companyProfile.name} logo`} width={0} height={0} />
+                <Image
+                  unoptimized
+                  src={companyProfile.logo ? `/api/uploads/${companyProfile.logo}` : ""}
+                  alt={`${companyProfile.name} logo`}
+                  width={0}
+                  height={0}
+                />
               </Card>
               <EditCompany prevCompanyProfile={companyProfile} />
             </Flex>
