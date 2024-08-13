@@ -5,6 +5,8 @@
   flex-flow: row wrap;
   align-items: center;
   gap: 1em;
+  position: relative;
+  z-index: 9999;
 }
 
 .linksContainer {
