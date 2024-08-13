@@ -49,8 +49,8 @@ const columns = [
   }),
 ]
 
-const CompaniesTable = ({ companies }: { companies: CompanyRow[] }) => {
+const CompanyTable = ({ companies }: { companies: CompanyRow[] }) => {
   return <TanstackTable data={companies} columns={columns} />
 }
 
-export default CompaniesTable
+export default CompanyTable
