@@ -1,3 +1,4 @@
+import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import Link from "@/components/Link"
 import prisma from "@/lib/db"
 
@@ -92,8 +93,7 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
               </Text>
               <Heading size="8">{event.title}</Heading>
               <Box>
-                <Text color="gray">By</Text>{" "}
-                <Link href={`/companies/${encodeURIComponent(event.company.name)}`}>{event.company.name}</Link>
+                <Text color="gray">By</Text> <Link href={getCompanyLink(event.company)}>{event.company.name}</Link>
               </Box>
             </Box>
             <Text>{event.shortDescription}</Text>

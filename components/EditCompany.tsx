@@ -1,5 +1,6 @@
 "use client"
 
+import { SLUG_START, slugComputer } from "@/app/companies/slug"
 import { updateCompany } from "@/lib/crud/companies"
 import { ServerSideFormHandler } from "@/lib/types"
 
@@ -7,12 +8,16 @@ import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
 import { CompanyProfile } from "@prisma/client"
-import { Pencil1Icon } from "@radix-ui/react-icons"
-import { IconButton, Text, TextField } from "@radix-ui/themes"
+import { InfoCircledIcon, Pencil1Icon } from "@radix-ui/react-icons"
+import { Flex, IconButton, Text, TextField, Tooltip } from "@radix-ui/themes"
+import { useState } from "react"
 
 const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; prevCompanyProfile: CompanyProfile }) => {
   const updateCompanyWithID: ServerSideFormHandler = (prevState, formData) =>
     updateCompany(prevState, formData, prevCompanyProfile.id)
+
+  const [companyName, setCompanyName] = useState(prevCompanyProfile.name)
+  const [slug, setSlug] = useState(prevCompanyProfile.slug)
 
   return (
     <FormInModal action={updateCompanyWithID} close={close}>
@@ -24,8 +29,26 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
           name="name"
           placeholder="e.g. Imperial College London"
           required
-          defaultValue={prevCompanyProfile.name}
+          onChange={e => {
+            setCompanyName(e.target.value)
+            setSlug(slugComputer(e.target.value))
+          }}
+          value={companyName}
         />
+      </label>
+      <label>
+        <Flex direction="row" align="center" gap="1">
+          <Text as="div" size="2" mb="1" weight="bold">
+            Slug*
+          </Text>
+          <Tooltip content="Used to access the company in the URL. Must be unique.">
+            <InfoCircledIcon style={{ marginBottom: "3px" }} />
+          </Tooltip>
+        </Flex>
+        <Flex direction="row" gap="1" align="center">
+          <Text>{SLUG_START}</Text>
+          <TextField.Root name="slug" required value={slug} onChange={e => setSlug(e.target.value)} />
+        </Flex>
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
