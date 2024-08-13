@@ -16,7 +16,7 @@ export const DropdownCard = ({ user, children }: { user: Session["user"]; childr
         <UserAvatar user={user} size="6" />
       </Flex>
       <Flex direction="column" gap="2" justify="between">
-        <Heading>{user.name}</Heading>
+        <Heading>{user.name || user.email}</Heading>
         {children}
         <Button color="red" onClick={() => signOut()} variant="outline">
           <Flex gap="2" align="center">
