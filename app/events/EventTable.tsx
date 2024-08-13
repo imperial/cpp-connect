@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 
 import type { CompanyProfile, Event } from "@prisma/client"
@@ -25,13 +26,13 @@ const EventTable = ({
 }) => {
   const columnDefsMap: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
     "company.name": {
-      cell: info => info.getValue(),
+      cell: info => <Link href={`/companies/${info.row.original.company.name}`}>{info.getValue()}</Link>,
       header: "Company",
       id: "company.name",
       sortingFn: "alphanumeric",
     },
     title: {
-      cell: info => info.getValue(),
+      cell: info => <Link href={`/events/${info.row.original.id}`}>{info.getValue()}</Link>,
       header: "Title",
       sortingFn: "alphanumeric",
       id: "title",

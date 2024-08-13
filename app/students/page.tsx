@@ -14,6 +14,7 @@ const StudentsPage = async () => {
       },
       graduationDate: true,
       course: true,
+      studentShortcode: true,
     },
   })
   return <StudentTable students={students} />

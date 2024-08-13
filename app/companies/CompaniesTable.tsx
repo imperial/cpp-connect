@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 
 import styles from "./table.module.scss"
@@ -8,9 +9,8 @@ import type { CompanyProfile } from "@prisma/client"
 import { Box } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
 import Image from "next/image"
-import Link from "next/link"
 
-type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "website" | "size" | "hq">
+type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "size" | "hq">
 
 const columnHelper = createColumnHelper<CompanyRow>()
 
@@ -24,7 +24,7 @@ const columns = [
     header: "",
   }),
   columnHelper.accessor("name", {
-    cell: info => info.getValue(),
+    cell: info => <Link href={`/companies/${info.getValue()}`}>{info.getValue()}</Link>,
     header: "Company",
     id: "name",
     sortingFn: "text",
@@ -33,13 +33,6 @@ const columns = [
     cell: info => info.getValue(),
     header: "Sector",
     id: "sector",
-    sortingFn: "text",
-  }),
-  columnHelper.accessor("website", {
-    cell: info => <Link href={info.getValue()}>{info.getValue()}</Link>,
-    header: "Website",
-    id: "website",
-    enableColumnFilter: false,
     sortingFn: "text",
   }),
   columnHelper.accessor("size", {
