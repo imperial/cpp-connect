@@ -16,7 +16,7 @@ type ColumnName = keyof CompanyRow
 
 const columnHelper = createColumnHelper<CompanyRow>()
 
-const CompanyTable = ({
+const CompaniesTable = ({
   companies,
   columns,
   nonFilterable = [],
@@ -83,4 +83,4 @@ const CompanyTable = ({
   return <TanstackTable data={companies} columns={columnDefs} />
 }
 
-export default CompanyTable
+export default CompaniesTable
