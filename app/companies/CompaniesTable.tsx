@@ -20,7 +20,14 @@ const columns = [
   columnHelper.accessor("logo", {
     cell: info => (
       <Box width="4em" height="2.5em">
-        <Image src={info.getValue()} alt="profile teaser" width={100} height={100} className={styles.teaser} />
+        <Image
+          unoptimized
+          src={info.getValue() ? `/api/uploads/${info.getValue()}` : ""}
+          alt="profile teaser"
+          width={100}
+          height={100}
+          className={styles.teaser}
+        />
       </Box>
     ),
     header: "",

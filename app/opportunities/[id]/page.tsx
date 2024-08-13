@@ -33,7 +33,8 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
-            src={opportunity.company.banner}
+            unoptimized
+            src={opportunity.company.banner ? `/api/uploads/${opportunity.company.banner}` : ""}
             alt={`${opportunity.company.name} banner`}
             width={0}
             height={0}

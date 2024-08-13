@@ -77,7 +77,8 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
-            src={event.company.banner}
+            unoptimized
+            src={event.company.banner ? `/api/uploads/${event.company.banner}` : ""}
             alt={`${event.company.name} banner`}
             width={0}
             height={0}
