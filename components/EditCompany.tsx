@@ -22,7 +22,8 @@ const EditCompanyForm = ({
     updateCompany(prevState, formData, prevCompanyProfile.id)
   const [formState, formAction] = useFormState(updateCompanyWithID, { message: "" })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const mdxEditorRef = React.useRef<MDXEditorMethods>(null)
+  const [summary, setSummary] = useState(prevCompanyProfile.summary)
+  const mdxEditorRef = useRef<MDXEditorMethods>(null)
 
   useEffect(() => {
     if (formState?.status === "success") {
@@ -62,8 +63,9 @@ const EditCompanyForm = ({
             Summary
           </Text>
           <Card>
-            <MdEditor markdown={prevCompanyProfile.summary} />
+            <MdEditor markdown={summary} editorRef={mdxEditorRef} onChange={setSummary} />
           </Card>
+          <input type="hidden" readOnly name="summary" value={summary} />
         </label>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
