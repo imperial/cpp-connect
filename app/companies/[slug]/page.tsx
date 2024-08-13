@@ -1,13 +1,14 @@
 import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import { EditCompany } from "@/components/EditCompany"
+import Link from "@/components/Link"
 import prisma from "@/lib/db"
 
 import { CompanyManagement } from "./CompanyManagement"
 import styles from "./page.module.scss"
 
 import * as Collapsible from "@radix-ui/react-collapsible"
-import { Box, Card, Flex, Heading, Inset, Link, Tabs, Text } from "@radix-ui/themes"
+import { Box, Card, Flex, Heading, Inset, Tabs, Text } from "@radix-ui/themes"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
