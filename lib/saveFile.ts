@@ -64,3 +64,10 @@ const validateFile = (file: File, fileType: FileCategory) => {
  * @param file The file to check
  */
 export const fileExists = (file: File) => file.size > 0
+
+/**
+ * Get the file extension of a file
+ * @param file The file to get the extension of
+ * @example getFileExtension(<some png image>) => "png"
+ */
+export const getFileExtension = (file: File) => file.type.split("/")[1]

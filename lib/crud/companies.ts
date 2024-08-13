@@ -2,6 +2,8 @@
 
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { auth } from "@/auth"
+import { fileExists, getFileExtension, saveFile } from "@/lib/saveFile"
+import { FileCategory } from "@/lib/types"
 
 import prisma from "../db"
 import { restrictCompany } from "../rbac"
@@ -169,6 +171,8 @@ export const updateCompany = async (
   const name = formData.get("name")?.toString().trim()
   const slug = formData.get("slug")?.toString().trim()
   const summary = formData.get("summary")?.toString().trim()
+  const banner = formData.get("banner") as File
+  const logo = formData.get("logo") as File
   const website = formData.get("website")?.toString().trim()
   const sector = formData.get("sector")?.toString().trim()
   const size = formData.get("size")?.toString().trim()
@@ -224,6 +228,45 @@ export const updateCompany = async (
         status: "error",
       }
     } else {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
+  }
+
+  // Save the banner and logo (if they exist)
+  if (fileExists(banner)) {
+    const bannerPath = `banners/${slug}.${getFileExtension(banner)}`
+
+    try {
+      await saveFile(bannerPath, banner, FileCategory.IMAGE)
+    } catch (e: any) {
+      return { message: e?.cause, status: "error" }
+    }
+
+    try {
+      await prisma.companyProfile.update({
+        where: { id },
+        data: { banner: bannerPath },
+      })
+    } catch (e: any) {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
+  }
+
+  if (fileExists(logo)) {
+    const logoPath = `logos/${slug}.${getFileExtension(logo)}`
+
+    try {
+      await saveFile(logoPath, logo, FileCategory.IMAGE)
+    } catch (e: any) {
+      return { message: e?.cause, status: "error" }
+    }
+
+    try {
+      await prisma.companyProfile.update({
+        where: { id },
+        data: { logo: logoPath },
+      })
+    } catch (e: any) {
       return { message: "A database error occured. Please try again later.", status: "error" }
     }
   }

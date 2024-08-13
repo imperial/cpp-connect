@@ -58,6 +58,18 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
+          Banner
+        </Text>
+        <input type="file" name="banner" />
+      </label>
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Logo
+        </Text>
+        <input type="file" name="logo" />
+      </label>
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
           Website*
         </Text>
         <TextField.Root
