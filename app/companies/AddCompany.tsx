@@ -6,6 +6,8 @@ import { FormInModal } from "@/components/forms/FormInModal"
 import { GenericFormModal } from "@/components/modals/GenericFormModal"
 import { createCompany } from "@/lib/crud/companies"
 
+import { SLUG_START, slugComputer } from "./slug"
+
 import { InfoCircledIcon } from "@radix-ui/react-icons"
 import { Flex, Text, TextField, Tooltip } from "@radix-ui/themes"
 import { useState } from "react"
@@ -13,9 +15,6 @@ import { useState } from "react"
 const AddCompanyForm = ({ close }: { close: () => void }) => {
   const [companyName, setCompanyName] = useState("")
   const [slug, setSlug] = useState(companyName.toLowerCase().replace(/\s/g, "-"))
-
-  const SLUG_START = "https://" + window.location.host + "/companies/"
-  const slugComputer = (companyName: string) => companyName.toLowerCase().replace(/\s/g, "-")
 
   return (
     <FormInModal action={createCompany} close={close}>
