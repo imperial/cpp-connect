@@ -21,11 +21,16 @@ export const createCompany: ServerSideFormHandler = async (prevState, formData) 
 
   // Validate things
   const name = formData.get("name")?.toString().trim()
+  const slug = formData.get("slug")?.toString().trim()
   const website = formData.get("website")?.toString().trim()
   const sector = formData.get("sector")?.toString().trim()
 
   if (!name) {
     return { message: "Name is required.", status: "error" }
+  }
+
+  if (!slug) {
+    return { message: "Slug is required.", status: "error" }
   }
 
   if (!website) {
@@ -47,13 +52,18 @@ export const createCompany: ServerSideFormHandler = async (prevState, formData) 
     await prisma.companyProfile.create({
       data: {
         name: name.toString(),
+        slug: slug.toString(),
         website: website.toString(),
         sector: sector.toString(),
       },
     })
   } catch (e: any) {
-    if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
-      return { message: "Company already exists. Please supply a different name.", status: "error" }
+    if (e?.code === "P2002" && e?.meta?.target?.includes("slug")) {
+      return {
+        message:
+          "A company with that slug already exists. Please supply a different slug, or change the company name and slug.",
+        status: "error",
+      }
     } else {
       return { message: "A database error occured. Please try again later.", status: "error" }
     }
