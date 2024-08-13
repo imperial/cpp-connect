@@ -18,7 +18,50 @@ type ColumnName = keyof CompanyRow
 
 const columnHelper = createColumnHelper<CompanyRow>()
 
-const CompaniesTable = ({
+const columnDefsMap: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = {
+  logo: {
+    cell: info => (
+      <Box width="4em" height="2.5em">
+        <Image src={info.getValue()} alt="profile teaser" width={100} height={100} className={styles.teaser} />
+      </Box>
+    ),
+    header: "",
+  },
+  name: {
+    cell: info => <Link href={`/companies/${info.getValue()}`}>{info.getValue()}</Link>,
+    header: "Company",
+    id: "name",
+    sortingFn: "text",
+  },
+  // shown only if admin
+  slug: {
+  cell: info => info.getValue(),
+    header: "Slug",
+    id: "slug",
+    sortingFn: "text",
+  },
+  sector: {
+    cell: info => info.getValue(),
+    header: "Sector",
+    id: "sector",
+    sortingFn: "text",
+  },
+  size: {
+    cell: info => info.getValue() || "N/A",
+    header: "Size",
+    id: "size",
+    sortingFn: "alphanumeric",
+  },
+  hq: {
+    cell: info => info.getValue() || "N/A",
+    header: "HQ",
+    id: "hq",
+    sortingFn: "text",
+  },
+}
+
+
+const CompanyTable = ({
   companies,
   columns,
   nonFilterable = [],
@@ -28,48 +71,6 @@ const CompaniesTable = ({
   nonFilterable?: ColumnName[]
 }) => {
   const { data: session } = useSession()
-
-  const columnDefsMap: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = {
-    logo: {
-      cell: info => (
-        <Box width="4em" height="2.5em">
-          <Image src={info.getValue()} alt="profile teaser" width={100} height={100} className={styles.teaser} />
-        </Box>
-      ),
-      header: "",
-    },
-    name: {
-      cell: info => <Link href={`/companies/${info.getValue()}`}>{info.getValue()}</Link>,
-      header: "Company",
-      id: "name",
-      sortingFn: "text",
-    },
-    // shown only if admin
-    slug: {
-    cell: info => info.getValue(),
-      header: "Slug",
-      id: "slug",
-      sortingFn: "text",
-   },
-    sector: {
-      cell: info => info.getValue(),
-      header: "Sector",
-      id: "sector",
-      sortingFn: "text",
-    },
-    size: {
-      cell: info => info.getValue() || "N/A",
-      header: "Size",
-      id: "size",
-      sortingFn: "alphanumeric",
-    },
-    hq: {
-      cell: info => info.getValue() || "N/A",
-      header: "HQ",
-      id: "hq",
-      sortingFn: "text",
-    },
-  }
 
   for (let column of nonFilterable) {
     if (columnDefsMap[column]) {
@@ -101,4 +102,4 @@ const CompaniesTable = ({
   return <TanstackTable data={companies} columns={columnDefs} invisibleColumns={invisibleColumns} />
 }
 
-export default CompaniesTable
+export default CompanyTable
