@@ -1,5 +1,6 @@
 "use client"
 
+import { SLUG_START, slugComputer } from "@/app/companies/slug"
 import { updateCompany } from "@/lib/crud/companies"
 import { ServerSideFormHandler } from "@/lib/types"
 
@@ -17,9 +18,6 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
 
   const [companyName, setCompanyName] = useState(prevCompanyProfile.name)
   const [slug, setSlug] = useState(prevCompanyProfile.slug)
-
-  const SLUG_START = "https://" + window.location.host + "/companies/"
-  const slugComputer = (companyName: string) => companyName.toLowerCase().replace(/\s/g, "-")
 
   return (
     <FormInModal action={updateCompanyWithID} close={close}>

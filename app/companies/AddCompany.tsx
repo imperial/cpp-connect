@@ -7,8 +7,7 @@ import { GenericFormModal } from "@/components/modals/GenericFormModal"
 import { createCompany } from "@/lib/crud/companies"
 
 import { InfoCircledIcon } from "@radix-ui/react-icons"
-import { Box, Flex, Text, TextField, Tooltip } from "@radix-ui/themes"
-import { useRouter } from "next/navigation"
+import { Flex, Text, TextField, Tooltip } from "@radix-ui/themes"
 import { useState } from "react"
 
 const AddCompanyForm = ({ close }: { close: () => void }) => {
