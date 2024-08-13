@@ -7,10 +7,11 @@ import styles from "./table.module.scss"
 import type { CompanyProfile } from "@prisma/client"
 import { Box } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
 
-type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "website" | "size" | "hq">
+type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "website" | "size" | "hq" | "slug">
 
 const columnHelper = createColumnHelper<CompanyRow>()
 
@@ -27,6 +28,13 @@ const columns = [
     cell: info => info.getValue(),
     header: "Company",
     id: "name",
+    sortingFn: "text",
+  }),
+  // shown only if admin
+  columnHelper.accessor("slug", {
+    cell: info => info.getValue(),
+    header: "Slug",
+    id: "slug",
     sortingFn: "text",
   }),
   columnHelper.accessor("sector", {
@@ -57,7 +65,16 @@ const columns = [
 ]
 
 const CompaniesTable = ({ companies }: { companies: CompanyRow[] }) => {
-  return <TanstackTable data={companies} columns={columns} />
+  const { data: session } = useSession()
+
+  const invisibleColumns =
+    session?.user?.role === "ADMIN"
+      ? undefined
+      : {
+          slug: false,
+        }
+
+  return <TanstackTable data={companies} columns={columns} invisibleColumns={invisibleColumns} />
 }
 
 export default CompaniesTable
