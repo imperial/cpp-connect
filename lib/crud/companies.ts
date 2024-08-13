@@ -109,6 +109,9 @@ export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { sign
   if (!baseUrl) {
     return { message: "Base URL is required.", status: "error" }
   }
+  if (companyId === -1) {
+    return { message: "Company ID is required.", status: "error" }
+  }
 
   const res = await checkAuthorizedForCompanyCRUD(companyId)
 
