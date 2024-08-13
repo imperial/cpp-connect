@@ -206,8 +206,12 @@ export const updateCompany = async (
       data: { name, summary, website, sector, size, hq, email, phone, founded, slug },
     })
   } catch (e: any) {
-    if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
-      return { message: "Company already exists. Please supply a different name.", status: "error" }
+    if (e?.code === "P2002" && e?.meta?.target?.includes("slug")) {
+      return {
+        message:
+          "A company with that slug already exists. Please supply a different slug, or change the company name and slug.",
+        status: "error",
+      }
     } else {
       return { message: "A database error occured. Please try again later.", status: "error" }
     }
