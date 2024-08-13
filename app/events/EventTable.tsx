@@ -3,6 +3,7 @@
 import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 
+import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Event } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { format } from "date-fns"
@@ -26,7 +27,7 @@ const EventTable = ({
 }) => {
   const columnDefsMap: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
     "company.name": {
-      cell: info => <Link href={`/companies/${info.row.original.company.name}`}>{info.getValue()}</Link>,
+      cell: info => <Link href={getCompanyLink(info.row.original.company)}>{info.getValue()}</Link>,
       header: "Company",
       id: "company.name",
       sortingFn: "alphanumeric",

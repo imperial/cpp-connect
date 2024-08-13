@@ -15,6 +15,7 @@ const OpportunitiesPage = async () => {
       sector: true,
       size: true,
       hq: true,
+      slug: true,
     },
   })
 

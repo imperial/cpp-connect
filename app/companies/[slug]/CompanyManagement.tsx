@@ -1,4 +1,4 @@
-import { AddUser } from "@/app/companies/[name]/AddUser"
+import { AddUser } from "@/app/companies/[slug]/AddUser"
 import { DeleteCompany } from "@/components/DeleteCompany"
 import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 
