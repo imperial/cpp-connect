@@ -1,5 +1,6 @@
 "use server"
 
+import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { auth } from "@/auth"
 
 import prisma from "../db"
@@ -113,6 +114,16 @@ export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { sign
     return { message: "Company ID is required.", status: "error" }
   }
 
+  // Get slug
+  const company = await prisma.companyProfile.findUnique({
+    where: { id: companyId },
+    select: { slug: true },
+  })
+
+  if (!company) {
+    return { message: "Company not found.", status: "error" }
+  }
+
   const res = await checkAuthorizedForCompanyCRUD(companyId)
 
   if (res.status === "error") {
@@ -136,7 +147,9 @@ export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { sign
     }
   }
 
-  revalidatePath(`/companies/${companyId}`)
+  // get
+
+  revalidatePath(getCompanyLink(company))
 
   return {
     status: "success",
@@ -219,9 +232,9 @@ export const updateCompany = async (
 
   // If slug changed, redirect
   if (prevSlug !== slug) {
-    redirect(`/companies/${slug}`)
+    redirect(getCompanyLink({ slug: slug }))
   } else {
-    revalidatePath(`/companies/${id}`)
+    revalidatePath(getCompanyLink({ slug: slug }))
   }
 
   return {

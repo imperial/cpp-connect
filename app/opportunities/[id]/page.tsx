@@ -1,3 +1,4 @@
+import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import Chip from "@/components/Chip"
 import Link from "@/components/Link"
 import prisma from "@/lib/db"
@@ -45,10 +46,7 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
             <Heading size="8">{opportunity.position}</Heading>
 
             <Box>
-              At{" "}
-              <Link href={`/companies/${encodeURIComponent(opportunity.company.name)}`}>
-                {opportunity.company.name}
-              </Link>
+              At <Link href={getCompanyLink(opportunity.company)}>{opportunity.company.name}</Link>
             </Box>
           </Box>
 

@@ -3,6 +3,7 @@
 import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 
+import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Opportunity } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { formatDistanceToNowStrict } from "date-fns"
@@ -26,7 +27,7 @@ const OpportunityTable = ({
 }) => {
   const columnDefsMap: Partial<Record<ColumnName, ColumnDef<OpportunityRow, any>>> = {
     "company.name": {
-      cell: info => <Link href={`/companies/${info.getValue()}`}>{info.getValue()}</Link>,
+      cell: info => <Link href={getCompanyLink(info.row.original.company)}>{info.getValue()}</Link>,
       header: "Company",
       id: "company.name",
       sortingFn: "alphanumeric",

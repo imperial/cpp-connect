@@ -3,6 +3,7 @@
 import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 
+import { getCompanyLink } from "./getCompanyLink"
 import styles from "./table.module.scss"
 
 import type { CompanyProfile } from "@prisma/client"
@@ -25,7 +26,7 @@ const columns = [
     header: "",
   }),
   columnHelper.accessor("name", {
-    cell: info => <Link href={`/companies/${info.getValue()}`}>{info.getValue()}</Link>,
+    cell: info => <Link href={getCompanyLink(info.row.original)}>{info.getValue()}</Link>,
     header: "Company",
     id: "name",
     sortingFn: "text",
