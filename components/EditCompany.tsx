@@ -4,6 +4,7 @@ import { SLUG_START, slugComputer } from "@/app/companies/slug"
 import { updateCompany } from "@/lib/crud/companies"
 import { ServerSideFormHandler } from "@/lib/types"
 
+import FileInput from "./FileInput"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
@@ -56,18 +57,11 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
         </Text>
         <TextField.Root name="summary" placeholder="lorem ipsum..." defaultValue={prevCompanyProfile.summary} />
       </label>
-      <label>
-        <Text as="div" size="2" mb="1" weight="bold">
-          Banner
-        </Text>
-        <input type="file" name="banner" />
-      </label>
-      <label>
-        <Text as="div" size="2" mb="1" weight="bold">
-          Logo
-        </Text>
-        <input type="file" name="logo" />
-      </label>
+
+      <FileInput name="banner" header="Banner" />
+
+      <FileInput name="logo" header="Logo" />
+
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Website*
