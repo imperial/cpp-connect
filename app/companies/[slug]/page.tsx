@@ -15,6 +15,9 @@ import { notFound } from "next/navigation"
 import React from "react"
 import { BsBuildings, BsEnvelope, BsGlobe, BsTelephone } from "react-icons/bs"
 import Markdown from "react-markdown"
+import rehypeRaw from "rehype-raw"
+import remarkBreaks from "remark-breaks"
+import remarkGfm from "remark-gfm"
 
 /**
  * Conditional rendering of company detail. Will only render if children are truthy.
@@ -156,7 +159,13 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
                 <Box className={styles.summaryContainer}>
                   <CompanyDetail title="Summary">
                     {companyProfile.summary && (
-                      <Markdown className={styles.markdownContainer}>{companyProfile.summary}</Markdown>
+                      <Markdown
+                        className={styles.markdownContainer}
+                        remarkPlugins={[remarkGfm, remarkBreaks]}
+                        rehypePlugins={[rehypeRaw]}
+                      >
+                        {companyProfile.summary}
+                      </Markdown>
                     )}
                   </CompanyDetail>
 
@@ -184,7 +193,7 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             <Box p="8">
               <OpportunityTable
                 opportunities={companyProfile.opportunities}
-                keptColumns={["position", "location", "type", "createdAt"]}
+                columns={["position", "location", "type", "createdAt"]}
               />
             </Box>
           </Tabs.Content>

@@ -23,7 +23,7 @@ const OpportunitiesPage = async () => {
     <RestrictedArea allowedRoles={["STUDENT"]}>
       <Flex gap="5" direction="column">
         <CompanyAdminActions />
-        <CompanyTable companies={companies} />
+        <CompanyTable columns={["logo", "name", "sector", "size", "hq"]} companies={companies} />
       </Flex>
     </RestrictedArea>
   )

@@ -16,7 +16,7 @@ const OpportunitiesPage = async () => {
     <RestrictedArea allowedRoles={["STUDENT"]}>
       <OpportunityTable
         opportunities={opportunities}
-        keptColumns={["company.name", "position", "location", "type", "createdAt"]}
+        columns={["company.name", "position", "location", "type", "createdAt"]}
       />
     </RestrictedArea>
   )
