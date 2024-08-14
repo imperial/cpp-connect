@@ -199,7 +199,7 @@ export const updateCompany = companyOnlyAction(
 )
 
 export const deleteCompany = companyOnlyAction(
-  async (prevState: FormPassBackState, formData: FormData, name: string, id: number): Promise<FormPassBackState> => {
+  async (prevState: FormPassBackState, formData: FormData, id: number, name: string): Promise<FormPassBackState> => {
     if (!name) return { message: "Server error: company name is null.", status: "error" }
 
     const enteredName = formData.get("name")?.toString().trim()
