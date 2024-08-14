@@ -1,7 +1,7 @@
-import React from "react"
+import { redirect } from "next/navigation"
 
 const Page = async () => {
-  return <div>page</div>
+  return redirect("/auth/login")
 }
 
 export default Page

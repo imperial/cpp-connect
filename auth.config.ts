@@ -145,5 +145,6 @@ export default {
   pages: {
     signIn: "/auth/login",
     verifyRequest: "/auth/login/partner/success",
+    error: "/auth/error",
   },
 } satisfies NextAuthConfig

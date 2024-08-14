@@ -42,7 +42,14 @@ const LoginPage = () => {
         <Text>Enter your email address below:</Text>
         <Separator size="4" mt="3" mb="3" />
 
-        <TextField.Root size="3" placeholder="someone@example.com" style={{ width: "100%" }} name="email">
+        <TextField.Root
+          size="3"
+          placeholder="someone@example.com"
+          style={{ width: "100%" }}
+          name="email"
+          type="email"
+          required
+        >
           <TextField.Slot>
             <EnvelopeClosedIcon height="16" width="16" />
           </TextField.Slot>
