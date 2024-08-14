@@ -2,6 +2,7 @@ import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import { EditCompany } from "@/components/EditCompany"
 import Link from "@/components/Link"
+import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
 
 import { CompanyManagement } from "./CompanyManagement"
@@ -14,6 +15,9 @@ import { notFound } from "next/navigation"
 import React from "react"
 import { BsEnvelope, BsGlobe, BsTelephone } from "react-icons/bs"
 import Markdown from "react-markdown"
+import rehypeRaw from "rehype-raw"
+import remarkBreaks from "remark-breaks"
+import remarkGfm from "remark-gfm"
 
 /**
  * Conditional rendering of company detail. Will only render if children are truthy.
@@ -86,7 +90,9 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
               <Card className={styles.companyLogo}>
                 <Image src={companyProfile.logo} alt={`${companyProfile.name} logo`} width={0} height={0} />
               </Card>
-              <EditCompany prevCompanyProfile={companyProfile} />
+              <RestrictedAreaCompany companyId={companyProfile.id} showMessage={false}>
+                <EditCompany prevCompanyProfile={companyProfile} />
+              </RestrictedAreaCompany>
             </Flex>
 
             <Heading color="blue" size="7" mt="4">
@@ -137,7 +143,13 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
               <Collapsible.Root className={styles.CollapsibleRoot}>
                 <Box className={styles.summaryContainer}>
                   <CompanyDetail title="Summary">
-                    <Markdown className={styles.markdownContainer}>{companyProfile.summary}</Markdown>
+                    <Markdown
+                      className={styles.markdownContainer}
+                      remarkPlugins={[remarkGfm, remarkBreaks]}
+                      rehypePlugins={[rehypeRaw]}
+                    >
+                      {companyProfile.summary}
+                    </Markdown>
                   </CompanyDetail>
 
                   <CompanyDetail title="Website">
