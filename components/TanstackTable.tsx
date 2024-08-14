@@ -20,6 +20,7 @@ import {
   ColumnFiltersState,
   SortDirection,
   SortingState,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -38,6 +39,7 @@ interface TanstackTableProps<T> {
   columns: ColumnDef<T, any>[]
   enablePagination?: boolean
   enableSearch?: boolean
+  invisibleColumns?: VisibilityState
 }
 
 const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
@@ -57,6 +59,7 @@ const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
 export default function TanstackTable<T>({
   data,
   columns,
+  invisibleColumns,
   enablePagination = true,
   enableSearch = true,
 }: TanstackTableProps<T>) {
@@ -71,7 +74,7 @@ export default function TanstackTable<T>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    state: { columnFilters, sorting, pagination },
+    state: { columnFilters, sorting, pagination, columnVisibility: invisibleColumns },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

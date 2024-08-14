@@ -1,16 +1,18 @@
 "use client"
 
+import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 
+import { getCompanyLink } from "./getCompanyLink"
 import styles from "./table.module.scss"
 
 import type { CompanyProfile } from "@prisma/client"
 import { Box } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
-import Link from "next/link"
 
-type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "website" | "size" | "hq">
+type CompanyRow = Pick<CompanyProfile, "logo" | "name" | "sector" | "size" | "hq" | "slug">
 
 const columnHelper = createColumnHelper<CompanyRow>()
 
@@ -24,22 +26,22 @@ const columns = [
     header: "",
   }),
   columnHelper.accessor("name", {
-    cell: info => info.getValue(),
+    cell: info => <Link href={getCompanyLink(info.row.original)}>{info.getValue()}</Link>,
     header: "Company",
     id: "name",
+    sortingFn: "text",
+  }),
+  // shown only if admin
+  columnHelper.accessor("slug", {
+    cell: info => info.getValue(),
+    header: "Slug",
+    id: "slug",
     sortingFn: "text",
   }),
   columnHelper.accessor("sector", {
     cell: info => info.getValue(),
     header: "Sector",
     id: "sector",
-    sortingFn: "text",
-  }),
-  columnHelper.accessor("website", {
-    cell: info => <Link href={info.getValue()}>{info.getValue()}</Link>,
-    header: "Website",
-    id: "website",
-    enableColumnFilter: false,
     sortingFn: "text",
   }),
   columnHelper.accessor("size", {
@@ -57,7 +59,16 @@ const columns = [
 ]
 
 const CompaniesTable = ({ companies }: { companies: CompanyRow[] }) => {
-  return <TanstackTable data={companies} columns={columns} />
+  const { data: session } = useSession()
+
+  const invisibleColumns =
+    session?.user?.role === "ADMIN"
+      ? undefined
+      : {
+          slug: false,
+        }
+
+  return <TanstackTable data={companies} columns={columns} invisibleColumns={invisibleColumns} />
 }
 
 export default CompaniesTable

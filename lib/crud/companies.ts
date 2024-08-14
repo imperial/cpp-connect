@@ -1,10 +1,11 @@
 "use server"
 
+import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { auth } from "@/auth"
 import { adminOnlyAction, companyOnlyAction, restrictCompany } from "@/lib/rbac"
 
 import prisma from "../db"
-import { FormPassBackState, ServerActionDecorator, ServerSideFormHandler } from "../types"
+import { FormPassBackState, ServerSideFormHandler } from "../types"
 import { encodeSignInUrl } from "../util/signInTokens"
 import { Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
@@ -13,11 +14,16 @@ import { redirect } from "next/navigation"
 export const createCompany = adminOnlyAction(async (prevState, formData) => {
   // Validate things
   const name = formData.get("name")?.toString().trim()
+  const slug = formData.get("slug")?.toString().trim()
   const website = formData.get("website")?.toString().trim()
   const sector = formData.get("sector")?.toString().trim()
 
   if (!name) {
     return { message: "Name is required.", status: "error" }
+  }
+
+  if (!slug) {
+    return { message: "Slug is required.", status: "error" }
   }
 
   if (!website) {
@@ -39,15 +45,20 @@ export const createCompany = adminOnlyAction(async (prevState, formData) => {
     await prisma.companyProfile.create({
       data: {
         name: name.toString(),
+        slug: slug.toString(),
         website: website.toString(),
         sector: sector.toString(),
       },
     })
   } catch (e: any) {
-    if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
-      return { message: "Company already exists. Please supply a different name.", status: "error" }
+    if (e?.code === "P2002" && e?.meta?.target?.includes("slug")) {
+      return {
+        message:
+          "A company with that slug already exists. Please supply a different slug, or change the company name and slug.",
+        status: "error",
+      }
     } else {
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
   }
 
@@ -90,6 +101,19 @@ export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { sign
     if (!baseUrl) {
       return { message: "Base URL is required.", status: "error" }
     }
+    if (companyId === -1) {
+      return { message: "Company ID is required.", status: "error" }
+    }
+
+    // Get slug
+    const company = await prisma.companyProfile.findUnique({
+      where: { id: companyId },
+      select: { slug: true },
+    })
+
+    if (!company) {
+      return { message: "Company not found.", status: "error" }
+    }
 
     const res = await checkAuthorizedForCompanyCRUD(companyId)
 
@@ -110,11 +134,11 @@ export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { sign
       if (e?.code === "P2002" && e?.meta?.target?.includes("email")) {
         return { message: "A user with that email already exists. Please supply a different email.", status: "error" }
       } else {
-        return { message: "A database error occured. Please try again later.", status: "error" }
+        return { message: "A database error occurred. Please try again later.", status: "error" }
       }
     }
 
-    revalidatePath(`/companies/${companyId}`)
+    revalidatePath(getCompanyLink(company))
 
     return {
       status: "success",
@@ -133,6 +157,7 @@ export const updateCompany = companyOnlyAction(
     }
     // Validate things
     const name = formData.get("name")?.toString().trim()
+    const slug = formData.get("slug")?.toString().trim()
     const summary = formData.get("summary")?.toString().trim()
     const website = formData.get("website")?.toString().trim()
     const sector = formData.get("sector")?.toString().trim()
@@ -144,6 +169,10 @@ export const updateCompany = companyOnlyAction(
 
     if (!name) {
       return { message: "Name is required.", status: "error" }
+    }
+
+    if (!slug) {
+      return { message: "Slug is required.", status: "error" }
     }
 
     if (!website) {
@@ -162,19 +191,39 @@ export const updateCompany = companyOnlyAction(
 
     // Now update the company in the database
     try {
+      // Get previous slug
+      const prevCompany = await prisma.companyProfile.findUnique({
+        where: { id },
+        select: { slug: true },
+      })
+      if (!prevCompany) {
+        return { message: "Company not found.", status: "error" }
+      }
+
+      var prevSlug = prevCompany.slug
+
       await prisma.companyProfile.update({
         where: { id },
-        data: { name, summary, website, sector, size, hq, email, phone, founded },
+        data: { name, summary, website, sector, size, hq, email, phone, founded, slug },
       })
     } catch (e: any) {
-      if (e?.code === "P2002" && e?.meta?.target?.includes("name")) {
-        return { message: "Company already exists. Please supply a different name.", status: "error" }
+      if (e?.code === "P2002" && e?.meta?.target?.includes("slug")) {
+        return {
+          message:
+            "A company with that slug already exists. Please supply a different slug, or change the company name and slug.",
+          status: "error",
+        }
       } else {
-        return { message: "A database error occured. Please try again later.", status: "error" }
+        return { message: "A database error occurred. Please try again later.", status: "error" }
       }
     }
 
-    revalidatePath(`/companies/${id}`)
+    // If slug changed, redirect
+    if (prevSlug !== slug) {
+      redirect(getCompanyLink({ slug: slug }))
+    } else {
+      revalidatePath(getCompanyLink({ slug: slug }))
+    }
 
     return {
       status: "success",
@@ -204,10 +253,10 @@ export const deleteCompany = companyOnlyAction(
     // Now add the company to the database
     try {
       await prisma.companyProfile.delete({
-        where: { name },
+        where: { id },
       })
     } catch (e: any) {
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
     redirect("/companies")
   },

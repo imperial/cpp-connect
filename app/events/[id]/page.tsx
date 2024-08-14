@@ -1,3 +1,5 @@
+import { getCompanyLink } from "@/app/companies/getCompanyLink"
+import Link from "@/components/Link"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -5,7 +7,6 @@ import styles from "./page.module.scss"
 import { Box, Button, Card, Flex, Heading, Inset, Separator, Text } from "@radix-ui/themes"
 import { format, formatDistanceStrict, isSameDay } from "date-fns"
 import Image from "next/image"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import React from "react"
 import { BsBoxArrowUpRight, BsCalendar, BsPinMap } from "react-icons/bs"
@@ -91,9 +92,9 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
                 {format(event.dateStart, "E dd/MM")}
               </Text>
               <Heading size="8">{event.title}</Heading>
-              <Text color="gray">
-                By <Link href={`/companies/${encodeURIComponent(event.company.name)}`}>{event.company.name}</Link>
-              </Text>
+              <Box>
+                <Text color="gray">By</Text> <Link href={getCompanyLink(event.company)}>{event.company.name}</Link>
+              </Box>
             </Box>
             <Text>{event.shortDescription}</Text>
           </Flex>
