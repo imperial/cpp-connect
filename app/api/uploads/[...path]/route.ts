@@ -1,4 +1,5 @@
 import { auth } from "@/auth"
+import { validateFilePath } from "@/lib/saveFile"
 
 import fs from "fs/promises"
 import mime from "mime-types"
@@ -24,15 +25,11 @@ export const GET = async (req: NextRequest) => {
 
   const suffix = req.nextUrl.pathname.slice("/api/uploads".length)
 
-  // Normalize the path to move all the ../ to the front of the path
-  // Apply regex to remove any ../ from the front of the path
-  const safeSuffix = path.normalize(suffix).replace(/^(\.\.(\/|\\|$))+/, "")
-
-  if (safeSuffix !== suffix) {
+  if (!validateFilePath(suffix)) {
     return new Response("Invalid path", { status: 400 })
   }
 
-  const filePath = path.join(process.env.UPLOAD_DIR, safeSuffix)
+  const filePath = path.join(process.env.UPLOAD_DIR, suffix)
 
   try {
     const fileBuffer = await fs.readFile(filePath)

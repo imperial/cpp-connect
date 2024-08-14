@@ -24,7 +24,11 @@ export const saveFile = async (filePath: string, file: File, fileType: FileCateg
 
   // Validate the file and path
   validateFile(file, fileType)
-  validateFilePath(filePath)
+  if (!validateFilePath(filePath)) {
+    throw new Error("Invalid path", {
+      cause: "The path provided is invalid",
+    })
+  }
 
   await fs.writeFile(join(process.env.UPLOAD_DIR, filePath), Buffer.from(await file.arrayBuffer()))
 }
@@ -32,17 +36,14 @@ export const saveFile = async (filePath: string, file: File, fileType: FileCateg
 /**
  * Validate that a file path is safe
  * @param filePath The path to validate
+ * @returns Whether the path is safe
  */
-export const validateFilePath = (filePath: string) => {
+export const validateFilePath = (filePath: string): boolean => {
   // Normalize the path to move all the ../ to the front of the path
   // Apply regex to remove any ../ from the front of the path
   const safePath = path.normalize(filePath).replace(/^(\.\.(\/|\\|$))+/, "")
 
-  if (safePath !== filePath) {
-    throw new Error("Invalid path", {
-      cause: "The path provided is invalid",
-    })
-  }
+  return safePath === filePath
 }
 
 /**
