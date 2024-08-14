@@ -30,7 +30,7 @@ const RootLayout = ({
         <Theme accentColor="blue" grayColor="gray">
           <ThemePanel defaultOpen={false} />
           <Navbar />
-          <Flex className="page-container" align="center" justify="center" direction="column">
+          <Flex className="page-container" align="center" justify="center" direction="column" height="100%">
             <Box className="page-content">
               <Client>{children}</Client>
             </Box>

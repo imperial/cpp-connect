@@ -142,7 +142,9 @@ export default {
   },
 
   // TODO: uncomment when we have a login page
-  // pages: {
-  //   signIn: "/login"
-  // },
+  pages: {
+    signIn: "/auth/login",
+    verifyRequest: "/auth/login/partner/success",
+    error: "/auth/error",
+  },
 } satisfies NextAuthConfig

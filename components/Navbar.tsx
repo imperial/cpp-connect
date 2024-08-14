@@ -43,7 +43,7 @@ const Navbar = async () => {
         {session?.user ? (
           <ProfileDropdown user={session.user} />
         ) : (
-          <Link href="/login" className={styles.link}>
+          <Link href="/auth/login" className={styles.link}>
             <span>Log In</span>
           </Link>
         )}
