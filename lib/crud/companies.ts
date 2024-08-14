@@ -2,7 +2,7 @@
 
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { auth } from "@/auth"
-import { fileExists, getFileExtension, saveFile } from "@/lib/saveFile"
+import { getFileExtension, isFileNotEmpty, saveFile } from "@/lib/saveFile"
 import { FileCategory } from "@/lib/types"
 
 import prisma from "../db"
@@ -233,7 +233,7 @@ export const updateCompany = async (
   }
 
   // Save the banner and logo (if they exist)
-  if (fileExists(banner)) {
+  if (isFileNotEmpty(banner)) {
     const bannerPath = `banners/${slug}.${getFileExtension(banner)}`
 
     try {
@@ -252,7 +252,7 @@ export const updateCompany = async (
     }
   }
 
-  if (fileExists(logo)) {
+  if (isFileNotEmpty(logo)) {
     const logoPath = `logos/${slug}.${getFileExtension(logo)}`
 
     try {

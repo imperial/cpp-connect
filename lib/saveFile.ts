@@ -33,7 +33,7 @@ export const saveFile = async (path: string, file: File, fileType: FileCategory)
  */
 const validateFile = (file: File, fileType: FileCategory) => {
   // Check file exists
-  if (!fileExists(file)) {
+  if (!isFileNotEmpty(file)) {
     throw new Error("No file provided", {
       cause: "The file provided is empty",
     })
@@ -60,10 +60,11 @@ const validateFile = (file: File, fileType: FileCategory) => {
 }
 
 /**
- * Check if a file exists
+ * Check if a file is not empty.
+ * Can be used to check if a file has been provided
  * @param file The file to check
  */
-export const fileExists = (file: File) => file.size > 0
+export const isFileNotEmpty = (file: File) => file.size > 0
 
 /**
  * Get the file extension of a file
