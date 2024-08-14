@@ -2,6 +2,7 @@ import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import { EditCompany } from "@/components/EditCompany"
 import Link from "@/components/Link"
+import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
 
 import { CompanyManagement } from "./CompanyManagement"
@@ -101,7 +102,9 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
                   <BsBuildings size="80%" />
                 )}
               </Card>
-              <EditCompany prevCompanyProfile={companyProfile} />
+              <RestrictedAreaCompany companyId={companyProfile.id} showMessage={false}>
+                <EditCompany prevCompanyProfile={companyProfile} />
+              </RestrictedAreaCompany>
             </Flex>
 
             <Heading color="blue" size="7" mt="4">
