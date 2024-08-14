@@ -1,4 +1,6 @@
+import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import Chip from "@/components/Chip"
+import Link from "@/components/Link"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -6,7 +8,6 @@ import styles from "./page.module.scss"
 import { Box, Button, Card, Flex, Grid, Heading, Inset, Text } from "@radix-ui/themes"
 import { format } from "date-fns"
 import Image from "next/image"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import React from "react"
 import { BsBoxArrowUpRight, BsBriefcase, BsCalendar, BsCheckCircle, BsPinMap, BsXCircle } from "react-icons/bs"
@@ -45,10 +46,7 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
             <Heading size="8">{opportunity.position}</Heading>
 
             <Box>
-              At{" "}
-              <Link href={`/companies/${encodeURIComponent(opportunity.company.name)}`}>
-                {opportunity.company.name}
-              </Link>
+              At <Link href={getCompanyLink(opportunity.company)}>{opportunity.company.name}</Link>
             </Box>
           </Box>
 

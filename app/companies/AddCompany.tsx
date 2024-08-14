@@ -1,99 +1,75 @@
 "use client"
 
+import { InfoCallout } from "@/components/Callouts"
+import { PlusButton } from "@/components/buttons/PlusButton"
+import { FormInModal } from "@/components/forms/FormInModal"
+import { GenericFormModal } from "@/components/modals/GenericFormModal"
 import { createCompany } from "@/lib/crud/companies"
 
-import { CrossCircledIcon, ExclamationTriangleIcon, PlusIcon } from "@radix-ui/react-icons"
-import { Button, Callout, Dialog, Flex, Spinner, Text, TextField } from "@radix-ui/themes"
-import React, { use, useCallback, useEffect, useState } from "react"
-import { useFormState } from "react-dom"
+import { SLUG_START, slugComputer } from "./slug"
 
-const AddCompanyForm = ({ setOpenState }: { setOpenState: (v: boolean) => void }) => {
-  const [formState, formAction] = useFormState(createCompany, { message: "" })
-  const [isSubmitting, setIsSubmitting] = useState(false)
+import { InfoCircledIcon } from "@radix-ui/react-icons"
+import { Flex, Text, TextField, Tooltip } from "@radix-ui/themes"
+import { useState } from "react"
 
-  useEffect(() => {
-    if (formState?.status === "success") {
-      setOpenState(false)
-    }
-    setIsSubmitting(false)
-  }, [formState, setOpenState])
-
-  const clientSideSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true)
-  }, [])
+const AddCompanyForm = ({ close }: { close: () => void }) => {
+  const [companyName, setCompanyName] = useState("")
+  const [slug, setSlug] = useState(companyName.toLowerCase().replace(/\s/g, "-"))
 
   return (
-    <form onSubmit={clientSideSubmit} action={formAction}>
-      <Flex direction="column" gap="3">
-        <Callout.Root>
-          <Callout.Icon>
-            <ExclamationTriangleIcon />
-          </Callout.Icon>
-          <Callout.Text>You can add company users & other details after this step.</Callout.Text>
-        </Callout.Root>
-        {formState?.status === "error" && formState?.message && (
-          <Callout.Root color="red">
-            <Callout.Icon>
-              <CrossCircledIcon />
-            </Callout.Icon>
-            <Callout.Text>{formState.message}</Callout.Text>
-          </Callout.Root>
-        )}
-        <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            Company name*
-          </Text>
-          <TextField.Root name="name" placeholder="E.g., Imperial" required />
-        </label>
-        <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            Website*
-          </Text>
-          <TextField.Root name="website" placeholder="E.g., https://imperial.ic.ac.uk" required type="url" />
-        </label>
-        <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            Sector*
-          </Text>
-          <TextField.Root name="sector" placeholder="E.g., Education" required />
-        </label>
-      </Flex>
-      <Flex gap="3" mt="4" justify="end">
-        <Button
-          variant="soft"
-          color="gray"
-          onClick={e => {
-            e.preventDefault()
-            setOpenState(false)
+    <FormInModal action={createCompany} close={close}>
+      <InfoCallout message="You can add company users & other details after this step." />
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Company name*
+        </Text>
+        <TextField.Root
+          name="name"
+          placeholder="E.g., Imperial"
+          required
+          value={companyName}
+          onChange={e => {
+            setCompanyName(e.target.value)
+            setSlug(slugComputer(e.target.value))
           }}
-        >
-          Cancel
-        </Button>
-        <Button type="submit">{isSubmitting ? <Spinner /> : "Save"}</Button>
-      </Flex>
-    </form>
+        />
+      </label>
+      <label>
+        <Flex direction="row" align="center" gap="1">
+          <Text as="div" size="2" mb="1" weight="bold">
+            Slug*
+          </Text>
+          <Tooltip content="Used to access the company in the URL. Must be unique.">
+            <InfoCircledIcon style={{ marginBottom: "3px" }} />
+          </Tooltip>
+        </Flex>
+        <Flex direction="row" gap="1" align="center">
+          <Text>{SLUG_START}</Text>
+          <TextField.Root name="slug" required value={slug} onChange={e => setSlug(e.target.value)} />
+        </Flex>
+      </label>
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Website*
+        </Text>
+        <TextField.Root name="website" placeholder="E.g., https://imperial.ic.ac.uk" required type="url" />
+      </label>
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Sector*
+        </Text>
+        <TextField.Root name="sector" placeholder="E.g., Education" required />
+      </label>
+    </FormInModal>
   )
 }
 
 export const AddCompany = () => {
-  const [openState, setOpenState] = useState(false)
-
   return (
-    <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
-      <Dialog.Trigger>
-        <Button size="3">
-          <PlusIcon />
-          <Text>Add Company</Text>
-        </Button>
-      </Dialog.Trigger>
-      <Dialog.Content maxWidth="60vw">
-        <Dialog.Title>Add new company</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
-          Add a new company profile
-        </Dialog.Description>
-
-        <AddCompanyForm setOpenState={setOpenState} />
-      </Dialog.Content>
-    </Dialog.Root>
+    <GenericFormModal title="Add new company" description="Add a new company profile" form={AddCompanyForm}>
+      <PlusButton>
+        <Text>Add Company</Text>
+      </PlusButton>
+    </GenericFormModal>
   )
 }

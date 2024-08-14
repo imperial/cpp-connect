@@ -1,6 +1,7 @@
 import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import { EditCompany } from "@/components/EditCompany"
+import Link from "@/components/Link"
 import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
 
@@ -8,7 +9,7 @@ import { CompanyManagement } from "./CompanyManagement"
 import styles from "./page.module.scss"
 
 import * as Collapsible from "@radix-ui/react-collapsible"
-import { Box, Card, Flex, Heading, Inset, Link, Tabs, Text } from "@radix-ui/themes"
+import { Box, Card, Flex, Heading, Inset, Tabs, Text } from "@radix-ui/themes"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
@@ -38,10 +39,10 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
   }
 }
 
-const CompanyPage = async ({ params }: { params: { name: string } }) => {
+const CompanyPage = async ({ params }: { params: { slug: string } }) => {
   const companyProfile = await prisma.companyProfile.findFirst({
     where: {
-      name: decodeURIComponent(params.name),
+      slug: decodeURIComponent(params.slug),
     },
     include: {
       opportunities: {
@@ -75,7 +76,7 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
-            src={companyProfile.banner}
+            src={companyProfile.banner ?? ""}
             alt={`${companyProfile.name} banner`}
             width={0}
             height={0}
@@ -175,7 +176,7 @@ const CompanyPage = async ({ params }: { params: { name: string } }) => {
             <Box p="8">
               <OpportunityTable
                 opportunities={companyProfile.opportunities}
-                keptColumns={["position", "location", "type", "createdAt"]}
+                columns={["position", "location", "type", "createdAt"]}
               />
             </Box>
           </Tabs.Content>

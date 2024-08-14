@@ -1,6 +1,8 @@
 model CompanyProfile {
   id            Int           @id @default(autoincrement())
-  name          String        @unique
+  name          String
+  // Unique slug for the company for use in URLs
+  slug          String        @unique
   summary       String        @default("")
   sector        String
   logo          String        @default("")
@@ -23,14 +25,14 @@ enum OpportunityType {
 }
 
 model Opportunity {
-  id          Int            @id @default(autoincrement())
-  company     CompanyProfile @relation(fields: [companyID], references: [id], onDelete: Cascade)
+  id          Int             @id @default(autoincrement())
+  company     CompanyProfile  @relation(fields: [companyID], references: [id], onDelete: Cascade)
   companyID   Int
   position    String
   location    String
   available   Boolean
   type        OpportunityType
-  createdAt   DateTime       @default(now())
+  createdAt   DateTime        @default(now())
   link        String
   description String
 }
@@ -44,12 +46,12 @@ model Event {
   dateEnd   DateTime?
 
   shortDescription String
-  richSummary  String
+  richSummary      String
   // No. spaces available at the event
-  spaces   Int
-  location String
+  spaces           Int
+  location         String
   // Singular outbound link to the event
-  link     String
+  link             String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
