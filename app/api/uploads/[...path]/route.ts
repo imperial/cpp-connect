@@ -22,7 +22,17 @@ export const GET = async (req: NextRequest) => {
     return new Response("UPLOAD_DIR not set", { status: 500 })
   }
 
-  const filePath = path.join(process.env.UPLOAD_DIR, req.nextUrl.pathname.slice("/api/uploads".length))
+  const suffix = req.nextUrl.pathname.slice("/api/uploads".length)
+
+  // Normalize the path to move all the ../ to the front of the path
+  // Apply regex to remove any ../ from the front of the path
+  const safeSuffix = path.normalize(suffix).replace(/^(\.\.(\/|\\|$))+/, "")
+
+  if (safeSuffix !== suffix) {
+    return new Response("Invalid path", { status: 400 })
+  }
+
+  const filePath = path.join(process.env.UPLOAD_DIR, safeSuffix)
 
   try {
     const fileBuffer = await fs.readFile(filePath)

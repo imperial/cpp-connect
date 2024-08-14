@@ -187,6 +187,11 @@ export const updateCompany = async (
 
   if (!slug) {
     return { message: "Slug is required.", status: "error" }
+  } else if (!slug.match(/^[a-z0-9\-]+$/)) {
+    return {
+      message: "Invalid characters in slug. Only lowercase alphanumeric characters and hyphens are allowed.",
+      status: "error",
+    }
   }
 
   if (!website) {
