@@ -36,7 +36,7 @@ const radixTheme = [
 
 type CSS = React.CSSProperties
 
-export default function Email() {
+export default function Email({ company }: { company: string }) {
   return (
     <Html lang="en" dir="ltr">
       <Head>
@@ -44,33 +44,26 @@ export default function Email() {
       </Head>
       <Preview>Email preview text</Preview>
       <Body style={main}>
-        <Container style={{ background: "#ffffff" }}>
-          {/*  */}
+        <Container style={mainBodyContainer}>
           <Section>
-            <Row
-              style={{
-                backgroundColor: radixTheme[9],
-                width: "100%",
-                padding: "1.875rem",
-              }}
-            >
-              <Column style={{ textAlign: "left" }}>
+            <Row style={logoBanner}>
+              <Column style={left}>
                 <Img
-                  style={{ display: "inline", height: "3.5rem" }}
+                  style={{ ...logoBannerImg, height: "3.5rem" }}
                   src="/static/images/cpp-connect-logo.png"
                   alt="cpp connect logo"
                   height={50}
                 />
               </Column>
-              <Column style={{ textAlign: "right" }}>
-                <Img style={{ display: "inline" }} src="/static/images/imperial-logo.png" alt="imperial logo" />
+              <Column style={right}>
+                <Img style={logoBannerImg} src="/static/images/imperial-logo.png" alt="imperial logo" />
               </Column>
             </Row>
           </Section>
-          <Container style={{ padding: "1.875rem" }}>
+          <Container style={textBodyContainer}>
             <Section>
               <Heading as="h1" style={heading}>
-                Hi Imperial,
+                Hi {company},
               </Heading>
               <Text style={text}>Click the link below to sign into CPP Connect:</Text>
             </Section>
@@ -86,7 +79,7 @@ export default function Email() {
             <Hr style={hr} />
 
             <Section>
-              <Text style={footerText}>Magic link sent by Imperial’s CPP Connect to Imperial.</Text>
+              <Text style={footerText}>Magic link sent by Imperial’s CPP Connect to {company}.</Text>
               <Text style={footerText}>
                 Imperial College London
                 <br />
@@ -110,6 +103,17 @@ const main = {
   fontFamily:
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 } satisfies CSS
+
+const mainBodyContainer = { background: "#ffffff" } satisfies CSS
+const textBodyContainer = { padding: "1.875rem" } satisfies CSS
+
+const logoBanner = {
+  backgroundColor: radixTheme[9],
+  width: "100%",
+  padding: "1.875rem",
+} satisfies CSS
+
+const logoBannerImg = { display: "inline" } satisfies CSS
 
 const heading = {
   marginTop: "0",
@@ -138,6 +142,14 @@ const buttonText = {
 
 const centre = {
   textAlign: "center",
+} satisfies CSS
+
+const right = {
+  textAlign: "right",
+} satisfies CSS
+
+const left = {
+  textAlign: "left",
 } satisfies CSS
 
 const hr = {
