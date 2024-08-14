@@ -70,7 +70,7 @@ const columns = [
   }),
 ]
 
-const CompaniesTable = ({ companies }: { companies: CompanyRow[] }) => {
+const CompanyTable = ({ companies }: { companies: CompanyRow[] }) => {
   const { data: session } = useSession()
 
   const invisibleColumns =
@@ -83,4 +83,4 @@ const CompaniesTable = ({ companies }: { companies: CompanyRow[] }) => {
   return <TanstackTable data={companies} columns={columns} invisibleColumns={invisibleColumns} />
 }
 
-export default CompaniesTable
+export default CompanyTable
