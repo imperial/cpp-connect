@@ -7,6 +7,7 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Img,
   Preview,
@@ -32,6 +33,8 @@ const radixTheme = [
   "#112b6b",
 ]
 // raixTheme[8] is ICL_BLUE
+
+type CSS = React.CSSProperties
 
 export default function Email() {
   return (
@@ -71,13 +74,28 @@ export default function Email() {
               </Heading>
               <Text style={text}>Click the link below to sign into CPP Connect:</Text>
             </Section>
-            <Section>
-              <Button style={button} href="https://example.com">
-                Sign in
+            <Section style={centre}>
+              <Button style={{ ...button, margin: "0.75rem 0" }} href="https://example.com">
+                <Text style={buttonText}>Sign In</Text>
               </Button>
             </Section>
             <Section>
               <Text style={text}>If you did not send this email you can safely ignore it.</Text>
+            </Section>
+
+            <Hr style={hr} />
+
+            <Section>
+              <Text style={footerText}>Magic link sent by Imperial’s CPP Connect to Imperial.</Text>
+              <Text style={footerText}>
+                Imperial College London
+                <br />
+                Exhibition Road
+                <br />
+                London
+                <br />
+                SW7 2AZ
+              </Text>
             </Section>
           </Container>
         </Container>
@@ -89,18 +107,17 @@ export default function Email() {
 const main = {
   backgroundColor: radixTheme[7],
   width: "100%",
-  height: "100%",
   fontFamily:
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-}
+} satisfies CSS
 
 const heading = {
   marginTop: "0",
-}
+} satisfies CSS
 
 const text = {
   fontSize: "1rem",
-}
+} satisfies CSS
 
 const button = {
   width: "170px",
@@ -110,4 +127,25 @@ const button = {
   backgroundColor: radixTheme[9],
   textDecoration: "none",
   color: radixTheme[0],
-}
+  borderRadius: "6px",
+} satisfies CSS
+
+const buttonText = {
+  ...text,
+  marginTop: "12px",
+  marginBottom: "12px",
+} satisfies CSS
+
+const centre = {
+  textAlign: "center",
+} satisfies CSS
+
+const hr = {
+  borderTop: "1px solid #C2C2C2",
+} satisfies CSS
+
+const footerText = {
+  color: "#606060",
+  fontSize: "0.875rem",
+  lineHeight: 1.4,
+} satisfies CSS
