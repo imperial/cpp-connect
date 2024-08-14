@@ -34,7 +34,11 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
         <Inset clip="padding-box" p="0" side="top">
           <Image
             unoptimized
-            src={opportunity.company.banner ? `/api/uploads/${opportunity.company.banner}` : ""}
+            src={
+              opportunity.company.banner
+                ? `/api/uploads/${opportunity.company.banner}`
+                : "https://picsum.photos/1200/300?grayscale"
+            }
             alt={`${opportunity.company.name} banner`}
             width={0}
             height={0}
