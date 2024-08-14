@@ -7,7 +7,7 @@ import { getCompanyLink } from "./getCompanyLink"
 import styles from "./table.module.scss"
 
 import type { CompanyProfile } from "@prisma/client"
-import { Box } from "@radix-ui/themes"
+import { Flex } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
@@ -19,18 +19,23 @@ const columnHelper = createColumnHelper<CompanyRow>()
 const columns = [
   columnHelper.accessor("logo", {
     cell: info => (
-      <Box width="4em" height="2.5em">
-        <Image
-          unoptimized
-          src={info.getValue() ? `/api/uploads/${info.getValue()}` : ""}
-          alt="profile teaser"
-          width={100}
-          height={100}
-          className={styles.teaser}
-        />
-      </Box>
+      <Flex align="center" justify="center">
+        <Flex justify="center" height="4em" maxWidth="8em">
+          {info.getValue() && (
+            <Image
+              unoptimized
+              src={`/api/uploads/${info.getValue()}`}
+              alt="profile teaser"
+              width={100}
+              height={100}
+              className={styles.teaser}
+            />
+          )}
+        </Flex>
+      </Flex>
     ),
     header: "",
+    enableSorting: false,
   }),
   columnHelper.accessor("name", {
     cell: info => <Link href={getCompanyLink(info.row.original)}>{info.getValue()}</Link>,
@@ -52,13 +57,13 @@ const columns = [
     sortingFn: "text",
   }),
   columnHelper.accessor("size", {
-    cell: info => info.getValue() ?? "N/A",
+    cell: info => info.getValue(),
     header: "Size",
     id: "size",
     sortingFn: "alphanumeric",
   }),
   columnHelper.accessor("hq", {
-    cell: info => info.getValue() ?? "N/A",
+    cell: info => info.getValue(),
     header: "HQ",
     id: "hq",
     sortingFn: "text",
