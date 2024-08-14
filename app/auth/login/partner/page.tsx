@@ -1,8 +1,11 @@
 "use client"
 
+import { decodeSignInToken } from "@/lib/util/signInTokens"
+
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons"
 import { Button, Flex, Heading, Separator, Spinner, Text, TextField } from "@radix-ui/themes"
 import { signIn } from "next-auth/react"
+import { useSearchParams } from "next/navigation"
 import { useEffect, useState, useTransition } from "react"
 
 const LoginPage = () => {
@@ -13,6 +16,9 @@ const LoginPage = () => {
   useEffect(() => {
     setIsClient(true)
   }, [])
+
+  const searchParams = useSearchParams()
+  const token = searchParams.get("token")
 
   if (!isClient) {
     return (
@@ -49,6 +55,7 @@ const LoginPage = () => {
           name="email"
           type="email"
           required
+          defaultValue={!!token ? decodeSignInToken(token ?? "") : ""}
         >
           <TextField.Slot>
             <EnvelopeClosedIcon height="16" width="16" />
