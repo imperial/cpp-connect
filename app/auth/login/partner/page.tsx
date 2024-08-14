@@ -1,27 +1,57 @@
-import { SuccessCallout } from "@/components/Callouts"
-import Link from "@/components/Link"
+"use client"
 
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons"
-import { Button, Flex, Heading, Separator, Text, TextField } from "@radix-ui/themes"
-import Image from "next/image"
-import React from "react"
+import { Button, Flex, Heading, Separator, Spinner, Text, TextField } from "@radix-ui/themes"
+import { signIn } from "next-auth/react"
+import { useEffect, useState, useTransition } from "react"
 
-const LoginPage = async () => {
+const LoginPage = () => {
+  const [isPending, startTransition] = useTransition()
+
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    return (
+      <Flex direction="row" gap="3">
+        <Spinner />
+        Loading
+      </Flex>
+    )
+  }
+
+  const signInEmail = async (data: FormData) => {
+    const email = data.get("email")
+
+    if (!email) {
+      return
+    }
+
+    startTransition(async () => {
+      await signIn("nodemailer", { email })
+    })
+  }
+
   return (
-    <Flex pl="9" pr="9" direction="column" gap="4" align="center" justify="center">
-      <Heading as="h1">Partner Sign In</Heading>
-      <Text>Enter your email address below:</Text>
-      <Separator size="4" mt="3" mb="3" />
-      <SuccessCallout message="Check your inbox for a link to sign in" style={{ width: "100%" }} />
-      <TextField.Root placeholder="someone@example.com" style={{ width: "100%" }}>
-        <TextField.Slot>
-          <EnvelopeClosedIcon height="16" width="16" />
-        </TextField.Slot>
-      </TextField.Root>
+    <Flex pl="9" pr="9" direction="column" gap="3" align="center" justify="center" asChild>
+      <form action={signInEmail}>
+        <Heading as="h1">Partner Sign In</Heading>
+        <Text>Enter your email address below:</Text>
+        <Separator size="4" mt="3" mb="3" />
 
-      <Button size="3" style={{ width: "100%" }}>
-        Sign In With Magic Link
-      </Button>
+        <TextField.Root size="3" placeholder="someone@example.com" style={{ width: "100%" }} name="email">
+          <TextField.Slot>
+            <EnvelopeClosedIcon height="16" width="16" />
+          </TextField.Slot>
+        </TextField.Root>
+
+        <Button size="3" style={{ width: "100%" }}>
+          {isPending ? <Spinner /> : "Sign In With Magic Link"}
+        </Button>
+      </form>
     </Flex>
   )
 }

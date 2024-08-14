@@ -1,4 +1,4 @@
-import { signIn } from "@/auth"
+import { auth, signIn } from "@/auth"
 import Link from "@/components/Link"
 
 import styles from "./page.module.scss"
