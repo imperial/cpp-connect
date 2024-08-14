@@ -164,7 +164,7 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             <Box p="8">
               <OpportunityTable
                 opportunities={companyProfile.opportunities}
-                keptColumns={["position", "location", "type", "createdAt"]}
+                columns={["position", "location", "type", "createdAt"]}
               />
             </Box>
           </Tabs.Content>
