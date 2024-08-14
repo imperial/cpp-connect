@@ -18,11 +18,11 @@ const columnHelper = createColumnHelper<OpportunityRow>()
 
 const OpportunityTable = ({
   opportunities,
-  keptColumns,
+  columns,
   nonFilterable = [],
 }: {
   opportunities: OpportunityRow[]
-  keptColumns: ColumnName[]
+  columns: ColumnName[]
   nonFilterable?: ColumnName[]
 }) => {
   const columnDefsMap: Partial<Record<ColumnName, ColumnDef<OpportunityRow, any>>> = {
@@ -67,7 +67,7 @@ const OpportunityTable = ({
     }
   }
 
-  const columnDefs = keptColumns.map((columnName: ColumnName) =>
+  const columnDefs = columns.map((columnName: ColumnName) =>
     columnHelper.accessor(
       columnName,
       columnDefsMap[columnName] ?? {
