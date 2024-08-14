@@ -23,7 +23,6 @@ export const saveFile = async (path: string, file: File, fileType: FileCategory)
   // Validate the file
   validateFile(file, fileType)
 
-  console.log(join(process.env.UPLOAD_DIR, path))
   await fs.writeFile(join(process.env.UPLOAD_DIR, path), Buffer.from(await file.arrayBuffer()))
 }
 

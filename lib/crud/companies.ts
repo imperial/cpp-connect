@@ -237,7 +237,6 @@ export const updateCompany = async (
     const bannerPath = `banners/${slug}.${getFileExtension(banner)}`
 
     try {
-      console.log(bannerPath)
       await saveFile(bannerPath, banner, FileCategory.IMAGE)
     } catch (e: any) {
       return { message: e?.cause, status: "error" }
