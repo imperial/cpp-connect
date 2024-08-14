@@ -17,6 +17,9 @@ import {
 } from "@react-email/components"
 import * as React from "react"
 
+/**
+ * radixTheme[9] is the Imperial Blue
+ */
 const radixTheme = [
   "#ffffff",
   "#fcfdff",
@@ -32,7 +35,6 @@ const radixTheme = [
   "#1a51ea",
   "#112b6b",
 ]
-// raixTheme[8] is ICL_BLUE
 
 type CSS = React.CSSProperties
 
