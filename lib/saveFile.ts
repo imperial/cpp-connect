@@ -33,7 +33,7 @@ export const saveFile = async (filePath: string, file: File, fileType: FileCateg
  * Validate that a file path is safe
  * @param filePath The path to validate
  */
-const validateFilePath = (filePath: string) => {
+export const validateFilePath = (filePath: string) => {
   // Normalize the path to move all the ../ to the front of the path
   // Apply regex to remove any ../ from the front of the path
   const safePath = path.normalize(filePath).replace(/^(\.\.(\/|\\|$))+/, "")
