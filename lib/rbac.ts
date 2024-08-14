@@ -2,50 +2,39 @@
  * RBAC helper functions
  */
 import { auth } from "@/auth"
+import prisma from "@/lib/db"
 import { FormPassBackState, ServerActionDecorator, ServerSideFormHandler } from "@/lib/types"
 
 import { Role, User } from "@prisma/client"
+import { Session } from "next-auth"
 
-const roleIs = (roleToCheck: Role, role: Role | Role[]): boolean => {
-  if (Array.isArray(role)) {
-    return role.includes(roleToCheck)
-  }
-  return role === roleToCheck
+async function additionalCheckUser<Args extends any[] = any[]>(session: Session, ...args: Args): Promise<boolean> {
+  return args.length > 0 && session.user.id === args[0]
 }
 
-export const restrictAdmin = (role: Role): boolean => roleIs(role, Role.ADMIN)
-export const restrictCompany = (
-  user: Pick<User, "associatedCompanyId" | "role"> | null,
-  expectedCompanyId: number,
-): boolean => {
-  if (!user) {
-    return false
-  }
-
-  switch (user.role) {
-    case Role.ADMIN:
-      return true
-    case Role.COMPANY:
-      return (
-        typeof user.associatedCompanyId !== "undefined" &&
-        !!expectedCompanyId &&
-        user.associatedCompanyId === expectedCompanyId
-      )
-    default:
-      return false
-  }
+async function additionalCheckCompany<Args extends any[] = any[]>(session: Session, ...args: Args): Promise<boolean> {
+  const user: Pick<User, "associatedCompanyId"> | null = await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+    select: {
+      associatedCompanyId: true,
+    },
+  })
+  return args.length > 0 && user?.associatedCompanyId === args[0]
 }
-export const restrictUser = (role: Role): boolean => roleIs(role, [Role.STUDENT, Role.ADMIN])
 
-function protectedAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = []>(
+function protectedAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
   allowedRoles: Role[],
+  additionalCheck: (session: Session, ...args: Args) => Promise<boolean> = async () => true,
 ): ServerActionDecorator<T, Args> {
   function actionDecorator(action: ServerSideFormHandler<T, Args>) {
     async function actionCaller(prevState: T, formData: FormData, ...args: Args): Promise<T> {
       const session = await auth()
       if (
         typeof session?.user.role !== "undefined" &&
-        (session.user.role === Role.ADMIN || allowedRoles.includes(session.user.role))
+        (session.user.role === Role.ADMIN ||
+          (allowedRoles.includes(session.user.role) && (await additionalCheck(session, ...args))))
       ) {
         return await action(prevState, formData, ...args)
       }
@@ -56,19 +45,19 @@ function protectedAction<T extends FormPassBackState = FormPassBackState, Args e
   return actionDecorator
 }
 
-export function studentOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = []>(
+export function studentOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
   action: ServerSideFormHandler<T, Args>,
 ) {
-  return protectedAction<T, Args>([Role.STUDENT])(action)
+  return protectedAction<T, Args>([Role.STUDENT], additionalCheckUser<Args>)(action)
 }
 
-export function companyOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = []>(
+export function companyOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
   action: ServerSideFormHandler<T, Args>,
 ) {
-  return protectedAction<T, Args>([Role.COMPANY])(action)
+  return protectedAction<T, Args>([Role.COMPANY], additionalCheckCompany<Args>)(action)
 }
 
-export function adminOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = []>(
+export function adminOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
   action: ServerSideFormHandler<T, Args>,
 ) {
   return protectedAction<T, Args>([Role.ADMIN])(action)

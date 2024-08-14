@@ -1,8 +1,7 @@
 "use server"
 
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
-import { auth } from "@/auth"
-import { adminOnlyAction, companyOnlyAction, restrictCompany } from "@/lib/rbac"
+import { adminOnlyAction, companyOnlyAction } from "@/lib/rbac"
 
 import prisma from "../db"
 import { FormPassBackState, ServerSideFormHandler } from "../types"
@@ -70,92 +69,59 @@ export const createCompany = adminOnlyAction(async (prevState, formData) => {
   }
 })
 
-const checkAuthorizedForCompanyCRUD = async (companyId: number): Promise<FormPassBackState> => {
-  const session = await auth()
-  if (!session) {
-    return { message: "You must be logged in to perform this action.", status: "error" }
+export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = companyOnlyAction<
+  FormPassBackState & { signInURL?: string }
+>(async (prevState, formData) => {
+  const email = formData.get("email")?.toString().trim()
+  const baseUrl = formData.get("baseUrl")?.toString().trim()
+  const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
+  if (!email) {
+    return { message: "Email is required.", status: "error" }
   }
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.user?.id,
-    },
-    select: {
-      associatedCompanyId: true,
-      role: true,
-    },
+  if (!baseUrl) {
+    return { message: "Base URL is required.", status: "error" }
+  }
+  if (companyId === -1) {
+    return { message: "Company ID is required.", status: "error" }
+  }
+
+  // Get slug
+  const company = await prisma.companyProfile.findUnique({
+    where: { id: companyId },
+    select: { slug: true },
   })
-  if (!restrictCompany(user, companyId)) {
-    return { message: "Operation denied - unauthorised.", status: "error" }
+
+  if (!company) {
+    return { message: "Company not found.", status: "error" }
   }
-  return { status: "success", message: "success" }
-}
 
-export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = companyOnlyAction(
-  async (prevState, formData) => {
-    const email = formData.get("email")?.toString().trim()
-    const baseUrl = formData.get("baseUrl")?.toString().trim()
-    const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
-    if (!email) {
-      return { message: "Email is required.", status: "error" }
-    }
-    if (!baseUrl) {
-      return { message: "Base URL is required.", status: "error" }
-    }
-    if (companyId === -1) {
-      return { message: "Company ID is required.", status: "error" }
-    }
-
-    // Get slug
-    const company = await prisma.companyProfile.findUnique({
-      where: { id: companyId },
-      select: { slug: true },
+  try {
+    await prisma.user.create({
+      data: {
+        email: email.toString(),
+        role: Role.COMPANY,
+        associatedCompanyId: companyId,
+      },
     })
-
-    if (!company) {
-      return { message: "Company not found.", status: "error" }
+  } catch (e: any) {
+    if (e?.code === "P2002" && e?.meta?.target?.includes("email")) {
+      return { message: "A user with that email already exists. Please supply a different email.", status: "error" }
+    } else {
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
+  }
 
-    const res = await checkAuthorizedForCompanyCRUD(companyId)
+  revalidatePath(getCompanyLink(company))
 
-    if (res.status === "error") {
-      return res
-    }
-
-    // Create the user
-    try {
-      await prisma.user.create({
-        data: {
-          email: email.toString(),
-          role: Role.COMPANY,
-          associatedCompanyId: companyId,
-        },
-      })
-    } catch (e: any) {
-      if (e?.code === "P2002" && e?.meta?.target?.includes("email")) {
-        return { message: "A user with that email already exists. Please supply a different email.", status: "error" }
-      } else {
-        return { message: "A database error occurred. Please try again later.", status: "error" }
-      }
-    }
-
-    revalidatePath(getCompanyLink(company))
-
-    return {
-      status: "success",
-      message: "Company user created successfully.",
-      signInURL: encodeSignInUrl(email, baseUrl),
-    }
-  },
-)
+  return {
+    status: "success",
+    message: "Company user created successfully.",
+    signInURL: encodeSignInUrl(email, baseUrl),
+  }
+})
 
 export const updateCompany = companyOnlyAction(
   async (prevState: FormPassBackState, formData: FormData, id: number): Promise<FormPassBackState> => {
-    const res = await checkAuthorizedForCompanyCRUD(id)
-
-    if (res.status === "error") {
-      return res
-    }
-    // Validate things
     const name = formData.get("name")?.toString().trim()
     const slug = formData.get("slug")?.toString().trim()
     const summary = formData.get("summary")?.toString().trim()
@@ -234,12 +200,6 @@ export const updateCompany = companyOnlyAction(
 
 export const deleteCompany = companyOnlyAction(
   async (prevState: FormPassBackState, formData: FormData, name: string, id: number): Promise<FormPassBackState> => {
-    const res = await checkAuthorizedForCompanyCRUD(id)
-
-    if (res.status === "error") {
-      return res
-    }
-
     if (!name) return { message: "Server error: company name is null.", status: "error" }
 
     const enteredName = formData.get("name")?.toString().trim()
