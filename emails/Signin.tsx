@@ -36,39 +36,50 @@ const radixTheme = [
 
 type CSS = React.CSSProperties
 
-export default function Email({ company }: { company: string }) {
+export default function SignInEmail({
+  company,
+  signInURL,
+  emailMode,
+}: {
+  company: string | undefined
+  signInURL: string
+  emailMode: boolean
+}) {
+  const logoURL = emailMode ? "cid:cpp-connect.png" : "/static/images/cpp-connect-logo.png"
+  const imperialLogoURL = emailMode ? "cid:imperial.png" : "/static/images/imperial-logo.png"
+
   return (
     <Html lang="en" dir="ltr">
       <Head>
-        <title>Sign In to CPP Connect</title>
+        <title>Sign in to CPP Connect</title>
       </Head>
-      <Preview>Email preview text</Preview>
+      <Preview>Sign in to CPP Connect</Preview>
       <Body style={main}>
         <Container style={mainBodyContainer}>
           <Section>
             <Row style={logoBanner}>
               <Column style={left}>
                 <Img
-                  style={{ ...logoBannerImg, height: "3.5rem" }}
-                  src="/static/images/cpp-connect-logo.png"
+                  style={{ ...logoBannerImg, height: "3.5rem", paddingRight: "20px" }}
+                  src={logoURL}
                   alt="cpp connect logo"
                   height={50}
                 />
               </Column>
               <Column style={right}>
-                <Img style={logoBannerImg} src="/static/images/imperial-logo.png" alt="imperial logo" />
+                <Img style={{ ...logoBannerImg, paddingLeft: "20px" }} src={imperialLogoURL} alt="imperial logo" />
               </Column>
             </Row>
           </Section>
           <Container style={textBodyContainer}>
             <Section>
               <Heading as="h1" style={heading}>
-                Hi {company},
+                Hi {company ? company : "there"},
               </Heading>
               <Text style={text}>Click the link below to sign into CPP Connect:</Text>
             </Section>
             <Section style={centre}>
-              <Button style={{ ...button, margin: "0.75rem 0" }} href="https://example.com">
+              <Button style={{ ...button, margin: "0.75rem 0" }} href={signInURL}>
                 <Text style={buttonText}>Sign In</Text>
               </Button>
             </Section>
@@ -79,7 +90,10 @@ export default function Email({ company }: { company: string }) {
             <Hr style={hr} />
 
             <Section>
-              <Text style={footerText}>Magic link sent by Imperial’s CPP Connect to {company}.</Text>
+              <Text style={footerText}>
+                Magic link sent by Imperial’s CPP Connect{company ? ` to ${company}` : ""}.<br />
+                CPP Connect will never ask you for a password or your personal information.
+              </Text>
               <Text style={footerText}>
                 Imperial College London
                 <br />
