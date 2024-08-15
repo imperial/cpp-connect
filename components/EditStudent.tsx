@@ -240,7 +240,7 @@ export const EditStudent = ({ prevStudentProfile }: { prevStudentProfile: Studen
 
   return (
     <GenericFormModal title="Edit Your Profile" form={formRenderer}>
-      <IconButton size="3" mt="3">
+      <IconButton size="3">
         <Pencil1Icon />
       </IconButton>
     </GenericFormModal>
