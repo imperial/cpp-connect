@@ -12,11 +12,7 @@ async function additionalCheckUser<Args extends any[] = any[]>(session: Session,
   return args.length > 0 && session.user.id === args[0]
 }
 
-async function additionalCheckCompany<Args extends unknown[]>(
-  session: Session,
-  companyID: number,
-  ...args: Args
-): Promise<boolean> {
+async function additionalCheckCompany(session: Session, companyID: number, ...args: any[]): Promise<boolean> {
   const user: Pick<User, "associatedCompanyId"> | null = await prisma.user.findUnique({
     where: {
       id: session.user.id,
@@ -25,7 +21,7 @@ async function additionalCheckCompany<Args extends unknown[]>(
       associatedCompanyId: true,
     },
   })
-  return args.length > 0 && user?.associatedCompanyId === companyID
+  return typeof user !== "undefined" && !!user && user.associatedCompanyId === companyID
 }
 
 /**
@@ -34,7 +30,7 @@ async function additionalCheckCompany<Args extends unknown[]>(
  * @param additionalCheck an optional function that can be used to perform additional checks on the session (e.g. checking if the user is the owner of a resource)
  * @returns a decorator that can be used to protect an action
  */
-function protectedAction<T extends FormPassBackState, Args extends any[]>(
+function protectedAction<T extends FormPassBackState, Args extends unknown[]>(
   allowedRoles: Role[],
   additionalCheck: (session: Session, ...args: Args) => Promise<boolean> = async () => true,
 ): ServerActionDecorator<T, Args> {
@@ -76,7 +72,7 @@ type ExtractSecondPart<T extends [number, ...any[]]> = T extends [number, ...inf
 export function companyOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends unknown[] = unknown[]>(
   action: ServerSideFormHandler<T, [companyID: number, ...Args]>,
 ) {
-  return protectedAction<T, [companyID: number, ...Args]>([Role.COMPANY], additionalCheckCompany<unknown[]>)(action)
+  return protectedAction<T, [companyID: number, ...Args]>([Role.COMPANY], additionalCheckCompany)(action)
 }
 
 export function adminOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
