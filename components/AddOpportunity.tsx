@@ -4,7 +4,8 @@ import { Dropdown } from "@/components/Dropdown"
 import { PlusButton } from "@/components/buttons/PlusButton"
 import { FormInModal } from "@/components/forms/FormInModal"
 import { GenericFormModal } from "@/components/modals/GenericFormModal"
-import { createCompany } from "@/lib/crud/companies"
+import { createOpportunity, updateOpportunity } from "@/lib/crud/opportunities"
+import { FormPassBackState } from "@/lib/types"
 
 import { Opportunity, OpportunityType } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
@@ -12,34 +13,31 @@ import { Card, IconButton, Text, TextField } from "@radix-ui/themes"
 import dynamic from "next/dynamic"
 import { useState } from "react"
 
-// enum OpportunityType {
-//   Internship
-//   Placement
-//   Graduate
-// }
-
-// model Opportunity {
-//   position    String
-//   location    String
-//   type        OpportunityType
-//   link        String
-//   description String
-// }
-
-// company as an argument to action
-
 const defaultOpportunityType = OpportunityType.Internship
 
 const MdEditor = dynamic(() => import("@/components/MdEditor"), { ssr: false })
 
-const AddOpportunityForm = ({ close, prevOpportunity }: { close: () => void; prevOpportunity?: Opportunity }) => {
+const AddOpportunityForm = ({
+  close,
+  prevOpportunity,
+  companyID,
+}: {
+  close: () => void
+  prevOpportunity?: Opportunity
+  companyID?: number
+}) => {
   const [opportunityType, setOpportunityType] = useState<OpportunityType>(
     prevOpportunity?.type ?? defaultOpportunityType,
   )
   const [description, setDescription] = useState(prevOpportunity?.description ?? "")
+  const createOpportunityWithArgs = async (prevState: FormPassBackState, formData: FormData) =>
+    createOpportunity(prevState, formData, companyID ?? -1)
+
+  const updateOpportunityWithArgs = async (prevState: FormPassBackState, formData: FormData) =>
+    updateOpportunity(prevState, formData, prevOpportunity?.id ?? -1)
 
   return (
-    <FormInModal action={createCompany} close={close}>
+    <FormInModal action={prevOpportunity ? updateOpportunityWithArgs : createOpportunityWithArgs} close={close}>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Position*
@@ -81,6 +79,7 @@ const AddOpportunityForm = ({ close, prevOpportunity }: { close: () => void; pre
           }))}
           onValueChange={(type: string) => setOpportunityType(type as OpportunityType)}
         ></Dropdown>
+        <input type="hidden" readOnly name="type" value={opportunityType} />
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
@@ -89,14 +88,21 @@ const AddOpportunityForm = ({ close, prevOpportunity }: { close: () => void; pre
         <Card>
           <MdEditor markdown={description} onChange={setDescription} />
         </Card>
+        <input type="hidden" readOnly name="description" value={description} />
       </label>
     </FormInModal>
   )
 }
 
-export const AddOpportunity = ({ prevOpportunity }: { prevOpportunity?: Opportunity }) => {
+export const AddOpportunity = ({
+  prevOpportunity,
+  companyID,
+}: {
+  prevOpportunity?: Opportunity
+  companyID?: number
+}) => {
   const formRenderer = ({ close }: { close: () => void }) => (
-    <AddOpportunityForm close={close} prevOpportunity={prevOpportunity} />
+    <AddOpportunityForm close={close} prevOpportunity={prevOpportunity} companyID={companyID} />
   )
 
   return (

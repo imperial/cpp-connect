@@ -1,15 +1,16 @@
 import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
+import { auth } from "@/auth"
 import { AddOpportunity } from "@/components/AddOpportunity"
 import { EditCompany } from "@/components/EditCompany"
 import Link from "@/components/Link"
-import RestrictedArea from "@/components/rbac/RestrictedArea"
-import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
+import RestrictedAreaCompany, { checkCompany } from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
 
 import { CompanyManagement } from "./CompanyManagement"
 import styles from "./page.module.scss"
 
+import { Role } from "@prisma/client"
 import * as Collapsible from "@radix-ui/react-collapsible"
 import { Box, Card, Flex, Heading, Inset, Tabs, Text } from "@radix-ui/themes"
 import Image from "next/image"
@@ -42,6 +43,7 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
 }
 
 const CompanyPage = async ({ params }: { params: { slug: string } }) => {
+  const session = await auth()
   const companyProfile = await prisma.companyProfile.findFirst({
     where: {
       slug: decodeURIComponent(params.slug),
@@ -191,21 +193,25 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             </Box>
           </Tabs.Content>
           <Tabs.Content value="opportunities">
-            <RestrictedArea showMessage={false}>
+            <RestrictedAreaCompany companyId={companyProfile.id} showMessage={false}>
               <Card variant="surface" className={styles.opportunityPanel}>
                 <Flex gap="3" direction="row" align="center" justify="between" p="2">
                   <Heading size="6">Opportunities panel</Heading>
                   <Flex gap="3" direction="row" align="center">
-                    <AddOpportunity />
+                    <AddOpportunity companyID={companyProfile.id} slug={params.slug} />
                   </Flex>
                 </Flex>
               </Card>
-            </RestrictedArea>
+            </RestrictedAreaCompany>
 
             <Box p="8">
               <OpportunityTable
                 opportunities={companyProfile.opportunities}
-                columns={["position", "location", "type", "createdAt"]}
+                columns={
+                  session?.user.role === Role.ADMIN || checkCompany(companyProfile.id)
+                    ? ["position", "location", "type", "createdAt", "editButton"]
+                    : ["position", "location", "type", "createdAt"]
+                }
               />
             </Box>
           </Tabs.Content>

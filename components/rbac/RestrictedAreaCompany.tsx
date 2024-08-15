@@ -6,7 +6,7 @@ import { Role } from "@prisma/client"
 import { Session } from "next-auth"
 import React from "react"
 
-const checkCompany = (companyId: number) => async (session: Session) => {
+export const checkCompany = (companyId: number) => async (session: Session) => {
   if (!session?.user?.id) {
     return false
   }

@@ -1,5 +1,6 @@
 "use client"
 
+import { AddOpportunity } from "@/components/AddOpportunity"
 import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 
@@ -13,7 +14,7 @@ type OpportunityRow = {
   company: CompanyProfile
 } & Opportunity
 
-type ColumnName = keyof OpportunityRow | `company.${keyof CompanyProfile}`
+type ColumnName = keyof OpportunityRow | `company.${keyof CompanyProfile}` | "editButton"
 
 const columnHelper = createColumnHelper<OpportunityRow>()
 
@@ -61,6 +62,13 @@ const OpportunityTable = ({
         header: "Posted",
         sortingFn: "datetime",
         id: "posted",
+        enableColumnFilter: false,
+      },
+      editButton: {
+        cell: info => <AddOpportunity prevOpportunity={info.row.original} />,
+        header: "",
+        id: "editButton",
+        enableSorting: false,
         enableColumnFilter: false,
       },
     }
