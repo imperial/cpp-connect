@@ -73,7 +73,7 @@ export function companyOnlyAction<T extends FormPassBackState = FormPassBackStat
   return protectedAction<T, [companyID: number, ...Args]>([Role.COMPANY], additionalCheckCompany)(action)
 }
 
-export function adminOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
+export function adminOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends unknown[] = unknown[]>(
   action: ServerSideFormHandler<T, Args>,
 ) {
   return protectedAction<T, Args>([Role.ADMIN])(action)
