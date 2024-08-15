@@ -66,7 +66,10 @@ export const FormWithAction: React.FC<FormWithActionProps> = ({
     },
     [action, onSuccess],
   )
-  const [formState, formAction] = useFormState(wrappedAction, defaultState ?? { message: "" })
+  const [formState, formAction] = useFormState(
+    wrappedAction,
+    defaultState ?? ({ status: "error", message: "" } as FormPassBackState),
+  )
 
   return (
     <form action={formAction}>

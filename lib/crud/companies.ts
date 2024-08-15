@@ -166,7 +166,7 @@ export const updateCompany = companyOnlyAction(
         return { message: "Company not found.", status: "error" }
       }
 
-      const prevSlug = prevCompany.slug
+      var prevSlug = prevCompany.slug
 
       await prisma.companyProfile.update({
         where: { id },
