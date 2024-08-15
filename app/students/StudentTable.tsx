@@ -36,7 +36,7 @@ const StudentTable = ({
         sortingFn: "text",
       },
       graduationDate: {
-        cell: info => info.getValue()?.getFullYear() ?? "N/A",
+        cell: info => info.getValue()?.getFullYear(),
         header: "Graduating",
         sortingFn: "datetime",
         id: "graduationDate",
@@ -84,8 +84,8 @@ const StudentTable = ({
         columnHelper.accessor(
           columnName,
           columnDefsMap[columnName] ?? {
-            // default column definition, so that all company values are also accessible
-            cell: info => info.getValue() || "N/A",
+            // default column definition, so that all student values are also accessible
+            cell: info => info.getValue(),
             header: columnName,
             sortingFn: "alphanumeric",
             id: columnName,
