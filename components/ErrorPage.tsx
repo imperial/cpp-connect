@@ -1,6 +1,6 @@
 import styles from "./error.module.scss"
 
-import { Button, Flex } from "@radix-ui/themes"
+import { Flex, Heading } from "@radix-ui/themes"
 import React from "react"
 
 export default function ErrorPage({
@@ -15,8 +15,12 @@ export default function ErrorPage({
   return (
     <div className={styles.container}>
       <Flex justify="center" align="center" direction="column" gap="3">
-        <h1 className={styles.header}>{title}</h1>
-        <h2 className={styles.message}>{message}</h2>
+        <Heading as="h1" className={styles.header}>
+          {title}
+        </Heading>
+        <Heading as="h2" className={styles.message}>
+          {message}
+        </Heading>
         {children}
       </Flex>
     </div>
