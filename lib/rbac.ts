@@ -8,8 +8,8 @@ import { FormPassBackState, ServerActionDecorator, ServerSideFormHandler } from 
 import { Role, User } from "@prisma/client"
 import { Session } from "next-auth"
 
-async function additionalCheckUser<Args extends any[] = any[]>(session: Session, ...args: Args): Promise<boolean> {
-  return args.length > 0 && session.user.id === args[0]
+async function additionalCheckStudent(session: Session, studentID: string, ...args: any[]): Promise<boolean> {
+  return session.user.id === studentID
 }
 
 async function additionalCheckCompany(session: Session, companyID: number, ...args: any[]): Promise<boolean> {
@@ -53,16 +53,14 @@ function protectedAction<T extends FormPassBackState, Args extends unknown[]>(
 
 /**
  * The additionalCheck function for this decorator checks if the student is the owner of the resource (e.g. if they are not attempting to change someone else's profile)
- * @param action the action to protect
+ * @param action the action to protect. It's 3rd argument must be the user ID.
  * @returns a decorator that can be used to protect an action that can only be accessed by students
  */
-export function studentOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
-  action: ServerSideFormHandler<T, Args>,
+export function studentOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends unknown[] = unknown[]>(
+  action: ServerSideFormHandler<T, [studentID: string, ...Args]>,
 ) {
-  return protectedAction<T, Args>([Role.STUDENT], additionalCheckUser<Args>)(action)
+  return protectedAction<T, [studentID: string, ...Args]>([Role.STUDENT], additionalCheckStudent)(action)
 }
-
-type ExtractSecondPart<T extends [number, ...any[]]> = T extends [number, ...infer U] ? U : never
 
 /**
  * The additionalCheck function for this decorator checks if the company is the owner of the resource (e.g. if they are not attempting to change someone else's company profile)
