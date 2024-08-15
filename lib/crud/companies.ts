@@ -121,7 +121,7 @@ export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { sign
 })
 
 export const updateCompany = companyOnlyAction(
-  async (prevState: FormPassBackState, formData: FormData, id: number): Promise<FormPassBackState> => {
+  async (_: FormPassBackState, formData: FormData, id: number): Promise<FormPassBackState> => {
     const name = formData.get("name")?.toString().trim()
     const slug = formData.get("slug")?.toString().trim()
     const summary = formData.get("summary")?.toString().trim()
