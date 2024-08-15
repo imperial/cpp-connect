@@ -2,6 +2,7 @@
 
 // Error boundaries must be Client Components
 import ErrorPage from "@/components/ErrorPage"
+import { AnimatedButton } from "@/components/buttons/AnimatedButton"
 
 import { Button } from "@radix-ui/themes"
 import React, { useEffect } from "react"
@@ -14,14 +15,14 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
 
   return (
     <ErrorPage title="Oops!" message="Something went wrong!">
-      <Button
+      <AnimatedButton
         onClick={
           // Attempt to recover by trying to re-render the segment
           () => reset()
         }
       >
         Try again
-      </Button>
+      </AnimatedButton>
     </ErrorPage>
   )
 }

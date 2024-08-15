@@ -7,27 +7,4 @@
     font-size: 1rem;
     color: var(--gray-9);
   }
-  .backButton {
-    background-color: var(--blue-9);
-    -webkit-transition: -webkit-transform 0.3s ease-out;
-    -moz-transition: -moz-transform 0.3s ease-out;
-    -o-transition: -o-transform 0.3s ease-out;
-    -ms-transition: -ms-transform 0.3s ease-out;
-    transition: transform 0.3s ease-out;
-    &:hover {
-      background-color: var(--blue-9);
-      border: solid 2px var(--blue-10);
-      box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.6);
-      -webkit-transform: scale(1.05);
-      -moz-transform: scale(1.05);
-      -o-transform: scale(1.05);
-      transform: scale(1.05);
-
-      -webkit-transition: -webkit-transform 0.3s ease-out;
-      -moz-transition: -moz-transform 0.3s ease-out;
-      -o-transition: -o-transform 0.3s ease-out;
-      -ms-transition: -ms-transform 0.3s ease-out;
-      transition: transform 0.3s ease-out;
-    }
-  }
 }

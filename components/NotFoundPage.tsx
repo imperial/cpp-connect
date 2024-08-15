@@ -1,3 +1,5 @@
+import { AnimatedButton } from "@/components/buttons/AnimatedButton"
+
 import styles from "./error.module.scss"
 
 import { Button, Flex } from "@radix-ui/themes"
@@ -18,9 +20,9 @@ export default function NotFoundPage({
       <Flex justify="center" align="center" direction="column" gap="3">
         <h1 className={styles.header}>404</h1>
         <h2 className={styles.message}>{message}</h2>
-        <Button className={styles.backButton} asChild>
+        <AnimatedButton asChild>
           <Link href={btnUrl}>{btnName}</Link>
-        </Button>
+        </AnimatedButton>
       </Flex>
     </div>
   )
