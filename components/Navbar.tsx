@@ -1,6 +1,7 @@
 import { auth } from "@/auth"
 import Link from "@/components/Link"
 import ProfileDropdown from "@/components/ProfileDropdown"
+import getUserAvatar from "@/lib/getUserAvatar"
 
 import styles from "./navbar.module.scss"
 
@@ -41,7 +42,7 @@ const Navbar = async () => {
         </Flex>
 
         {session?.user ? (
-          <ProfileDropdown user={session.user} />
+          <ProfileDropdown user={{ ...session.user, image: await getUserAvatar(session.user) }} />
         ) : (
           <Link href="/auth/login" className={styles.link}>
             <span>Log In</span>

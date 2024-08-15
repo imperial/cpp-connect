@@ -9,6 +9,7 @@ const UserAvatar = ({ user, size }: { user: User; size: "1" | "2" | "3" | "4" | 
   <Avatar
     alt="Profile"
     radius="full"
+    src={`/api/uploads/${user.image}`}
     size={size}
     style={{ fontSize: `${parseInt(size) / 3.5}rem` }}
     className={styles.Avatar}
