@@ -11,7 +11,7 @@ const FileInput = ({ name, header }: { name: string; header: string }) => {
 
   return (
     <>
-      <Text as="div" size="2" mb="1" weight="bold">
+      <Text as="div" size="2" weight="bold">
         {header}
       </Text>
       <Button asChild>

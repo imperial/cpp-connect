@@ -18,14 +18,14 @@ interface DeletableChipProps extends BaseChipProps {
 
 type ChipProps = NonDeletableChipProps | DeletableChipProps
 
-const Chip = async (props: ChipProps) => {
+const Chip = (props: ChipProps) => {
   const { label, deletable } = props
 
   return (
     <Flex className={styles.chip} gap="2">
       <Text>{label}</Text>
       {deletable && (
-        <IconButton color="gray" size="1" className={styles.deleteButton} onClick={props.onDelete}>
+        <IconButton type="button" color="gray" size="1" className={styles.deleteButton} onClick={props.onDelete}>
           <BsX />
         </IconButton>
       )}
