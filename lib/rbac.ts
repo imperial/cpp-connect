@@ -24,6 +24,12 @@ async function additionalCheckCompany<Args extends any[] = any[]>(session: Sessi
   return args.length > 0 && user?.associatedCompanyId === args[0]
 }
 
+/**
+ * Usage: you can create your custom decorators by calling this function with the allowed roles and an optional additionalCheck function
+ * @param allowedRoles a list of Roles that are allowed to access the action
+ * @param additionalCheck an optional function that can be used to perform additional checks on the session (e.g. checking if the user is the owner of a resource)
+ * @returns a decorator that can be used to protect an action
+ */
 function protectedAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
   allowedRoles: Role[],
   additionalCheck: (session: Session, ...args: Args) => Promise<boolean> = async () => true,
@@ -45,12 +51,22 @@ function protectedAction<T extends FormPassBackState = FormPassBackState, Args e
   return actionDecorator
 }
 
+/**
+ * The additionalCheck function for this decorator checks if the student is the owner of the resource (e.g. if they are not attempting to change someone else's profile)
+ * @param action the action to protect
+ * @returns a decorator that can be used to protect an action that can only be accessed by students
+ */
 export function studentOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
   action: ServerSideFormHandler<T, Args>,
 ) {
   return protectedAction<T, Args>([Role.STUDENT], additionalCheckUser<Args>)(action)
 }
 
+/**
+ * The additionalCheck function for this decorator checks if the company is the owner of the resource (e.g. if they are not attempting to change someone else's company profile)
+ * @param action the action to protect
+ * @returns a decorator that can be used to protect an action that can only be accessed by companies
+ */
 export function companyOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
   action: ServerSideFormHandler<T, Args>,
 ) {
