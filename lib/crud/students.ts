@@ -27,6 +27,7 @@ export const updateStudent = async (
   const gradMonth = formData.get("gradMonth")?.toString().trim()
   const gradYear = formData.get("gradYear")?.toString().trim()
   const cv = formData.get("cv") as File
+  const avatar = formData.get("avatar") as File
   const lookingFor = formData.get("lookingFor")?.toString().trim() || undefined // dropdown default value is ""
   const bio = formData.get("bio")?.toString().trim()
   let skills = formData.get("skills")?.toString().trim()
@@ -67,8 +68,6 @@ export const updateStudent = async (
     return { message: "A database error occured. Please try again later.", status: "error" }
   }
 
-  revalidatePath(`/students/${await getStudentShortcode({ id: userId })}`)
-
   // Save the cv (if it exists)
   if (isFileNotEmpty(cv)) {
     const cvPath = `cvs/${randomBytes(16).toString("hex")}.${getFileExtension(cv)}`
@@ -103,6 +102,43 @@ export const updateStudent = async (
       return { message: "A database error occured. Please try again later.", status: "error" }
     }
   }
+
+  // Save the avatar (if it exists)
+  if (isFileNotEmpty(avatar)) {
+    const avatarPath = `avatars/${randomBytes(16).toString("hex")}.${getFileExtension(avatar)}`
+
+    // save the new avatar to the file system
+    try {
+      await saveFile(avatarPath, avatar, FileCategory.IMAGE)
+    } catch (e: any) {
+      return { message: e?.cause, status: "error" }
+    }
+
+    // delete old avatar if it exists
+    try {
+      const oldAvatar = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { image: true },
+      })
+      if (oldAvatar?.image) {
+        await deleteFile(oldAvatar.image)
+      }
+    } catch (e: any) {
+      return { message: "An error occured while deleting the old avatar. Please try again later.", status: "error" }
+    }
+
+    // update the student profile with the new avatar
+    try {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { image: avatarPath },
+      })
+    } catch (e: any) {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
+  }
+
+  revalidatePath(`/students/${await getStudentShortcode({ id: userId })}`)
 
   return {
     status: "success",

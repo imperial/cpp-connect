@@ -101,6 +101,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
       </label>
 
       <FileInput name="cv" header="CV" />
+      <FileInput name="avatar" header="Profile Picture" />
 
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
