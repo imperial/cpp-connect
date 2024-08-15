@@ -1,4 +1,5 @@
 import Chip from "@/components/Chip"
+import { EditStudent } from "@/components/EditStudent"
 import Link from "@/components/Link"
 import UserAvatar from "@/components/UserAvatar"
 import RestrictedArea from "@/components/rbac/RestrictedArea"
@@ -64,6 +65,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
 
   return (
     <RestrictedArea allowedRoles={["STUDENT"]}>
+      <EditStudent prevStudentProfile={studentProfile} />
       <Flex gap="3" direction="row" wrap="wrap">
         <Card variant="ghost" className={styles.shortDetailsCard}>
           <Flex direction="column" align="center" gap="5">
