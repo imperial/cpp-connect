@@ -1,10 +1,11 @@
 {
-  "name": "impaas-template",
+  "name": "cpp-connect",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "dev:email": "email dev",
+    "prebuild": "npm run db:generate",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
