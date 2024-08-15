@@ -1,15 +1,17 @@
 services:
   app:
-    image: edtech/cpp-connect
+    image: imperial/cpp-connect
     pull_policy: never
     build:
       context: .
       dockerfile: Dockerfile
+    user: node
     depends_on:
       - database
     environment:
       - DATABASE_URL=postgres://user:pass@database:5432/cpp-connect
       - UPLOAD_DIR=uploads
+      - NODE_ENV=development
     ports:
       - "3000:3000"
     volumes:
