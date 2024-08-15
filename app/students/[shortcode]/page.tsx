@@ -80,7 +80,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
               </Flex>
 
               {studentProfile.cv && (
-                <Link href={studentProfile.cv} target="_blank" mb={"0"}>
+                <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" mb={"0"}>
                   <BsFileEarmarkText size="35" title="download cv" color="black" />
                 </Link>
               )}
@@ -89,13 +89,12 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
             {studentProfile.course && <Text>{studentProfile.course}</Text>}
 
             {(studentProfile.lookingFor || studentProfile.graduationDate) && (
-              <Box>
+              <Flex gap="2" direction="column">
                 {studentProfile.lookingFor && <Text>Looking for {formatLookingFor(studentProfile.lookingFor)}</Text>}
-                <br />
                 {studentProfile.graduationDate && (
                   <Text>Graduating in {format(studentProfile.graduationDate, "MMMM, yyyy")}</Text>
                 )}
-              </Box>
+              </Flex>
             )}
 
             <Flex align="center" gap="2">

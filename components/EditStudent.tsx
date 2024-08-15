@@ -36,6 +36,24 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
   const [interest, setInterest] = useState("")
   const [interests, setInterests] = useState(prevStudentProfile.interests)
 
+  const addSkill = () => {
+    if (skills.includes(skill.trim())) return
+
+    if (skill) {
+      setSkills([...skills, skill])
+    }
+    setSkill("")
+  }
+
+  const addInterest = () => {
+    if (interests.includes(interest.trim())) return
+
+    if (interest) {
+      setInterests([...interests, interest])
+    }
+    setInterest("")
+  }
+
   return (
     <FormInModal action={updateStudentWithID} close={close}>
       <label>
@@ -118,17 +136,18 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
         </Text>
         <Flex gap="2" direction="column">
           <Flex gap="2">
-            <TextField.Root value={skill} onChange={e => setSkill(e.target.value)} placeholder="e.g. Python" />
-            <IconButton
-              size="2"
-              onClick={() => {
-                if (skill) {
-                  setSkills([...skills, skill.trim()])
+            <TextField.Root
+              value={skill}
+              onChange={e => setSkill(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  addSkill()
                 }
-                setSkill("")
               }}
-              type="button"
-            >
+              placeholder="e.g. Python"
+            />
+            <IconButton size="2" onClick={addSkill} type="button">
               <PlusIcon />
             </IconButton>
           </Flex>
@@ -139,7 +158,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
             {!skills.length && <Text>No skills added yet</Text>}
           </Flex>
         </Flex>
-        <input type="hidden" readOnly name="skills" value={skills} />
+        <input type="hidden" readOnly name="skills" value={JSON.stringify(skills)} />
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
@@ -150,18 +169,15 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
             <TextField.Root
               value={interest}
               onChange={e => setInterest(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  addInterest()
+                }
+              }}
               placeholder="e.g. Game development"
             />
-            <IconButton
-              size="2"
-              onClick={() => {
-                if (interest) {
-                  setInterests([...interests, interest.trim()])
-                }
-                setInterest("")
-              }}
-              type="button"
-            >
+            <IconButton size="2" onClick={addInterest} type="button">
               <PlusIcon />
             </IconButton>
           </Flex>
@@ -177,7 +193,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
             {!interests.length && <Text>No interests added yet</Text>}
           </Flex>
         </Flex>
-        <input type="hidden" readOnly name="interests" value={interests} />
+        <input type="hidden" readOnly name="interests" value={JSON.stringify(interests)} />
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
@@ -185,7 +201,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
         </Text>
         <TextField.Root
           name="website"
-          placeholder="site@example.com"
+          placeholder="https://site@example.com"
           defaultValue={prevStudentProfile.personalWebsite ?? undefined}
           type="url"
         />
