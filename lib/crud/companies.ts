@@ -117,7 +117,7 @@ export const createCompanyUser = companyOnlyAction<FormPassBackState & { signInU
 )
 
 export const updateCompany = companyOnlyAction(
-  async (_: FormPassBackState, formData: FormData, id: number): Promise<FormPassBackState> => {
+  async (_: FormPassBackState, formData: FormData, companyId: number): Promise<FormPassBackState> => {
     const name = formData.get("name")?.toString().trim()
     const slug = formData.get("slug")?.toString().trim()
     const summary = formData.get("summary")?.toString().trim()
@@ -155,7 +155,7 @@ export const updateCompany = companyOnlyAction(
     try {
       // Get previous slug
       const prevCompany = await prisma.companyProfile.findUnique({
-        where: { id },
+        where: { id: companyId },
         select: { slug: true },
       })
       if (!prevCompany) {
@@ -165,7 +165,7 @@ export const updateCompany = companyOnlyAction(
       var prevSlug = prevCompany.slug
 
       await prisma.companyProfile.update({
-        where: { id },
+        where: { id: companyId },
         data: { name, summary, website, sector, size, hq, email, phone, founded, slug },
       })
     } catch (e: any) {
@@ -195,7 +195,7 @@ export const updateCompany = companyOnlyAction(
 )
 
 export const deleteCompany = companyOnlyAction(
-  async (_: FormPassBackState, formData: FormData, id: number, name: string): Promise<FormPassBackState> => {
+  async (_: FormPassBackState, formData: FormData, companyId: number, name: string): Promise<FormPassBackState> => {
     if (!name) return { message: "Server error: company name is null.", status: "error" }
 
     const enteredName = formData.get("name")?.toString().trim()
@@ -209,7 +209,7 @@ export const deleteCompany = companyOnlyAction(
     // Now add the company to the database
     try {
       await prisma.companyProfile.delete({
-        where: { id },
+        where: { id: companyId },
       })
     } catch (e: any) {
       return { message: "A database error occurred. Please try again later.", status: "error" }
