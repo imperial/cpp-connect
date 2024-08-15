@@ -10,7 +10,7 @@ import { Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-export const createCompany = adminOnlyAction(async (prevState, formData) => {
+export const createCompany = adminOnlyAction(async (_, formData) => {
   // Validate things
   const name = formData.get("name")?.toString().trim()
   const slug = formData.get("slug")?.toString().trim()
