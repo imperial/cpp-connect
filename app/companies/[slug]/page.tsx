@@ -1,7 +1,9 @@
 import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
+import { AddOpportunity } from "@/components/AddOpportunity"
 import { EditCompany } from "@/components/EditCompany"
 import Link from "@/components/Link"
+import RestrictedArea from "@/components/rbac/RestrictedArea"
 import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
 
@@ -88,7 +90,6 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             className={styles.banner}
           />
         </Inset>
-
         <Flex direction="column">
           <Flex gap="3" direction="column" className={styles.companyInfo} p="4" pt="0">
             <Flex className={styles.companyLogoContainer} justify="between">
@@ -190,6 +191,17 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             </Box>
           </Tabs.Content>
           <Tabs.Content value="opportunities">
+            <RestrictedArea showMessage={false}>
+              <Card variant="surface" className={styles.opportunityPanel}>
+                <Flex gap="3" direction="row" align="center" justify="between" p="2">
+                  <Heading size="6">Opportunities panel</Heading>
+                  <Flex gap="3" direction="row" align="center">
+                    <AddOpportunity />
+                  </Flex>
+                </Flex>
+              </Card>
+            </RestrictedArea>
+
             <Box p="8">
               <OpportunityTable
                 opportunities={companyProfile.opportunities}
