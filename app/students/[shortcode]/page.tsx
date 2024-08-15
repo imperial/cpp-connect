@@ -79,15 +79,6 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
               </Flex>
             </Flex>
 
-            {studentProfile.cv && (
-              <Flex align="center" gap="2" asChild>
-                <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" underline="none">
-                  <BsFileEarmarkText title="download cv" color="black" />
-                  <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}'s CV</Text>
-                </Link>
-              </Flex>
-            )}
-
             {studentProfile.course && <Text>{studentProfile.course}</Text>}
 
             {(studentProfile.lookingFor || studentProfile.graduationDate) && (
@@ -99,6 +90,14 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
               </Flex>
             )}
 
+            {studentProfile.cv && (
+              <Flex align="center" gap="2" asChild>
+                <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" underline="none">
+                  <BsFileEarmarkText title="download cv" color="black" />
+                  <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}'s CV</Text>
+                </Link>
+              </Flex>
+            )}
             <Flex align="center" gap="2">
               <BsEnvelope />
               <Link href={`mailto:${studentProfile.user.email}`}>{studentProfile.user.email}</Link>
