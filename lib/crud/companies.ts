@@ -69,56 +69,52 @@ export const createCompany = adminOnlyAction(async (_, formData) => {
   }
 })
 
-export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = companyOnlyAction<
-  FormPassBackState & { signInURL?: string }
->(async (_, formData) => {
-  const email = formData.get("email")?.toString().trim()
-  const baseUrl = formData.get("baseUrl")?.toString().trim()
-  const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
-  if (!email) {
-    return { message: "Email is required.", status: "error" }
-  }
-  if (!baseUrl) {
-    return { message: "Base URL is required.", status: "error" }
-  }
-  if (companyId === -1) {
-    return { message: "Company ID is required.", status: "error" }
-  }
-
-  // Get slug
-  const company = await prisma.companyProfile.findUnique({
-    where: { id: companyId },
-    select: { slug: true },
-  })
-
-  if (!company) {
-    return { message: "Company not found.", status: "error" }
-  }
-
-  try {
-    await prisma.user.create({
-      data: {
-        email: email.toString(),
-        role: Role.COMPANY,
-        associatedCompanyId: companyId,
-      },
-    })
-  } catch (e: any) {
-    if (e?.code === "P2002" && e?.meta?.target?.includes("email")) {
-      return { message: "A user with that email already exists. Please supply a different email.", status: "error" }
-    } else {
-      return { message: "A database error occurred. Please try again later.", status: "error" }
+export const createCompanyUser = companyOnlyAction<FormPassBackState & { signInURL?: string }>(
+  async (_, formData, companyId: number) => {
+    const email = formData.get("email")?.toString().trim()
+    const baseUrl = formData.get("baseUrl")?.toString().trim()
+    if (!email) {
+      return { message: "Email is required.", status: "error" }
     }
-  }
+    if (!baseUrl) {
+      return { message: "Base URL is required.", status: "error" }
+    }
 
-  revalidatePath(getCompanyLink(company))
+    // Get slug
+    const company = await prisma.companyProfile.findUnique({
+      where: { id: companyId },
+      select: { slug: true },
+    })
 
-  return {
-    status: "success",
-    message: "Company user created successfully.",
-    signInURL: encodeSignInUrl(email, baseUrl),
-  }
-})
+    if (!company) {
+      return { message: "Company not found.", status: "error" }
+    }
+
+    try {
+      await prisma.user.create({
+        data: {
+          email: email.toString(),
+          role: Role.COMPANY,
+          associatedCompanyId: companyId,
+        },
+      })
+    } catch (e: any) {
+      if (e?.code === "P2002" && e?.meta?.target?.includes("email")) {
+        return { message: "A user with that email already exists. Please supply a different email.", status: "error" }
+      } else {
+        return { message: "A database error occurred. Please try again later.", status: "error" }
+      }
+    }
+
+    revalidatePath(getCompanyLink(company))
+
+    return {
+      status: "success",
+      message: "Company user created successfully.",
+      signInURL: encodeSignInUrl(email, baseUrl),
+    }
+  },
+)
 
 export const updateCompany = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, id: number): Promise<FormPassBackState> => {

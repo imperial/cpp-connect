@@ -12,7 +12,11 @@ async function additionalCheckUser<Args extends any[] = any[]>(session: Session,
   return args.length > 0 && session.user.id === args[0]
 }
 
-async function additionalCheckCompany<Args extends any[] = any[]>(session: Session, ...args: Args): Promise<boolean> {
+async function additionalCheckCompany<Args extends unknown[]>(
+  session: Session,
+  companyID: number,
+  ...args: Args
+): Promise<boolean> {
   const user: Pick<User, "associatedCompanyId"> | null = await prisma.user.findUnique({
     where: {
       id: session.user.id,
@@ -21,7 +25,7 @@ async function additionalCheckCompany<Args extends any[] = any[]>(session: Sessi
       associatedCompanyId: true,
     },
   })
-  return args.length > 0 && user?.associatedCompanyId === args[0]
+  return args.length > 0 && user?.associatedCompanyId === companyID
 }
 
 /**
@@ -30,7 +34,7 @@ async function additionalCheckCompany<Args extends any[] = any[]>(session: Sessi
  * @param additionalCheck an optional function that can be used to perform additional checks on the session (e.g. checking if the user is the owner of a resource)
  * @returns a decorator that can be used to protect an action
  */
-function protectedAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
+function protectedAction<T extends FormPassBackState, Args extends any[]>(
   allowedRoles: Role[],
   additionalCheck: (session: Session, ...args: Args) => Promise<boolean> = async () => true,
 ): ServerActionDecorator<T, Args> {
@@ -62,15 +66,17 @@ export function studentOnlyAction<T extends FormPassBackState = FormPassBackStat
   return protectedAction<T, Args>([Role.STUDENT], additionalCheckUser<Args>)(action)
 }
 
+type ExtractSecondPart<T extends [number, ...any[]]> = T extends [number, ...infer U] ? U : never
+
 /**
  * The additionalCheck function for this decorator checks if the company is the owner of the resource (e.g. if they are not attempting to change someone else's company profile)
- * @param action the action to protect
+ * @param action the action to protect. It's 3rd argument must be the company ID.
  * @returns a decorator that can be used to protect an action that can only be accessed by companies
  */
-export function companyOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(
-  action: ServerSideFormHandler<T, Args>,
+export function companyOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends unknown[] = unknown[]>(
+  action: ServerSideFormHandler<T, [companyID: number, ...Args]>,
 ) {
-  return protectedAction<T, Args>([Role.COMPANY], additionalCheckCompany<Args>)(action)
+  return protectedAction<T, [companyID: number, ...Args]>([Role.COMPANY], additionalCheckCompany<unknown[]>)(action)
 }
 
 export function adminOnlyAction<T extends FormPassBackState = FormPassBackState, Args extends any[] = any[]>(

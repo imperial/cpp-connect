@@ -3,13 +3,14 @@
 import { FormPassBackState, ServerSideFormHandler } from "@/lib/types"
 
 import { ErrorCallout } from "../Callouts"
+import { ToTuple } from "@prisma/client/runtime/library"
 import { Button, Flex, Spinner } from "@radix-ui/themes"
 import React, { useCallback, useTransition } from "react"
 import { useFormState } from "react-dom"
 
 export interface FormWithActionProps {
   /** The server-side action to be called when the form is submitted. Must conform to the `ServerSideFormHandler` type. */
-  action: ServerSideFormHandler
+  action: ServerSideFormHandler<FormPassBackState, []>
   /** The form fields to be displayed. */
   children: React.ReactNode
   /** The default state of the form, depending on what your form actions returns. Defaults to `{ message: "" }`. */
@@ -39,14 +40,14 @@ export interface FormWithActionProps {
  * @see FormWithActionProps for details on the props.
  * @see FormInModal for a version of this form for us in modals.
  */
-export const FormWithAction: React.FC<FormWithActionProps> = ({
+export function FormWithAction({
   action,
   children,
   defaultState,
   actionsSection,
   onSuccess,
   submitButton,
-}) => {
+}: FormWithActionProps) {
   const [isPending, startTransition] = useTransition()
   const wrappedAction = useCallback(
     (prevState: FormPassBackState, formData: FormData): Promise<FormPassBackState> => {
