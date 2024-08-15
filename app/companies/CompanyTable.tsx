@@ -7,8 +7,8 @@ import { getCompanyLink } from "./getCompanyLink"
 import styles from "./table.module.scss"
 
 import type { CompanyProfile } from "@prisma/client"
-import { Box } from "@radix-ui/themes"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import { Flex } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
 import { useMemo } from "react"
@@ -34,11 +34,23 @@ const CompanyTable = ({
     const columnDefsMap_: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = {
       logo: {
         cell: info => (
-          <Box width="4em" height="2.5em">
-            <Image src={info.getValue()} alt="profile teaser" width={100} height={100} className={styles.teaser} />
-          </Box>
+          <Flex align="center" justify="center">
+            <Flex justify="center" height="4em" maxWidth="8em">
+              {info.getValue() && (
+                <Image
+                  unoptimized
+                  src={`/api/uploads/${info.getValue()}`}
+                  alt="profile teaser"
+                  width={100}
+                  height={100}
+                  className={styles.teaser}
+                />
+              )}
+            </Flex>
+          </Flex>
         ),
         header: "",
+        enableSorting: false,
       },
       name: {
         cell: info => <Link href={getCompanyLink(info.row.original)}>{info.getValue()}</Link>,

@@ -4,6 +4,7 @@ import { SLUG_START, slugComputer } from "@/app/companies/slug"
 import { updateCompany } from "@/lib/crud/companies"
 import { ServerSideFormHandler } from "@/lib/types"
 
+import FileInput from "./FileInput"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
@@ -68,6 +69,11 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
         </Card>
         <input type="hidden" readOnly name="summary" value={summary} />
       </label>
+
+      <FileInput name="banner" header="Banner" />
+
+      <FileInput name="logo" header="Logo" />
+
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Website*

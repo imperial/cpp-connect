@@ -13,7 +13,7 @@ import { Box, Card, Flex, Heading, Inset, Tabs, Text } from "@radix-ui/themes"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
-import { BsEnvelope, BsGlobe, BsTelephone } from "react-icons/bs"
+import { BsBuildings, BsEnvelope, BsGlobe, BsTelephone } from "react-icons/bs"
 import Markdown from "react-markdown"
 import rehypeRaw from "rehype-raw"
 import remarkBreaks from "remark-breaks"
@@ -76,7 +76,12 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
       <Card className={styles.headerCard}>
         <Inset clip="padding-box" p="0" side="top">
           <Image
-            src={companyProfile.banner ?? ""}
+            unoptimized
+            src={
+              companyProfile.banner
+                ? `/api/uploads/${companyProfile.banner}`
+                : "https://picsum.photos/1200/300?grayscale"
+            }
             alt={`${companyProfile.name} banner`}
             width={0}
             height={0}
@@ -88,7 +93,17 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
           <Flex gap="3" direction="column" className={styles.companyInfo} p="4" pt="0">
             <Flex className={styles.companyLogoContainer} justify="between">
               <Card className={styles.companyLogo}>
-                <Image src={companyProfile.logo} alt={`${companyProfile.name} logo`} width={0} height={0} />
+                {companyProfile.logo ? (
+                  <Image
+                    unoptimized
+                    src={companyProfile.logo ? `/api/uploads/${companyProfile.logo}` : ""}
+                    alt={`${companyProfile.name} logo`}
+                    width={0}
+                    height={0}
+                  />
+                ) : (
+                  <BsBuildings size="80%" />
+                )}
               </Card>
               <RestrictedAreaCompany companyId={companyProfile.id} showMessage={false}>
                 <EditCompany prevCompanyProfile={companyProfile} />
@@ -143,13 +158,15 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
               <Collapsible.Root className={styles.CollapsibleRoot}>
                 <Box className={styles.summaryContainer}>
                   <CompanyDetail title="Summary">
-                    <Markdown
-                      className={styles.markdownContainer}
-                      remarkPlugins={[remarkGfm, remarkBreaks]}
-                      rehypePlugins={[rehypeRaw]}
-                    >
-                      {companyProfile.summary}
-                    </Markdown>
+                    {companyProfile.summary && (
+                      <Markdown
+                        className={styles.markdownContainer}
+                        remarkPlugins={[remarkGfm, remarkBreaks]}
+                        rehypePlugins={[rehypeRaw]}
+                      >
+                        {companyProfile.summary}
+                      </Markdown>
+                    )}
                   </CompanyDetail>
 
                   <CompanyDetail title="Website">

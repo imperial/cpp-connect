@@ -2,12 +2,16 @@
 
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { auth } from "@/auth"
+import { deleteFile } from "@/lib/deleteFile"
+import { getFileExtension, isFileNotEmpty, saveFile } from "@/lib/saveFile"
+import { FileCategory } from "@/lib/types"
 
 import prisma from "../db"
 import { restrictCompany } from "../rbac"
 import { FormPassBackState, ServerSideFormHandler } from "../types"
 import { encodeSignInUrl } from "../util/signInTokens"
 import { Role } from "@prisma/client"
+import { randomBytes } from "crypto"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
@@ -169,6 +173,8 @@ export const updateCompany = async (
   const name = formData.get("name")?.toString().trim()
   const slug = formData.get("slug")?.toString().trim()
   const summary = formData.get("summary")?.toString().trim()
+  const banner = formData.get("banner") as File
+  const logo = formData.get("logo") as File
   const website = formData.get("website")?.toString().trim()
   const sector = formData.get("sector")?.toString().trim()
   const size = formData.get("size")?.toString().trim()
@@ -183,6 +189,11 @@ export const updateCompany = async (
 
   if (!slug) {
     return { message: "Slug is required.", status: "error" }
+  } else if (!slug.match(/^[a-z0-9\-]+$/)) {
+    return {
+      message: "Invalid characters in slug. Only lowercase alphanumeric characters and hyphens are allowed.",
+      status: "error",
+    }
   }
 
   if (!website) {
@@ -224,6 +235,75 @@ export const updateCompany = async (
         status: "error",
       }
     } else {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
+  }
+
+  // Save the banner and logo (if they exist)
+  if (isFileNotEmpty(banner)) {
+    const bannerPath = `banners/${randomBytes(16).toString("hex")}.${getFileExtension(banner)}`
+
+    // save the new banner to the file system
+    try {
+      await saveFile(bannerPath, banner, FileCategory.IMAGE)
+    } catch (e: any) {
+      return { message: e?.cause, status: "error" }
+    }
+
+    // delete old banner if it exists
+    try {
+      const oldBanner = await prisma.companyProfile.findUnique({
+        where: { id },
+        select: { banner: true },
+      })
+      if (oldBanner?.banner) {
+        await deleteFile(oldBanner.banner)
+      }
+    } catch (e: any) {
+      return { message: "An error occured while deleting the old banner. Please try again later.", status: "error" }
+    }
+
+    // update the company profile with the new banner
+    try {
+      await prisma.companyProfile.update({
+        where: { id },
+        data: { banner: bannerPath },
+      })
+    } catch (e: any) {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
+  }
+
+  if (isFileNotEmpty(logo)) {
+    const logoPath = `logos/${randomBytes(16).toString("hex")}.${getFileExtension(logo)}`
+
+    // save the new logo to the file system
+    try {
+      await saveFile(logoPath, logo, FileCategory.IMAGE)
+    } catch (e: any) {
+      return { message: e?.cause, status: "error" }
+    }
+
+    // delete old logo if it exists
+    try {
+      const oldLogo = await prisma.companyProfile.findUnique({
+        where: { id },
+        select: { logo: true },
+      })
+      if (oldLogo?.logo) {
+        await deleteFile(oldLogo.logo)
+      }
+    } catch (e: any) {
+      return { message: "An error occured while deleting the old logo. Please try again later.", status: "error" }
+    }
+
+    // update the company profile with the new logo
+    try {
+      await prisma.companyProfile.update({
+        where: { id },
+        data: { logo: logoPath },
+      })
+    } catch (e: any) {
       return { message: "A database error occured. Please try again later.", status: "error" }
     }
   }
