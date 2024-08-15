@@ -71,7 +71,7 @@ export const createCompany = adminOnlyAction(async (_, formData) => {
 
 export const createCompanyUser: ServerSideFormHandler<FormPassBackState & { signInURL?: string }> = companyOnlyAction<
   FormPassBackState & { signInURL?: string }
->(async (prevState, formData) => {
+>(async (_, formData) => {
   const email = formData.get("email")?.toString().trim()
   const baseUrl = formData.get("baseUrl")?.toString().trim()
   const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
