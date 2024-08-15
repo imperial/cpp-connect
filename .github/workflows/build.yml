@@ -36,7 +36,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
       - run: npm ci
-      - run: npm run lint -f json -o eslint_report.json
+      - run: npm run lint -- -f json -o eslint_report.json
         # Continue to the next step even if this fails
         continue-on-error: true
       - name: Annotate Code Linting Results
