@@ -55,7 +55,10 @@ export const updateStudent = async (
     return { message: "Invalid looking for value", status: "error" }
   }
 
-  const graduationDate = gradMonth && gradYear ? new Date(`${gradMonth} ${gradYear}`) : undefined
+  let graduationDate = gradMonth && gradYear ? new Date(`${gradMonth} ${gradYear}`) : undefined
+  if (graduationDate && isNaN(graduationDate.getTime())) {
+    return { message: "Invalid graduation date", status: "error" }
+  }
 
   // Now update the student in the database
   try {

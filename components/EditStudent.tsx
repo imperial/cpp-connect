@@ -14,6 +14,7 @@ import { PlusIcon } from "@radix-ui/react-icons"
 import { Pencil1Icon } from "@radix-ui/react-icons"
 import { Select } from "@radix-ui/themes"
 import { Card, Flex, IconButton, Text, TextField } from "@radix-ui/themes"
+import { format } from "date-fns"
 import dynamic from "next/dynamic"
 import React, { useRef, useState } from "react"
 
@@ -71,7 +72,12 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
           Graduation Date
         </Text>
         <Flex gap="2">
-          <Select.Root name="gradMonth">
+          <Select.Root
+            name="gradMonth"
+            defaultValue={
+              prevStudentProfile.graduationDate ? format(prevStudentProfile.graduationDate, "MMM") : undefined
+            }
+          >
             <Select.Trigger placeholder="Month" />
             <Select.Content>
               <Select.Group>
@@ -84,7 +90,12 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
               </Select.Group>
             </Select.Content>
           </Select.Root>
-          <Select.Root name="gradYear">
+          <Select.Root
+            name="gradYear"
+            defaultValue={
+              prevStudentProfile.graduationDate ? format(prevStudentProfile.graduationDate, "yyyy") : undefined
+            }
+          >
             <Select.Trigger placeholder="Year" />
             <Select.Content>
               <Select.Group>
@@ -108,7 +119,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
           Looking For
         </Text>
 
-        <Select.Root name="lookingFor">
+        <Select.Root name="lookingFor" defaultValue={prevStudentProfile.lookingFor ?? undefined}>
           <Select.Trigger placeholder="Looking for" />
           <Select.Content>
             <Select.Group>
