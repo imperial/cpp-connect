@@ -112,7 +112,7 @@ export const AddOpportunity = ({
       form={formRenderer}
     >
       {prevOpportunity ? (
-        <IconButton size="3" mt="3">
+        <IconButton size="3">
           <Pencil1Icon />
         </IconButton>
       ) : (

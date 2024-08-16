@@ -209,7 +209,7 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
                 opportunities={companyProfile.opportunities}
                 columns={
                   !!session && (session.user.role === Role.ADMIN || (await checkCompany(companyProfile.id)(session)))
-                    ? ["position", "location", "type", "createdAt", "editButton"]
+                    ? ["position", "location", "type", "createdAt", "adminButtons"]
                     : ["position", "location", "type", "createdAt"]
                 }
               />

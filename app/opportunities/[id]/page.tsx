@@ -1,6 +1,7 @@
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { AddOpportunity } from "@/components/AddOpportunity"
 import Chip from "@/components/Chip"
+import { DeleteOpportunity } from "@/components/DeleteOpportunity"
 import Link from "@/components/Link"
 import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
@@ -57,7 +58,10 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
               </Box>
             </Box>
             <RestrictedAreaCompany companyId={opportunity.companyID} showMessage={false}>
-              <AddOpportunity prevOpportunity={opportunity} companyID={opportunity.companyID} />
+              <Flex gap="2">
+                <AddOpportunity prevOpportunity={opportunity} companyID={opportunity.companyID} />
+                <DeleteOpportunity id={opportunity.id} companyID={opportunity.companyID} redirectOnDelete />
+              </Flex>
             </RestrictedAreaCompany>
           </Flex>
 

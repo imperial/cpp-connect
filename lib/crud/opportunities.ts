@@ -6,6 +6,7 @@ import prisma from "../db"
 import { FormPassBackState } from "../types"
 import { OpportunityType } from "@prisma/client"
 import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 
 export const createOpportunity = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyID: number): Promise<FormPassBackState> => {
@@ -134,5 +135,41 @@ export const updateOpportunity = companyOnlyAction(
       status: "success",
       message: "success",
     }
+  },
+)
+
+export const deleteOpportunity = companyOnlyAction(
+  async (
+    _: FormPassBackState,
+    formData: FormData,
+    companyID: number,
+    opportunityID: number,
+    redirectOnDelete: boolean = false,
+  ): Promise<FormPassBackState> => {
+    let slug = ""
+    try {
+      slug = (
+        await prisma.opportunity.delete({
+          where: { id: opportunityID },
+          include: {
+            company: {
+              select: {
+                slug: true,
+              },
+            },
+          },
+        })
+      ).company.slug
+    } catch (e: any) {
+      return { message: "A database error occured. Please try again later.", status: "error" }
+    }
+
+    if (redirectOnDelete) {
+      redirect(`/companies/${slug}`)
+    } else {
+      revalidatePath(`/companies/${slug}`)
+    }
+
+    return { message: "Succesfully deleted the opportunity.", status: "success" }
   },
 )
