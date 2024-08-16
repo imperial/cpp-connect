@@ -1,10 +1,13 @@
 "use client"
 
+import { DeleteOpportunity } from "@/components/DeleteOpportunity"
 import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
+import { EditOpportunity } from "@/components/UpsertOpportunity"
 
 import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Opportunity } from "@prisma/client"
+import { Flex } from "@radix-ui/themes"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { formatDistanceToNowStrict } from "date-fns"
 import { useMemo } from "react"
@@ -13,7 +16,7 @@ type OpportunityRow = {
   company: CompanyProfile
 } & Opportunity
 
-type ColumnName = keyof OpportunityRow | `company.${keyof CompanyProfile}`
+type ColumnName = keyof OpportunityRow | `company.${keyof CompanyProfile}` | "adminButtons"
 
 const columnHelper = createColumnHelper<OpportunityRow>()
 
@@ -61,6 +64,18 @@ const OpportunityTable = ({
         header: "Posted",
         sortingFn: "datetime",
         id: "posted",
+        enableColumnFilter: false,
+      },
+      adminButtons: {
+        cell: info => (
+          <Flex gap="2">
+            <EditOpportunity prevOpportunity={info.row.original} companyID={info.row.original.companyID} />
+            <DeleteOpportunity id={info.row.original.id} companyID={info.row.original.companyID} />
+          </Flex>
+        ),
+        header: "",
+        id: "adminButtons",
+        enableSorting: false,
         enableColumnFilter: false,
       },
     }
