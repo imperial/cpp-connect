@@ -288,8 +288,23 @@ export const deleteCompany = companyOnlyAction(
       return { message: "Entered name did not match company name. Please try again.", status: "error" }
     }
 
+    // Delete uploaded files (banner and logo) related to the company
+    try {
+      const files = await prisma.companyProfile.findUnique({
+        where: { id: companyId },
+        select: { logo: true, banner: true },
+      })
+      if (files?.logo) {
+        await deleteFile(files.logo)
+      }
+      if (files?.banner) {
+        await deleteFile(files.banner)
+      }
+    } catch (e: any) {
+      return { message: "An error occurred while deleting logo or banner. Please try again later.", status: "error" }
+    }
+
     // Now remove the company from the database
-    // TODO: also remove associated files
     try {
       await prisma.companyProfile.delete({
         where: { id: companyId },
@@ -297,6 +312,7 @@ export const deleteCompany = companyOnlyAction(
     } catch (e: any) {
       return { message: "A database error occurred. Please try again later.", status: "error" }
     }
+
     redirect("/companies")
   },
 )
