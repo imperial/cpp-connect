@@ -3,12 +3,10 @@
 import { studentOnlyAction } from "@/lib/rbac"
 
 import prisma from "../db"
-import { deleteFile } from "../deleteFile"
+import { updateUpload } from "../files/updateUpload"
 import getStudentShortcode from "../getStudentShortcode"
-import { getFileExtension, isFileNotEmpty, saveFile } from "../saveFile"
 import { FileCategory, FormPassBackState } from "../types"
 import { OpportunityType } from "@prisma/client"
-import { randomBytes } from "crypto"
 import { revalidatePath } from "next/cache"
 
 /**
@@ -77,75 +75,43 @@ export const updateStudent = studentOnlyAction(
       return { message: "A database error occured. Please try again later.", status: "error" }
     }
 
-    // Save the cv (if it exists)
-    if (isFileNotEmpty(cv)) {
-      const cvPath = `cvs/${randomBytes(16).toString("hex")}.${getFileExtension(cv)}`
-
-      // save the new cv to the file system
-      try {
-        await saveFile(cvPath, cv, FileCategory.DOCUMENT)
-      } catch (e: any) {
-        return { message: e?.cause, status: "error" }
-      }
-
-      // delete old cv if it exists
-      try {
-        const oldCv = await prisma.studentProfile.findUnique({
-          where: { userId: studentId },
-          select: { cv: true },
-        })
-        if (oldCv?.cv) {
-          await deleteFile(oldCv.cv)
-        }
-      } catch (e: any) {
-        return { message: "An error occured while deleting the old cv. Please try again later.", status: "error" }
-      }
-
-      // update the student profile with the new cv
-      try {
+    const cvUpdateRes = await updateUpload(
+      cv,
+      "cvs",
+      FileCategory.DOCUMENT,
+      async () =>
+        (
+          await prisma.studentProfile.findUnique({
+            where: { userId: studentId },
+            select: { cv: true },
+          })
+        )?.cv,
+      async path =>
         await prisma.studentProfile.update({
           where: { userId: studentId },
-          data: { cv: cvPath },
-        })
-      } catch (e: any) {
-        return { message: "A database error occured. Please try again later.", status: "error" }
-      }
-    }
+          data: { cv: path },
+        }),
+    )
+    if (cvUpdateRes.status === "error") return cvUpdateRes
 
-    // Save the avatar (if it exists)
-    if (isFileNotEmpty(avatar)) {
-      const avatarPath = `avatars/${randomBytes(16).toString("hex")}.${getFileExtension(avatar)}`
-
-      // save the new avatar to the file system
-      try {
-        await saveFile(avatarPath, avatar, FileCategory.IMAGE)
-      } catch (e: any) {
-        return { message: e?.cause, status: "error" }
-      }
-
-      // delete old avatar if it exists
-      try {
-        const oldAvatar = await prisma.user.findUnique({
-          where: { id: studentId },
-          select: { image: true },
-        })
-        if (oldAvatar?.image) {
-          await deleteFile(oldAvatar.image)
-        }
-      } catch (e: any) {
-        return { message: "An error occured while deleting the old avatar. Please try again later.", status: "error" }
-      }
-
-      // update the student profile with the new avatar
-      try {
+    const avatarUpdateRes = await updateUpload(
+      avatar,
+      "avatars",
+      FileCategory.IMAGE,
+      async () =>
+        (
+          await prisma.user.findUnique({
+            where: { id: studentId },
+            select: { image: true },
+          })
+        )?.image,
+      async path =>
         await prisma.user.update({
           where: { id: studentId },
-          data: { image: avatarPath },
-        })
-      } catch (e: any) {
-        return { message: "A database error occured. Please try again later.", status: "error" }
-      }
-    }
+          data: { image: path },
+        }),
+    )
+    if (avatarUpdateRes.status === "error") return avatarUpdateRes
 
     revalidatePath(`/students/${await getStudentShortcode({ id: studentId })}`)
 

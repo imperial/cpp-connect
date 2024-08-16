@@ -1,16 +1,14 @@
 "use server"
 
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
-import { deleteFile } from "@/lib/deleteFile"
+import { updateUpload } from "@/lib/files/updateUpload"
 import { adminOnlyAction, companyOnlyAction } from "@/lib/rbac"
-import { getFileExtension, isFileNotEmpty, saveFile } from "@/lib/saveFile"
 import { FileCategory } from "@/lib/types"
 
 import prisma from "../db"
 import { FormPassBackState } from "../types"
 import { encodeSignInUrl } from "../util/signInTokens"
 import { Role } from "@prisma/client"
-import { randomBytes } from "crypto"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
@@ -193,74 +191,43 @@ export const updateCompany = companyOnlyAction(
       }
     }
 
-    // Save the banner and logo (if they exist)
-    if (isFileNotEmpty(banner)) {
-      const bannerPath = `banners/${randomBytes(16).toString("hex")}.${getFileExtension(banner)}`
-
-      // save the new banner to the file system
-      try {
-        await saveFile(bannerPath, banner, FileCategory.IMAGE)
-      } catch (e: any) {
-        return { message: e?.cause, status: "error" }
-      }
-
-      // delete old banner if it exists
-      try {
-        const oldBanner = await prisma.companyProfile.findUnique({
-          where: { id: companyId },
-          select: { banner: true },
-        })
-        if (oldBanner?.banner) {
-          await deleteFile(oldBanner.banner)
-        }
-      } catch (e: any) {
-        return { message: "An error occurred while deleting the old banner. Please try again later.", status: "error" }
-      }
-
-      // update the company profile with the new banner
-      try {
+    const bannerUpdateRes = await updateUpload(
+      banner,
+      "banners",
+      FileCategory.IMAGE,
+      async () =>
+        (
+          await prisma.companyProfile.findUnique({
+            where: { id: companyId },
+            select: { banner: true },
+          })
+        )?.banner,
+      async path =>
         await prisma.companyProfile.update({
           where: { id: companyId },
-          data: { banner: bannerPath },
-        })
-      } catch (e: any) {
-        return { message: "A database error occurred. Please try again later.", status: "error" }
-      }
-    }
+          data: { banner: path },
+        }),
+    )
+    if (bannerUpdateRes.status === "error") return bannerUpdateRes
 
-    if (isFileNotEmpty(logo)) {
-      const logoPath = `logos/${randomBytes(16).toString("hex")}.${getFileExtension(logo)}`
-
-      // save the new logo to the file system
-      try {
-        await saveFile(logoPath, logo, FileCategory.IMAGE)
-      } catch (e: any) {
-        return { message: e?.cause, status: "error" }
-      }
-
-      // delete old logo if it exists
-      try {
-        const oldLogo = await prisma.companyProfile.findUnique({
-          where: { id: companyId },
-          select: { logo: true },
-        })
-        if (oldLogo?.logo) {
-          await deleteFile(oldLogo.logo)
-        }
-      } catch (e: any) {
-        return { message: "An error occurred while deleting the old logo. Please try again later.", status: "error" }
-      }
-
-      // update the company profile with the new logo
-      try {
+    const logoUpdateRes = await updateUpload(
+      logo,
+      "logos",
+      FileCategory.IMAGE,
+      async () =>
+        (
+          await prisma.companyProfile.findUnique({
+            where: { id: companyId },
+            select: { logo: true },
+          })
+        )?.logo,
+      async path =>
         await prisma.companyProfile.update({
           where: { id: companyId },
-          data: { logo: logoPath },
-        })
-      } catch (e: any) {
-        return { message: "A database error occurred. Please try again later.", status: "error" }
-      }
-    }
+          data: { logo: path },
+        }),
+    )
+    if (logoUpdateRes.status === "error") return logoUpdateRes
 
     // If slug changed, redirect
     if (prevSlug !== slug) {
