@@ -1,5 +1,3 @@
-import { FormPassBackState } from "@/lib/types"
-
 import { FormWithAction, FormWithActionProps } from "./FormWithAction"
 
 import { Button } from "@radix-ui/themes"
