@@ -2,9 +2,11 @@
 
 import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
+import { EditEvent } from "@/components/UpsertEvent"
 
 import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Event } from "@prisma/client"
+import { Flex } from "@radix-ui/themes"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { useMemo } from "react"
@@ -15,7 +17,7 @@ type EventRow = {
 
 const columnHelper = createColumnHelper<EventRow>()
 
-type ColumnName = keyof EventRow | `company.${keyof CompanyProfile}`
+type ColumnName = keyof EventRow | `company.${keyof CompanyProfile}` | "adminButtons"
 
 const EventTable = ({
   events,
@@ -66,6 +68,18 @@ const EventTable = ({
         header: "Spaces",
         sortingFn: "alphanumeric",
         id: "spaces",
+        enableColumnFilter: false,
+      },
+      adminButtons: {
+        cell: info => (
+          <Flex gap="2">
+            <EditEvent prevEvent={info.row.original} companyID={info.row.original.companyID} />
+            {/* <DeleteEvent id={info.row.original.id} companyID={info.row.original.companyID} /> */}
+          </Flex>
+        ),
+        header: "",
+        id: "adminButtons",
+        enableSorting: false,
         enableColumnFilter: false,
       },
     }

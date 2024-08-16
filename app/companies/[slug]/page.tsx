@@ -219,7 +219,11 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             <Box p="8">
               <EventTable
                 events={companyProfile.events}
-                columns={["title", "dateStart", "shortDescription", "location", "spaces"]}
+                columns={
+                  !!session && (session.user.role === Role.ADMIN || (await checkCompany(companyProfile.id)(session)))
+                    ? ["title", "dateStart", "shortDescription", "location", "spaces", "adminButtons"]
+                    : ["title", "dateStart", "shortDescription", "location", "spaces"]
+                }
                 nonFilterable={["company.name"]}
               />
             </Box>

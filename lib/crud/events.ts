@@ -78,7 +78,7 @@ export const createEvent = companyOnlyAction(
   },
 )
 
-export const editEvent = companyOnlyAction(
+export const updateEvent = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyID: number, eventID: number): Promise<FormPassBackState> => {
     const title = formData.get("title")?.toString().trim()
     const dateStart = formData.get("dateStart")?.toString().trim()
