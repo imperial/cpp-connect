@@ -1,6 +1,8 @@
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
+import { AddOpportunity } from "@/components/AddOpportunity"
 import Chip from "@/components/Chip"
 import Link from "@/components/Link"
+import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -45,15 +47,19 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
             className={styles.banner}
           />
         </Inset>
-
         <Flex wrap="wrap" direction="column" p="5" gap="5">
-          <Box>
-            <Heading size="8">{opportunity.position}</Heading>
-
+          <Flex justify="between">
             <Box>
-              At <Link href={getCompanyLink(opportunity.company)}>{opportunity.company.name}</Link>
+              <Heading size="8">{opportunity.position}</Heading>
+
+              <Box>
+                At <Link href={getCompanyLink(opportunity.company)}>{opportunity.company.name}</Link>
+              </Box>
             </Box>
-          </Box>
+            <RestrictedAreaCompany companyId={opportunity.companyID} showMessage={false}>
+              <AddOpportunity prevOpportunity={opportunity} companyID={opportunity.companyID} />
+            </RestrictedAreaCompany>
+          </Flex>
 
           <Flex gap="1" wrap="wrap">
             <Chip label={opportunity.location} />
