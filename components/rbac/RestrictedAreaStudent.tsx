@@ -5,7 +5,7 @@ import { Session } from "next-auth"
 import React from "react"
 
 const checkStudent = (studentId: string) => async (session: Session) =>
-  !!session?.user?.id && session.user.id === studentId
+  !!session?.user.id && session.user.id === studentId
 
 const RestrictedAreaStudent = ({
   children,
