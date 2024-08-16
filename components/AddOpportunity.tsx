@@ -34,7 +34,7 @@ const AddOpportunityForm = ({
     createOpportunity(prevState, formData, companyID ?? -1)
 
   const updateOpportunityWithArgs = async (prevState: FormPassBackState, formData: FormData) =>
-    updateOpportunity(prevState, formData, prevOpportunity?.id ?? -1)
+    updateOpportunity(prevState, formData, companyID ?? -1, prevOpportunity?.id ?? -1)
 
   return (
     <FormInModal action={prevOpportunity ? updateOpportunityWithArgs : createOpportunityWithArgs} close={close}>
@@ -99,7 +99,7 @@ export const AddOpportunity = ({
   companyID,
 }: {
   prevOpportunity?: Opportunity
-  companyID?: number
+  companyID: number
 }) => {
   const formRenderer = ({ close }: { close: () => void }) => (
     <AddOpportunityForm close={close} prevOpportunity={prevOpportunity} companyID={companyID} />

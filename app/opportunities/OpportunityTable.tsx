@@ -65,7 +65,7 @@ const OpportunityTable = ({
         enableColumnFilter: false,
       },
       editButton: {
-        cell: info => <AddOpportunity prevOpportunity={info.row.original} />,
+        cell: info => <AddOpportunity prevOpportunity={info.row.original} companyID={info.row.original.companyID} />,
         header: "",
         id: "editButton",
         enableSorting: false,

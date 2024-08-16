@@ -198,7 +198,7 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
                 <Flex gap="3" direction="row" align="center" justify="between" p="2">
                   <Heading size="6">Opportunities panel</Heading>
                   <Flex gap="3" direction="row" align="center">
-                    <AddOpportunity companyID={companyProfile.id} slug={params.slug} />
+                    <AddOpportunity companyID={companyProfile.id} />
                   </Flex>
                 </Flex>
               </Card>
