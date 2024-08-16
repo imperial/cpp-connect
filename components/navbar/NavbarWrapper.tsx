@@ -14,10 +14,10 @@ const NavbarWrapper = async () => {
 
   switch (userRole) {
     case Role.ADMIN:
-      return <Navbar role={userRole} />
+      return <Navbar role={userRole} avatar="" />
     case Role.COMPANY:
       const slug = (await getCompanySlug(session?.user!)) || ""
-      return <Navbar role={userRole} slug={slug} />
+      return <Navbar role={userRole} slug={slug} avatar="" />
     case Role.STUDENT:
       const shortcode = (await getStudentShortcode(session?.user!)) || ""
       const avatar = (await getUserAvatar(session?.user!)) || ""

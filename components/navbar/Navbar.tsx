@@ -2,19 +2,24 @@
 
 import DesktopNavbar from "@/components/navbar/DesktopNavbar"
 
+import { Role } from "@prisma/client"
 import React, { useEffect, useState } from "react"
 
-interface AdminNavbarProps {
-  role: "ADMIN"
-}
-
-interface StudentNavbarProps {
-  role: "STUDENT"
-  shortcode: string
+interface BaseNavbarProps {
+  role: Role
   avatar: string
 }
 
-interface CompanyNavbarProps {
+interface AdminNavbarProps extends BaseNavbarProps {
+  role: "ADMIN"
+}
+
+interface StudentNavbarProps extends BaseNavbarProps {
+  role: "STUDENT"
+  shortcode: string
+}
+
+interface CompanyNavbarProps extends BaseNavbarProps {
   role: "COMPANY"
   slug: string
 }
