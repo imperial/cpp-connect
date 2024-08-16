@@ -1,6 +1,7 @@
 "use server"
 
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
+import { deleteFile } from "@/lib/files/deleteFile"
 import { updateUpload } from "@/lib/files/updateUpload"
 import { adminOnlyAction, companyOnlyAction } from "@/lib/rbac"
 import { FileCategory } from "@/lib/types"
