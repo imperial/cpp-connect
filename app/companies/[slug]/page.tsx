@@ -208,7 +208,7 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
               <OpportunityTable
                 opportunities={companyProfile.opportunities}
                 columns={
-                  session?.user.role === Role.ADMIN || checkCompany(companyProfile.id)
+                  !!session && (session.user.role === Role.ADMIN || (await checkCompany(companyProfile.id)(session)))
                     ? ["position", "location", "type", "createdAt", "editButton"]
                     : ["position", "location", "type", "createdAt"]
                 }
