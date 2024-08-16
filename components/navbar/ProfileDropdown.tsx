@@ -1,17 +1,37 @@
 "use client"
 
-import { DropdownCard } from "@/components/DropdownCard"
 import UserAvatar from "@/components/UserAvatar"
-import styles from "@/components/profileDropdown.module.scss"
+import styles from "@/components/navbar/profileDropdown.module.scss"
 
 import { RoleNavbarProps } from "./Navbar"
 
 import { Role } from "@prisma/client"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
-import { Button, Link, Text } from "@radix-ui/themes"
-import { useSession } from "next-auth/react"
+import { Button, Flex, Heading, Link, Text } from "@radix-ui/themes"
+import { Session } from "next-auth"
+import { signOut, useSession } from "next-auth/react"
 import React from "react"
-import { BsBuilding, BsPersonCircle } from "react-icons/bs"
+import { BsBoxArrowRight, BsBuilding, BsPersonCircle } from "react-icons/bs"
+
+const DropdownCard = ({ user, children }: { user: Session["user"]; children?: React.ReactNode }) => {
+  return (
+    <Flex className={styles.DropdownCard} gap="4" align="stretch">
+      <Flex align="center">
+        <UserAvatar user={user} size="6" />
+      </Flex>
+      <Flex direction="column" gap="2" justify="between">
+        <Heading>{user.name || user.email}</Heading>
+        {children}
+        <Button color="red" onClick={() => signOut()} variant="outline">
+          <Flex gap="2" align="center">
+            <BsBoxArrowRight />
+            <Text>Sign out</Text>
+          </Flex>
+        </Button>
+      </Flex>
+    </Flex>
+  )
+}
 
 const ProfileDropdown = (props: RoleNavbarProps) => {
   const { data } = useSession()

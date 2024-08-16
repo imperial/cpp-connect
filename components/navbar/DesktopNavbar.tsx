@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "@/components/Link"
-import ProfileDropdown from "@/components/ProfileDropdown"
+import ProfileDropdown from "@/components/navbar/ProfileDropdown"
 
 import { NavbarProps, RoleNavbarProps } from "./Navbar"
 import styles from "./navbar.module.scss"
@@ -23,7 +23,7 @@ const DesktopNavbar = (props: NavbarProps) => {
     <Flex className={styles.container} justify="between" asChild>
       <nav>
         <Flex gap="9" wrap="wrap">
-          <Link href="/">
+          <Link href="/public">
             <Flex className={styles.logosContainer}>
               <Image src="/images/cpp-connect-logo.svg" alt="cpp connect logo" width={0} height={0} />
               <Image src="/images/imperial-logo.svg" alt="imperial logo" width={0} height={0} />

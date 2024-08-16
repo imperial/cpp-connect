@@ -1,6 +1,6 @@
 "use client"
 
-import DesktopNavbar from "./DesktopNavbar"
+import DesktopNavbar from "@/components/navbar/DesktopNavbar"
 
 import React, { useEffect, useState } from "react"
 

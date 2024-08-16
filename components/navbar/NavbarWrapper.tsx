@@ -1,9 +1,8 @@
 import { auth } from "@/auth"
+import Navbar from "@/components/navbar/Navbar"
 import getCompanySlug from "@/lib/getCompanySlug"
 import getStudentShortcode from "@/lib/getStudentShortcode"
 import getUserAvatar from "@/lib/getUserAvatar"
-
-import Navbar from "./Navbar"
 
 import { Role } from "@prisma/client"
 import React from "react"

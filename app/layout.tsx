@@ -1,5 +1,5 @@
 import { Client } from "@/components/Client"
-import NavbarWrapper from "@/components/NavbarWrapper"
+import NavbarWrapper from "@/components/navbar/NavbarWrapper"
 import Footer from "@/components/Footer"
 import "@/styling/globals.scss"
 
