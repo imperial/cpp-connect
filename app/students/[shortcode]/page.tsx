@@ -3,6 +3,7 @@ import { EditStudent } from "@/components/EditStudent"
 import Link from "@/components/Link"
 import UserAvatar from "@/components/UserAvatar"
 import RestrictedArea from "@/components/rbac/RestrictedArea"
+import RestrictedAreaStudent from "@/components/rbac/RestrictedAreaStudent"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -142,7 +143,9 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
               </Flex>
             </Flex>
             <Box position="absolute" top="2" right="2">
-              <EditStudent prevStudentProfile={studentProfile} />
+              <RestrictedAreaStudent showMessage={false} studentId={studentProfile.userId}>
+                <EditStudent prevStudentProfile={studentProfile} />
+              </RestrictedAreaStudent>
             </Box>
           </Flex>
         </Flex>
