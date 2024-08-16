@@ -1,12 +1,16 @@
 "use server"
 
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
-import { adminOnlyAction, companyOnlyAction } from "@/lib/rbac"
+import { deleteFile } from "@/lib/deleteFile"
+import { getFileExtension, isFileNotEmpty, saveFile } from "@/lib/saveFile"
+import { FileCategory } from "@/lib/types"
 
 import prisma from "../db"
-import { FormPassBackState, ServerSideFormHandler } from "../types"
+import { adminOnlyAction, companyOnlyAction } from "@/lib/rbac"
+import { FormPassBackState } from "../types"
 import { encodeSignInUrl } from "../util/signInTokens"
 import { Role } from "@prisma/client"
+import { randomBytes } from "crypto"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
@@ -121,6 +125,8 @@ export const updateCompany = companyOnlyAction(
     const name = formData.get("name")?.toString().trim()
     const slug = formData.get("slug")?.toString().trim()
     const summary = formData.get("summary")?.toString().trim()
+    const banner = formData.get("banner") as File
+    const logo = formData.get("logo") as File
     const website = formData.get("website")?.toString().trim()
     const sector = formData.get("sector")?.toString().trim()
     const size = formData.get("size")?.toString().trim()
@@ -135,6 +141,11 @@ export const updateCompany = companyOnlyAction(
 
     if (!slug) {
       return { message: "Slug is required.", status: "error" }
+    } else if (!slug.match(/^[a-z0-9\-]+$/)) {
+      return {
+        message: "Invalid characters in slug. Only lowercase alphanumeric characters and hyphens are allowed.",
+        status: "error",
+      }
     }
 
     if (!website) {
@@ -180,6 +191,76 @@ export const updateCompany = companyOnlyAction(
       }
     }
 
+
+    // Save the banner and logo (if they exist)
+    if (isFileNotEmpty(banner)) {
+      const bannerPath = `banners/${randomBytes(16).toString("hex")}.${getFileExtension(banner)}`
+
+      // save the new banner to the file system
+      try {
+        await saveFile(bannerPath, banner, FileCategory.IMAGE)
+      } catch (e: any) {
+        return { message: e?.cause, status: "error" }
+      }
+
+      // delete old banner if it exists
+      try {
+        const oldBanner = await prisma.companyProfile.findUnique({
+          where: { id: companyId },
+          select: { banner: true },
+        })
+        if (oldBanner?.banner) {
+          await deleteFile(oldBanner.banner)
+        }
+      } catch (e: any) {
+        return { message: "An error occurred while deleting the old banner. Please try again later.", status: "error" }
+      }
+
+      // update the company profile with the new banner
+      try {
+        await prisma.companyProfile.update({
+          where: { id: companyId },
+          data: { banner: bannerPath },
+        })
+      } catch (e: any) {
+        return { message: "A database error occurred. Please try again later.", status: "error" }
+      }
+    }
+
+    if (isFileNotEmpty(logo)) {
+      const logoPath = `logos/${randomBytes(16).toString("hex")}.${getFileExtension(logo)}`
+
+      // save the new logo to the file system
+      try {
+        await saveFile(logoPath, logo, FileCategory.IMAGE)
+      } catch (e: any) {
+        return { message: e?.cause, status: "error" }
+      }
+
+      // delete old logo if it exists
+      try {
+        const oldLogo = await prisma.companyProfile.findUnique({
+          where: { id: companyId },
+          select: { logo: true },
+        })
+        if (oldLogo?.logo) {
+          await deleteFile(oldLogo.logo)
+        }
+      } catch (e: any) {
+        return { message: "An error occurred while deleting the old logo. Please try again later.", status: "error" }
+      }
+
+      // update the company profile with the new logo
+      try {
+        await prisma.companyProfile.update({
+          where: { id: companyId },
+          data: { logo: logoPath },
+        })
+      } catch (e: any) {
+        return { message: "A database error occurred. Please try again later.", status: "error" }
+      }
+    }
+
     // If slug changed, redirect
     if (prevSlug !== slug) {
       redirect(getCompanyLink({ slug: slug }))
@@ -206,7 +287,8 @@ export const deleteCompany = companyOnlyAction(
       return { message: "Entered name did not match company name. Please try again.", status: "error" }
     }
 
-    // Now add the company to the database
+    // Now remove the company from the database
+    // TODO: also remove associated files
     try {
       await prisma.companyProfile.delete({
         where: { id: companyId },

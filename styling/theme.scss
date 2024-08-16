@@ -1,3 +1,7 @@
+// this is here because the imported style.css has var(--blue) which overwrites our theme
+// by importing it here we can overwrite their blue
+@import "@mdxeditor/editor/style.css";
+
 @mixin load-radix-theme($theme) {
   @import url('@radix-ui/colors/#{$theme}.css');
   @import url('@radix-ui/colors/#{$theme}-dark.css');

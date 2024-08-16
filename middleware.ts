@@ -13,7 +13,7 @@ export const config = {
    * - login (login page)
    * Also do not match home path
    */
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images|login|$).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images|login|auth|$).*)"],
 }
 
 export const { auth: middleware } = NextAuth(authConfig)

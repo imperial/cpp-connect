@@ -11,3 +11,8 @@ export type ServerSideFormHandler<
 export type ServerActionDecorator<T extends FormPassBackState, Args extends unknown[]> = (
   action: ServerSideFormHandler<T, Args>,
 ) => ServerSideFormHandler<T, Args>
+
+export enum FileCategory {
+  IMAGE,
+  DOCUMENT,
+}

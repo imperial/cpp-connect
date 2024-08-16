@@ -80,4 +80,23 @@
 
 .markdownContainer {
   list-style-position: inside;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+  }
+  table,
+  th,
+  td {
+    border: 1px solid;
+    border-color: var(--gray-6);
+    padding: 0.25em;
+  }
+  th {
+    text-align: left;
+  }
+  code {
+    background-color: var(--gray-4);
+    padding: 0.3em;
+  }
 }

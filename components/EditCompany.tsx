@@ -4,17 +4,27 @@ import { SLUG_START, slugComputer } from "@/app/companies/slug"
 import { updateCompany } from "@/lib/crud/companies"
 import { ServerSideFormHandler } from "@/lib/types"
 
+import FileInput from "./FileInput"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
+import { MDXEditorMethods } from "@mdxeditor/editor"
 import { CompanyProfile } from "@prisma/client"
-import { InfoCircledIcon, Pencil1Icon } from "@radix-ui/react-icons"
-import { Flex, IconButton, Text, TextField, Tooltip } from "@radix-ui/themes"
-import { useState } from "react"
+import { InfoCircledIcon } from "@radix-ui/react-icons"
+import { Pencil1Icon } from "@radix-ui/react-icons"
+import { Tooltip } from "@radix-ui/themes"
+import { Card, Flex, IconButton, Text, TextField } from "@radix-ui/themes"
+import dynamic from "next/dynamic"
+import React, { useRef, useState } from "react"
+
+const MdEditor = dynamic(() => import("@/components/MdEditor"), { ssr: false })
 
 const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; prevCompanyProfile: CompanyProfile }) => {
   const updateCompanyWithID: ServerSideFormHandler = (prevState, formData) =>
     updateCompany(prevState, formData, prevCompanyProfile.id)
+
+  const [summary, setSummary] = useState(prevCompanyProfile.summary)
+  const mdxEditorRef = useRef<MDXEditorMethods>(null)
 
   const [companyName, setCompanyName] = useState(prevCompanyProfile.name)
   const [slug, setSlug] = useState(prevCompanyProfile.slug)
@@ -54,8 +64,16 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
         <Text as="div" size="2" mb="1" weight="bold">
           Summary
         </Text>
-        <TextField.Root name="summary" placeholder="lorem ipsum..." defaultValue={prevCompanyProfile.summary} />
+        <Card>
+          <MdEditor markdown={summary} editorRef={mdxEditorRef} onChange={setSummary} />
+        </Card>
+        <input type="hidden" readOnly name="summary" value={summary} />
       </label>
+
+      <FileInput name="banner" header="Banner" />
+
+      <FileInput name="logo" header="Logo" />
+
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Website*
