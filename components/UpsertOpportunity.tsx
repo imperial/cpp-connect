@@ -17,7 +17,7 @@ const defaultOpportunityType = OpportunityType.Internship
 
 const MdEditor = dynamic(() => import("@/components/MdEditor"), { ssr: false })
 
-const AddOpportunityForm = ({
+const UpsertOpportunityForm = ({
   close,
   prevOpportunity,
   companyID,
@@ -94,15 +94,17 @@ const AddOpportunityForm = ({
   )
 }
 
-export const AddOpportunity = ({
+const UpsertOpportunity = ({
+  children,
   prevOpportunity,
   companyID,
 }: {
+  children: React.ReactNode
   prevOpportunity?: Opportunity
   companyID: number
 }) => {
   const formRenderer = ({ close }: { close: () => void }) => (
-    <AddOpportunityForm close={close} prevOpportunity={prevOpportunity} companyID={companyID} />
+    <UpsertOpportunityForm close={close} prevOpportunity={prevOpportunity} companyID={companyID} />
   )
 
   return (
@@ -111,15 +113,33 @@ export const AddOpportunity = ({
       description={prevOpportunity ? "Update opportunity details" : "Add a new opportunity listing"}
       form={formRenderer}
     >
-      {prevOpportunity ? (
-        <IconButton size="3">
-          <Pencil1Icon />
-        </IconButton>
-      ) : (
-        <PlusButton>
-          <Text>Add Opportunity</Text>
-        </PlusButton>
-      )}
+      {children}
     </GenericFormModal>
+  )
+}
+
+export const AddOpportunity = ({ companyID }: { companyID: number }) => {
+  return (
+    <UpsertOpportunity companyID={companyID}>
+      <PlusButton>
+        <Text>Add Opportunity</Text>
+      </PlusButton>
+    </UpsertOpportunity>
+  )
+}
+
+export const EditOpportunity = ({
+  companyID,
+  prevOpportunity,
+}: {
+  companyID: number
+  prevOpportunity: Opportunity
+}) => {
+  return (
+    <UpsertOpportunity companyID={companyID} prevOpportunity={prevOpportunity}>
+      <IconButton size="3">
+        <Pencil1Icon />
+      </IconButton>
+    </UpsertOpportunity>
   )
 }

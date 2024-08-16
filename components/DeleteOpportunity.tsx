@@ -45,7 +45,6 @@ export const DeleteOpportunity = ({
   companyID,
   redirectOnDelete = false,
 }: {
-  name: string
   id: number
   companyID: number
   redirectOnDelete?: boolean

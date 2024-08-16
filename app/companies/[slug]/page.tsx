@@ -1,9 +1,9 @@
 import EventTable from "@/app/events/EventTable"
 import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import { auth } from "@/auth"
-import { AddOpportunity } from "@/components/AddOpportunity"
 import { EditCompany } from "@/components/EditCompany"
 import Link from "@/components/Link"
+import { AddOpportunity } from "@/components/UpsertOpportunity"
 import RestrictedAreaCompany, { checkCompany } from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
 

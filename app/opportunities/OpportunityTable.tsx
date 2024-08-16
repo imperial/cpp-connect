@@ -1,9 +1,9 @@
 "use client"
 
-import { AddOpportunity } from "@/components/AddOpportunity"
 import { DeleteOpportunity } from "@/components/DeleteOpportunity"
 import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
+import { EditOpportunity } from "@/components/UpsertOpportunity"
 
 import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Opportunity } from "@prisma/client"
@@ -69,7 +69,7 @@ const OpportunityTable = ({
       adminButtons: {
         cell: info => (
           <Flex gap="2">
-            <AddOpportunity prevOpportunity={info.row.original} companyID={info.row.original.companyID} />
+            <EditOpportunity prevOpportunity={info.row.original} companyID={info.row.original.companyID} />
             <DeleteOpportunity id={info.row.original.id} companyID={info.row.original.companyID} />
           </Flex>
         ),
