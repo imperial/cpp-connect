@@ -10,29 +10,26 @@ const UserAvatar = ({
 }: {
   user: { image?: string; name?: string }
   size: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
-}) => {
-  console.log(`/api/uploads/${user.image}`)
-  return (
-    <Avatar
-      alt="Profile"
-      radius="full"
-      src={`/api/uploads/${user.image}`}
-      size={size}
-      style={{
-        fontSize: `${parseInt(size) / 3.5}rem`,
-      }}
-      className={styles.Avatar}
-      fallback={
-        user.name
-          ?.split(",")
-          .reverse()
-          .join(" ")
-          .split(/\s|-/g)
-          .map(name => name[0]?.toUpperCase())
-          .join("") ?? <BsPersonCircle size="95%" />
-      }
-    />
-  )
-}
+}) => (
+  <Avatar
+    alt="Profile"
+    radius="full"
+    src={user.image && `/api/uploads/${user.image}`}
+    size={size}
+    style={{
+      fontSize: `${parseInt(size) / 3.5}rem`,
+    }}
+    className={styles.Avatar}
+    fallback={
+      user.name
+        ?.split(",") // "Last-Name, FirstName" => ["Last-Name", "FirstName"]
+        .reverse() // ["Last-Name", "FirstName"] => ["FirstName", "Last-Name"]
+        .join(" ") // ["FirstName", "Last-Name"] => "FirstName Last-Name"
+        .split(/\s|-/g) // "FirstName Last-Name" => ["FirstName", "Last", "Name"]
+        .map(name => name[0]?.toUpperCase()) // ["FirstName", "Last", "Name"] => ["F", "L", "N"]
+        .join("") ?? <BsPersonCircle size="95%" /> // ["F", "L", "N"] => "FLN"
+    }
+  />
+)
 
 export default UserAvatar
