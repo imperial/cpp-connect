@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "@/components/Link"
 import UserAvatar from "@/components/UserAvatar"
 import styles from "@/components/navbar/profileDropdown.module.scss"
 
@@ -7,7 +8,7 @@ import { RoleNavbarProps } from "./Navbar"
 
 import { Role } from "@prisma/client"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
-import { Button, Flex, Heading, Link, Text } from "@radix-ui/themes"
+import { Button, Flex, Heading, Text } from "@radix-ui/themes"
 import { signOut, useSession } from "next-auth/react"
 import React from "react"
 import { BsBoxArrowRight, BsBuilding, BsPersonCircle } from "react-icons/bs"
@@ -46,7 +47,12 @@ const ProfileDropdown = (props: RoleNavbarProps) => {
         <DropdownCard {...props}>
           {props.role === Role.STUDENT && (
             <Button variant="outline" asChild>
-              <Link href={`/students/${props.shortcode}`} underline="none">
+              <Link
+                href={`/students/${props.shortcode}`}
+                radixProps={{
+                  underline: "none",
+                }}
+              >
                 <BsPersonCircle />
                 <Text>Your Profile</Text>
               </Link>
@@ -54,7 +60,12 @@ const ProfileDropdown = (props: RoleNavbarProps) => {
           )}
           {props.role === "COMPANY" && (
             <Button variant="outline" asChild>
-              <Link href={`/companies/${props.slug}`} underline="none">
+              <Link
+                href={`/companies/${props.slug}`}
+                radixProps={{
+                  underline: "none",
+                }}
+              >
                 <BsBuilding />
                 <Text>Your Company</Text>
               </Link>

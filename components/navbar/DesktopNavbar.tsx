@@ -12,9 +12,7 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import React from "react"
 
-const isSignedIn = (data: Session | null, props: NavbarProps): props is RoleNavbarProps => {
-  return !!(data && data.user)
-}
+const isSignedIn = (data: Session | null, props: NavbarProps): props is RoleNavbarProps => !!(data && data.user)
 
 const DesktopNavbar = (props: NavbarProps) => {
   const { data } = useSession()
@@ -23,7 +21,7 @@ const DesktopNavbar = (props: NavbarProps) => {
     <Flex className={styles.container} justify="between" asChild>
       <nav>
         <Flex gap="9" wrap="wrap">
-          <Link href="/public">
+          <Link href="/">
             <Flex className={styles.logosContainer}>
               <Image src="/images/cpp-connect-logo.svg" alt="cpp connect logo" width={0} height={0} />
               <Image src="/images/imperial-logo.svg" alt="imperial logo" width={0} height={0} />
