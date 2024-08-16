@@ -100,6 +100,7 @@ export const deleteUser = async (
 
     return {
       status: "success",
+      message: "User successfully deleted.",
     }
   }
 }

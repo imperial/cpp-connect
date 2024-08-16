@@ -20,7 +20,7 @@ interface DeleteCompanyFormProps {
 
 const DeleteCompanyForm = ({ close, name, id }: DeleteCompanyFormProps) => {
   const deleteCompanyWithName = async (prevState: FormPassBackState, formData: FormData) =>
-    deleteCompany(prevState, formData, name, id)
+    deleteCompany(prevState, formData, id, name)
 
   return (
     <FormInModal

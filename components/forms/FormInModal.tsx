@@ -19,7 +19,7 @@ export interface FormInModalProps extends FormWithActionProps {
  * @see FormInModalProps for details on the props.
  * @see FormWithActionProps for details on the props.
  */
-export const FormInModal: React.FC<FormInModalProps> = props => {
+export function FormInModal(props: FormInModalProps) {
   const AdditionalButtons = (
     <>
       {props.actionsSection}
