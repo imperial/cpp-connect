@@ -19,7 +19,7 @@ const validateIsOpportunityType = (value: string | undefined): value is Opportun
   value === undefined || Object.keys(OpportunityType).includes(value || "")
 
 export const updateStudent = studentOnlyAction(
-  async (_: FormPassBackState, formData: FormData, userId: string): Promise<FormPassBackState> => {
+  async (_: FormPassBackState, formData: FormData, studentId: string): Promise<FormPassBackState> => {
     // TODO: Add restriction to only allow students to update their own profiles
 
     const course = formData.get("course")?.toString().trim()
@@ -59,7 +59,7 @@ export const updateStudent = studentOnlyAction(
     // Now update the student in the database
     try {
       await prisma.studentProfile.update({
-        where: { userId },
+        where: { userId: studentId },
         data: {
           course,
           lookingFor,
@@ -91,7 +91,7 @@ export const updateStudent = studentOnlyAction(
       // delete old cv if it exists
       try {
         const oldCv = await prisma.studentProfile.findUnique({
-          where: { userId },
+          where: { userId: studentId },
           select: { cv: true },
         })
         if (oldCv?.cv) {
@@ -104,7 +104,7 @@ export const updateStudent = studentOnlyAction(
       // update the student profile with the new cv
       try {
         await prisma.studentProfile.update({
-          where: { userId },
+          where: { userId: studentId },
           data: { cv: cvPath },
         })
       } catch (e: any) {
@@ -126,7 +126,7 @@ export const updateStudent = studentOnlyAction(
       // delete old avatar if it exists
       try {
         const oldAvatar = await prisma.user.findUnique({
-          where: { id: userId },
+          where: { id: studentId },
           select: { image: true },
         })
         if (oldAvatar?.image) {
@@ -139,7 +139,7 @@ export const updateStudent = studentOnlyAction(
       // update the student profile with the new avatar
       try {
         await prisma.user.update({
-          where: { id: userId },
+          where: { id: studentId },
           data: { image: avatarPath },
         })
       } catch (e: any) {
@@ -147,7 +147,7 @@ export const updateStudent = studentOnlyAction(
       }
     }
 
-    revalidatePath(`/students/${await getStudentShortcode({ id: userId })}`)
+    revalidatePath(`/students/${await getStudentShortcode({ id: studentId })}`)
 
     return {
       status: "success",
