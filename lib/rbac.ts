@@ -12,7 +12,7 @@ async function additionalCheckStudent(session: Session, studentID: string, ...ar
   return session.user.id === studentID
 }
 
-async function additionalCheckCompany(session: Session, companyID: number, ...args: any[]): Promise<boolean> {
+async function additionalCheckCompany(session: Session, companyID: number, ..._: any[]): Promise<boolean> {
   const user: Pick<User, "associatedCompanyId"> | null = await prisma.user.findUnique({
     where: {
       id: session.user.id,
