@@ -6,18 +6,20 @@ import { Role } from "@prisma/client"
 import { Session } from "next-auth"
 import React from "react"
 
-const checkCompany = (companyId: number) => async (session: Session) => {
-  if (!session?.user?.id) {
-    return false
+export const checkCompany =
+  (companyId: number) =>
+  async (session: Session): Promise<boolean> => {
+    if (!session?.user?.id) {
+      return false
+    }
+    const userDB = await prisma.user.findUnique({
+      where: {
+        id: session?.user.id,
+        associatedCompanyId: companyId,
+      },
+    })
+    return !!userDB
   }
-  const userDB = await prisma.user.findUnique({
-    where: {
-      id: session?.user.id,
-      associatedCompanyId: companyId,
-    },
-  })
-  return !!userDB
-}
 
 const RestrictedAreaCompany = ({
   children,
