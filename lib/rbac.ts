@@ -8,7 +8,7 @@ import { FormPassBackState, ServerActionDecorator, ServerSideFormHandler } from 
 import { Role, User } from "@prisma/client"
 import { Session } from "next-auth"
 
-async function additionalCheckStudent(session: Session, studentID: string, ...args: any[]): Promise<boolean> {
+async function additionalCheckStudent(session: Session, studentID: string, ..._: any[]): Promise<boolean> {
   return session.user.id === studentID
 }
 
