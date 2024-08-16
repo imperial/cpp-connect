@@ -2,11 +2,11 @@
 
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { deleteFile } from "@/lib/deleteFile"
+import { adminOnlyAction, companyOnlyAction } from "@/lib/rbac"
 import { getFileExtension, isFileNotEmpty, saveFile } from "@/lib/saveFile"
 import { FileCategory } from "@/lib/types"
 
 import prisma from "../db"
-import { adminOnlyAction, companyOnlyAction } from "@/lib/rbac"
 import { FormPassBackState } from "../types"
 import { encodeSignInUrl } from "../util/signInTokens"
 import { Role } from "@prisma/client"
@@ -162,6 +162,8 @@ export const updateCompany = companyOnlyAction(
       return { message: "Sector is required.", status: "error" }
     }
 
+    let prevSlug: string
+
     // Now update the company in the database
     try {
       // Get previous slug
@@ -173,7 +175,7 @@ export const updateCompany = companyOnlyAction(
         return { message: "Company not found.", status: "error" }
       }
 
-      var prevSlug = prevCompany.slug
+      prevSlug = prevCompany.slug
 
       await prisma.companyProfile.update({
         where: { id: companyId },
@@ -190,7 +192,6 @@ export const updateCompany = companyOnlyAction(
         return { message: "A database error occurred. Please try again later.", status: "error" }
       }
     }
-
 
     // Save the banner and logo (if they exist)
     if (isFileNotEmpty(banner)) {
