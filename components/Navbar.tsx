@@ -1,56 +1,43 @@
-import { auth } from "@/auth"
-import Link from "@/components/Link"
-import ProfileDropdown from "@/components/ProfileDropdown"
-import getUserAvatar from "@/lib/getUserAvatar"
+"use client"
 
-import styles from "./navbar.module.scss"
+import DesktopNavbar from "./DesktopNavbar"
 
-import { Flex } from "@radix-ui/themes"
-import Image from "next/image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 
-const Navbar = async () => {
-  const session = await auth()
+interface AdminNavbarProps {
+  role: "ADMIN"
+}
 
-  return (
-    <Flex className={styles.container} justify="between" asChild>
-      <nav>
-        <Flex gap="9" wrap="wrap">
-          <Link href="/">
-            <Flex className={styles.logosContainer}>
-              <Image src="/images/cpp-connect-logo.svg" alt="cpp connect logo" width={0} height={0} />
-              <Image src="/images/imperial-logo.svg" alt="imperial logo" width={0} height={0} />
-            </Flex>
-          </Link>
+interface StudentNavbarProps {
+  role: "STUDENT"
+  shortcode: string
+  avatar: string
+}
 
-          {session?.user && (
-            <Flex className={styles.linksContainer}>
-              <Link href="/companies" className={styles.link}>
-                <span>Companies</span>
-              </Link>
-              <Link href="/events" className={styles.link}>
-                <span>Events</span>
-              </Link>
-              <Link href="/opportunities" className={styles.link}>
-                <span>Opportunities</span>
-              </Link>
-              <Link href="/students" className={styles.link}>
-                <span>Students</span>
-              </Link>
-            </Flex>
-          )}
-        </Flex>
+interface CompanyNavbarProps {
+  role: "COMPANY"
+  slug: string
+}
 
-        {session?.user ? (
-          <ProfileDropdown user={{ ...session.user, image: await getUserAvatar(session.user) }} />
-        ) : (
-          <Link href="/auth/login" className={styles.link}>
-            <span>Log In</span>
-          </Link>
-        )}
-      </nav>
-    </Flex>
-  )
+export type RoleNavbarProps = StudentNavbarProps | CompanyNavbarProps | AdminNavbarProps
+
+export type NavbarProps = RoleNavbarProps | {}
+
+const Navbar = (props: NavbarProps) => {
+  const [width, setWidth] = useState(window.innerWidth)
+
+  const handleWindowSizeChange = () => setWidth(window.innerWidth)
+
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange)
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange)
+    }
+  }, [])
+
+  const isMobile = width <= 768
+
+  return isMobile ? <></> : <DesktopNavbar {...props} />
 }
 
 export default Navbar

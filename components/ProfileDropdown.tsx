@@ -1,16 +1,22 @@
+"use client"
+
 import { DropdownCard } from "@/components/DropdownCard"
 import UserAvatar from "@/components/UserAvatar"
 import styles from "@/components/profileDropdown.module.scss"
-import getCompanySlug from "@/lib/getCompanySlug"
-import getStudentShortcode from "@/lib/getStudentShortcode"
 
+import { RoleNavbarProps } from "./Navbar"
+
+import { Role } from "@prisma/client"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Button, Link, Text } from "@radix-ui/themes"
-import { Session } from "next-auth"
+import { useSession } from "next-auth/react"
 import React from "react"
 import { BsBuilding, BsPersonCircle } from "react-icons/bs"
 
-const ProfileDropdown = async ({ user }: { user: Session["user"] }) => {
+const ProfileDropdown = (props: RoleNavbarProps) => {
+  const { data } = useSession()
+  const user = data?.user! // This component is only rendered when the user is logged in
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -20,17 +26,17 @@ const ProfileDropdown = async ({ user }: { user: Session["user"] }) => {
       </DropdownMenu.Trigger>
       <DropdownMenu.Content className={styles.DropdownMenuContent}>
         <DropdownCard user={user}>
-          {user.role === "STUDENT" && (
+          {props.role === Role.STUDENT && (
             <Button variant="outline" asChild>
-              <Link href={`/students/${(await getStudentShortcode(user)) ?? ""}`} underline="none">
+              <Link href={`/students/${props.shortcode}`} underline="none">
                 <BsPersonCircle />
                 <Text>Your Profile</Text>
               </Link>
             </Button>
           )}
-          {user.role === "COMPANY" && (
+          {props.role === "COMPANY" && (
             <Button variant="outline" asChild>
-              <Link href={`/companies/${(await getCompanySlug(user)) ?? ""}`} underline="none">
+              <Link href={`/companies/${props.slug}`} underline="none">
                 <BsBuilding />
                 <Text>Your Company</Text>
               </Link>
