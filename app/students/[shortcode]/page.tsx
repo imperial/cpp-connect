@@ -3,6 +3,7 @@ import { EditStudent } from "@/components/EditStudent"
 import Link from "@/components/Link"
 import UserAvatar from "@/components/UserAvatar"
 import RestrictedArea from "@/components/rbac/RestrictedArea"
+import RestrictedAreaStudent from "@/components/rbac/RestrictedAreaStudent"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -94,7 +95,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
               <Flex align="center" gap="2" asChild>
                 <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" underline="none">
                   <BsFileEarmarkText title="download cv" color="black" />
-                  <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}'s CV</Text>
+                  <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}&apos;s CV</Text>
                 </Link>
               </Flex>
             )}
@@ -142,7 +143,9 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
               </Flex>
             </Flex>
             <Box position="absolute" top="2" right="2">
-              <EditStudent prevStudentProfile={studentProfile} />
+              <RestrictedAreaStudent showMessage={false} studentId={studentProfile.userId}>
+                <EditStudent prevStudentProfile={studentProfile} />
+              </RestrictedAreaStudent>
             </Box>
           </Flex>
         </Flex>
