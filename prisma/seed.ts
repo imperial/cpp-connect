@@ -46,7 +46,6 @@ function createFakeStudent() {
         linkedIn: faker.internet.url(),
         course: `Computing (${faker.helpers.arrayElements(["Software Engineering", "Artificial Intelligence", "Machine Learning", "Visual Computing", "Security and Reliability", "Management"], { min: 1, max: 2 }).join(" and ")})`,
         graduationDate: faker.date.future(),
-        cv: faker.system.filePath(),
         skills: faker.helpers.arrayElements(
           [
             "Python",

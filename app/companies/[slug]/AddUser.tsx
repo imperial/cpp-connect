@@ -5,6 +5,7 @@ import { PlusButton } from "@/components/buttons/PlusButton"
 import { FormInModal } from "@/components/forms/FormInModal"
 import { GenericFormModal } from "@/components/modals/GenericFormModal"
 import { createCompanyUser } from "@/lib/crud/companies"
+import { FormPassBackState, ServerSideFormHandler } from "@/lib/types"
 
 import styles from "./add-user.module.scss"
 
@@ -60,9 +61,19 @@ const UserSignUpSuccess: React.FC<{ signInURL?: string }> = ({ signInURL }) => {
 const AddUserForm = ({ close, companyId }: { close: () => void; companyId: number }) => {
   const [formReturn, setFormReturn] = useState<Awaited<ReturnType<typeof createCompanyUser>> | undefined>(undefined)
 
+  const action: ServerSideFormHandler<FormPassBackState, []> = async (prevState, formData) => {
+    const companyId = parseInt(formData.get("companyId")?.toString() ?? "-1")
+
+    if (companyId === -1) {
+      return { message: "Company ID is required.", status: "error" }
+    }
+
+    return createCompanyUser(prevState, formData, companyId)
+  }
+
   return (
     <FormInModal
-      action={createCompanyUser}
+      action={action}
       onSuccess={formState => {
         setFormReturn(formState)
       }}

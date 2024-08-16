@@ -1,4 +1,5 @@
 import Chip from "@/components/Chip"
+import { EditStudent } from "@/components/EditStudent"
 import Link from "@/components/Link"
 import UserAvatar from "@/components/UserAvatar"
 import RestrictedArea from "@/components/rbac/RestrictedArea"
@@ -7,7 +8,7 @@ import prisma from "@/lib/db"
 import styles from "./page.module.scss"
 
 import { OpportunityType } from "@prisma/client"
-import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes"
+import { Box, Card, Flex, Heading, Separator, Text } from "@radix-ui/themes"
 import { format } from "date-fns"
 import { notFound } from "next/navigation"
 import React from "react"
@@ -64,9 +65,9 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
 
   return (
     <RestrictedArea allowedRoles={["STUDENT"]}>
-      <Flex gap="3" direction="row" wrap="wrap">
-        <Card variant="ghost" className={styles.shortDetailsCard}>
-          <Flex direction="column" align="center" gap="5">
+      <Card className={styles.container}>
+        <Flex gap="3" direction="row" wrap="wrap">
+          <Flex direction="column" align="center" gap="5" className={styles.shortDetailsCard} p="5">
             <UserAvatar user={studentProfile.user} size="9" />
 
             <Flex align="center" gap="2">
@@ -76,26 +77,27 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
                   Last updated: {format(studentProfile.updatedAt, "dd/MM/yyyy")}
                 </Text>
               </Flex>
-
-              {studentProfile.cv && (
-                <Link href={studentProfile.cv} target="_blank" mb={"0"}>
-                  <BsFileEarmarkText size="35" title="download cv" color="black" />
-                </Link>
-              )}
             </Flex>
 
             {studentProfile.course && <Text>{studentProfile.course}</Text>}
 
             {(studentProfile.lookingFor || studentProfile.graduationDate) && (
-              <Box>
+              <Flex gap="2" direction="column">
                 {studentProfile.lookingFor && <Text>Looking for {formatLookingFor(studentProfile.lookingFor)}</Text>}
-                <br />
                 {studentProfile.graduationDate && (
                   <Text>Graduating in {format(studentProfile.graduationDate, "MMMM, yyyy")}</Text>
                 )}
-              </Box>
+              </Flex>
             )}
 
+            {studentProfile.cv && (
+              <Flex align="center" gap="2" asChild>
+                <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" underline="none">
+                  <BsFileEarmarkText title="download cv" color="black" />
+                  <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}'s CV</Text>
+                </Link>
+              </Flex>
+            )}
             <Flex align="center" gap="2">
               <BsEnvelope />
               <Link href={`mailto:${studentProfile.user.email}`}>{studentProfile.user.email}</Link>
@@ -107,10 +109,10 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
               <StudentWebsiteLink href={studentProfile.linkedIn} icon={BsLinkedin} />
             </Flex>
           </Flex>
-        </Card>
 
-        <Card className={styles.longDetailsCard}>
-          <Flex>
+          <Separator orientation="vertical" className={styles.Separator} />
+
+          <Flex p="5" className={styles.longDetailsCard}>
             <Flex direction="column" gap="3">
               {studentProfile.bio && (
                 <Flex direction="column" gap="3">
@@ -139,9 +141,12 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
                 </Flex>
               </Flex>
             </Flex>
+            <Box position="absolute" top="2" right="2">
+              <EditStudent prevStudentProfile={studentProfile} />
+            </Box>
           </Flex>
-        </Card>
-      </Flex>
+        </Flex>
+      </Card>
     </RestrictedArea>
   )
 }

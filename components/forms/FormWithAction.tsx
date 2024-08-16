@@ -9,7 +9,7 @@ import { useFormState } from "react-dom"
 
 export interface FormWithActionProps {
   /** The server-side action to be called when the form is submitted. Must conform to the `ServerSideFormHandler` type. */
-  action: ServerSideFormHandler
+  action: ServerSideFormHandler<FormPassBackState, []>
   /** The form fields to be displayed. */
   children: React.ReactNode
   /** The default state of the form, depending on what your form actions returns. Defaults to `{ message: "" }`. */
@@ -39,14 +39,14 @@ export interface FormWithActionProps {
  * @see FormWithActionProps for details on the props.
  * @see FormInModal for a version of this form for us in modals.
  */
-export const FormWithAction: React.FC<FormWithActionProps> = ({
+export function FormWithAction({
   action,
   children,
   defaultState,
   actionsSection,
   onSuccess,
   submitButton,
-}) => {
+}: FormWithActionProps) {
   const [isPending, startTransition] = useTransition()
   const wrappedAction = useCallback(
     (prevState: FormPassBackState, formData: FormData): Promise<FormPassBackState> => {
@@ -66,7 +66,10 @@ export const FormWithAction: React.FC<FormWithActionProps> = ({
     },
     [action, onSuccess],
   )
-  const [formState, formAction] = useFormState(wrappedAction, defaultState ?? { message: "" })
+  const [formState, formAction] = useFormState(
+    wrappedAction,
+    defaultState ?? ({ status: "error", message: "" } as FormPassBackState),
+  )
 
   return (
     <form action={formAction}>
