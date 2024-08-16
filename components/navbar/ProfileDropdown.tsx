@@ -13,16 +13,22 @@ import { signOut, useSession } from "next-auth/react"
 import React from "react"
 import { BsBoxArrowRight, BsBuilding, BsPersonCircle } from "react-icons/bs"
 
-const DropdownCard = (props: RoleNavbarProps & { children?: React.ReactNode }) => {
-  const { data } = useSession()
-  const user = data?.user! // This component is only rendered when the user is logged in
+interface DropdownCardProps {
+  children?: React.ReactNode
+  user: {
+    name?: string | null
+    email?: string | null
+  }
+}
+
+const DropdownCard = (props: RoleNavbarProps & DropdownCardProps) => {
   return (
     <Flex className={styles.DropdownCard} gap="4" align="stretch">
       <Flex align="center">
-        <UserAvatar user={{ image: props.avatar, name: user.name ?? undefined }} size="6" />
+        <UserAvatar user={{ image: props.avatar, name: props.user.name ?? undefined }} size="6" />
       </Flex>
       <Flex direction="column" gap="2" justify="between">
-        <Heading>{user.name || user.email}</Heading>
+        <Heading>{props.user.name || props.user.email}</Heading>
         {props.children}
         <Button color="red" onClick={() => signOut()} variant="outline">
           <Flex gap="2" align="center">
@@ -36,15 +42,23 @@ const DropdownCard = (props: RoleNavbarProps & { children?: React.ReactNode }) =
 }
 
 const ProfileDropdown = (props: RoleNavbarProps) => {
+  const { data } = useSession()
+  const user = data?.user! // This component is only rendered when the user is logged in
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button className={styles.avatarButton}>
-          <UserAvatar user={{ image: props.avatar }} size="4" />
+          <UserAvatar user={{ image: props.avatar, name: user.name ?? undefined }} size="4" />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content className={styles.DropdownMenuContent}>
-        <DropdownCard {...props}>
+        <DropdownCard
+          {...props}
+          user={{
+            name: user.name,
+            email: user.email,
+          }}
+        >
           {props.role === Role.STUDENT && (
             <Button variant="outline" asChild>
               <Link
@@ -71,6 +85,7 @@ const ProfileDropdown = (props: RoleNavbarProps) => {
               </Link>
             </Button>
           )}
+          {props.role === "ADMIN" && <Text>(ADMIN)</Text>}
         </DropdownCard>
         <DropdownMenu.Arrow fill="white" />
       </DropdownMenu.Content>
