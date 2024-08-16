@@ -6,7 +6,7 @@ import { Session } from "next-auth"
  * Get the student shortcode of the session user for the profile link
  * @param user The session user
  */
-const getStudentShortcode = async (user: Session["user"]) => {
+const getStudentShortcode = async (user: Session["user"] | { id: string }) => {
   return (
     await prisma.studentProfile.findUnique({
       where: {

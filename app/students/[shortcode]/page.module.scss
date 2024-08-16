@@ -1,3 +1,7 @@
+.container {
+  padding: 0;
+}
+
 .SeparatorRoot {
   background-color: var(--blue-6);
   height: 100%;
@@ -10,7 +14,12 @@
   min-width: min(300px, 90vw);
 }
 
+.Separator {
+  height: initial;
+}
+
 .longDetailsCard {
   flex: 2 2;
   min-width: min(300px, 90vw);
+  position: relative;
 }

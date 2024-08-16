@@ -10,6 +10,8 @@ const StudentsPage = async () => {
         select: {
           name: true,
           updatedAt: true,
+          image: true,
+          role: true,
         },
       },
       graduationDate: true,
@@ -17,7 +19,12 @@ const StudentsPage = async () => {
       studentShortcode: true,
     },
   })
-  return <StudentTable students={students} columns={["user.name", "course", "graduationDate", "user.updatedAt"]} />
+  return (
+    <StudentTable
+      students={students}
+      columns={["user.image", "user.name", "course", "graduationDate", "user.updatedAt"]}
+    />
+  )
 }
 
 export default StudentsPage
