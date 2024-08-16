@@ -5,7 +5,7 @@ import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
 import { DeleteButton } from "./buttons/DeleteButton"
-import styles from "./deletecompany.module.scss"
+import styles from "./deleteCompany.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
