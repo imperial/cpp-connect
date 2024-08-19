@@ -3,11 +3,51 @@ import styles from "./mobileNavbar.module.scss"
 import Link from "../Link"
 import * as NavigationMenu from "@radix-ui/react-navigation-menu"
 import { Flex, IconButton } from "@radix-ui/themes"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import React, { ToggleEventHandler } from "react"
 import { BsList } from "react-icons/bs"
 
+const UnauthenticatedContent = () => {
+  return (
+    <NavigationMenu.Link asChild>
+      <Link href="/login" className={styles.link} radixProps={{ underline: "none" }}>
+        <span>Login</span>
+      </Link>
+    </NavigationMenu.Link>
+  )
+}
+
+const AuthenticatedContent = () => {
+  return (
+    <>
+      <NavigationMenu.Link asChild>
+        <Link href="/companies" className={styles.link} radixProps={{ underline: "none" }}>
+          <span>Companies</span>
+        </Link>
+      </NavigationMenu.Link>
+      <NavigationMenu.Link asChild>
+        <Link href="/events" className={styles.link} radixProps={{ underline: "none" }}>
+          <span>Events</span>
+        </Link>
+      </NavigationMenu.Link>
+      <NavigationMenu.Link asChild>
+        <Link href="/opportunities" className={styles.link} radixProps={{ underline: "none" }}>
+          <span>Opportunities</span>
+        </Link>
+      </NavigationMenu.Link>
+      <NavigationMenu.Link asChild>
+        <Link href="/students" className={styles.link} radixProps={{ underline: "none" }}>
+          <span>Students</span>
+        </Link>
+      </NavigationMenu.Link>
+    </>
+  )
+}
+
 const MobileNavbar = () => {
+  const { data: session } = useSession()
+
   const handleToggle = (value: string) => {
     if (value === "") {
       document.documentElement.style.overflow = "auto"
@@ -17,7 +57,7 @@ const MobileNavbar = () => {
       document.getElementsByClassName("page-container")[0].classList.add("dim")
     }
   }
-  2
+
   return (
     <NavigationMenu.Root orientation="vertical" onValueChange={handleToggle}>
       <NavigationMenu.List className={styles.NavigationMenuList}>
@@ -29,26 +69,7 @@ const MobileNavbar = () => {
           </IconButton>
 
           <NavigationMenu.Content className={styles.NavigationMenuContent}>
-            <NavigationMenu.Link asChild>
-              <Link href="/companies" className={styles.link} radixProps={{ underline: "none" }}>
-                <span>Companies</span>
-              </Link>
-            </NavigationMenu.Link>
-            <NavigationMenu.Link asChild>
-              <Link href="/events" className={styles.link} radixProps={{ underline: "none" }}>
-                <span>Events</span>
-              </Link>
-            </NavigationMenu.Link>
-            <NavigationMenu.Link asChild>
-              <Link href="/opportunities" className={styles.link} radixProps={{ underline: "none" }}>
-                <span>Opportunities</span>
-              </Link>
-            </NavigationMenu.Link>
-            <NavigationMenu.Link asChild>
-              <Link href="/students" className={styles.link} radixProps={{ underline: "none" }}>
-                <span>Students</span>
-              </Link>
-            </NavigationMenu.Link>
+            {session?.user ? <AuthenticatedContent /> : <UnauthenticatedContent />}
           </NavigationMenu.Content>
         </NavigationMenu.Item>
         <NavigationMenu.Item className={styles.NavigationMenuItem}>

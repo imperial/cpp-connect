@@ -46,7 +46,7 @@
 
 .NavigationMenuItem {
   img {
-    max-width: 12em;
+    max-width: min(12em, 40vw);
     height: 3em;
     width: auto;
   }
