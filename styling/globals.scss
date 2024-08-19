@@ -47,13 +47,16 @@ body {
 .page-container {
   width: 100vw;
   background-color: var(--color-background);
-  transition: filter .5s;
 }
 
 .page-content {
   width: min(90vw, 1200px);
   padding-top: 5vw;
   padding-bottom: 5vw;
+}
+
+#page-content, #footer {
+  transition: filter .5s;
 }
 
 .dim {

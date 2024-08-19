@@ -33,7 +33,14 @@ const RootLayout = ({
           <Client>
             <Flex direction="column" justify="between" minHeight="100vh">
               <NavbarWrapper />
-              <Flex className="page-container" align="center" direction="column" height="100%" flexGrow="1">
+              <Flex
+                id="page-container"
+                className="page-container"
+                align="center"
+                direction="column"
+                height="100%"
+                flexGrow="1"
+              >
                 <Box className="page-content">{children}</Box>
               </Flex>
               <Footer />

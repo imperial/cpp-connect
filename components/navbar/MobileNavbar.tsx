@@ -66,11 +66,17 @@ const MobileNavbar = (props: NavbarProps) => {
 
   const handleToggle = (value: string) => {
     if (value === "") {
+      // Allow scrolling when the menu is closed
       document.documentElement.style.overflow = "auto"
-      document.getElementsByClassName("page-container")[0].classList.remove("dim")
+      // Undim rest of the page when the menu is closed
+      document.getElementById("page-container")?.classList.remove("dim")
+      document.getElementById("footer")?.classList.remove("dim")
     } else {
+      // Prevent scrolling when the menu is open
       document.documentElement.style.overflow = "hidden"
-      document.getElementsByClassName("page-container")[0].classList.add("dim")
+      // Dim rest of the page when the menu is open
+      document.getElementById("page-container")?.classList.add("dim")
+      document.getElementById("footer")?.classList.add("dim")
     }
   }
 
