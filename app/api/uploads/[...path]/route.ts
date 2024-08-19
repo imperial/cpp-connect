@@ -1,5 +1,5 @@
 import { auth } from "@/auth"
-import { validateFilePath } from "@/lib/saveFile"
+import { validateFilePath } from "@/lib/files/saveFile"
 
 import fs from "fs/promises"
 import mime from "mime-types"
