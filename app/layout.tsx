@@ -1,6 +1,6 @@
 import { Client } from "@/components/Client"
-import NavbarWrapper from "@/components/navbar/NavbarWrapper"
 import Footer from "@/components/Footer"
+import NavbarWrapper from "@/components/navbar/NavbarWrapper"
 import "@/styling/globals.scss"
 
 import { Theme, ThemePanel } from "@radix-ui/themes"
@@ -31,12 +31,14 @@ const RootLayout = ({
         <Theme accentColor="blue" grayColor="gray">
           <ThemePanel defaultOpen={false} />
           <Client>
-            <NavbarWrapper />
-            <Flex className="page-container" align="center" justify="center" direction="column" height="100%">
-              <Box className="page-content">{children}</Box>
+            <Flex direction="column" justify="between" minHeight="100vh">
+              <NavbarWrapper />
+              <Flex className="page-container" align="center" direction="column" height="100%" flexGrow="1">
+                <Box className="page-content">{children}</Box>
+              </Flex>
+              <Footer />
             </Flex>
           </Client>
-          <Footer />
         </Theme>
       </body>
     </html>

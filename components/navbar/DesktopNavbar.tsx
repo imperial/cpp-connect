@@ -3,11 +3,10 @@
 import Link from "@/components/Link"
 import ProfileDropdown from "@/components/navbar/ProfileDropdown"
 
-import { NavbarProps, RoleNavbarProps, isSignedIn } from "./Navbar"
+import { NavbarProps, isSignedIn } from "./Navbar"
 import styles from "./desktopNavbar.module.scss"
 
 import { Flex } from "@radix-ui/themes"
-import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
 import React from "react"
