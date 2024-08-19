@@ -4,11 +4,11 @@ import { deleteOpportunity } from "@/lib/crud/opportunities"
 import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
-import styles from "./deletecompany.module.scss"
+import styles from "./deleteCompany.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
-import { Button, IconButton, Spinner, Text, TextField } from "@radix-ui/themes"
+import { Button, IconButton, Spinner } from "@radix-ui/themes"
 import { useCallback } from "react"
 import { FaTrash } from "react-icons/fa"
 
@@ -53,7 +53,7 @@ export const DeleteOpportunity = ({
     ({ close }: { close: () => void }) => (
       <DeleteOpportunityForm close={close} id={id} companyID={companyID} redirectOnDelete={redirectOnDelete} />
     ),
-    [id, companyID],
+    [id, companyID, redirectOnDelete],
   )
 
   return (
