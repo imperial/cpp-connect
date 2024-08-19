@@ -53,7 +53,7 @@ export const DeleteOpportunity = ({
     ({ close }: { close: () => void }) => (
       <DeleteOpportunityForm close={close} id={id} companyID={companyID} redirectOnDelete={redirectOnDelete} />
     ),
-    [id, companyID],
+    [id, companyID, redirectOnDelete],
   )
 
   return (
