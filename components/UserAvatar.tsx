@@ -8,13 +8,13 @@ const UserAvatar = ({
   user,
   size,
 }: {
-  user: { image?: string; name?: string }
+  user: { image?: string | null; name?: string | null }
   size: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 }) => (
   <Avatar
     alt="Profile"
     radius="full"
-    src={user.image && `/api/uploads/${user.image}`}
+    src={(user.image ?? undefined) && `/api/uploads/${user.image}`}
     size={size}
     style={{
       fontSize: `${parseInt(size) / 3.5}rem`,
