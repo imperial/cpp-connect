@@ -3,16 +3,16 @@ import styles from "./mobileNavbar.module.scss"
 
 import Link from "../Link"
 import * as NavigationMenu from "@radix-ui/react-navigation-menu"
-import { Flex, IconButton, Text } from "@radix-ui/themes"
-import { useSession } from "next-auth/react"
+import { Button, Flex, IconButton, Link as RadixLink, Separator, Text } from "@radix-ui/themes"
+import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
 import React, { ToggleEventHandler } from "react"
-import { BsList } from "react-icons/bs"
+import { BsBoxArrowRight, BsList } from "react-icons/bs"
 
 const UnauthenticatedContent = () => {
   return (
     <NavigationMenu.Link asChild>
-      <Link href="/login" className={styles.link} radixProps={{ underline: "none" }}>
+      <Link href="/auth/login" className={styles.link} radixProps={{ underline: "none" }}>
         <span>Login</span>
       </Link>
     </NavigationMenu.Link>
@@ -57,6 +57,12 @@ const AuthenticatedContent = (props: RoleNavbarProps) => {
           <span>Students</span>
         </Link>
       </NavigationMenu.Link>
+      <Separator orientation="horizontal" className={styles.Separator} />
+      <RadixLink asChild className={styles.link}>
+        <Button onClick={() => signOut()} variant="ghost" className={styles.signOutButton}>
+          <Text>Sign out</Text>
+        </Button>
+      </RadixLink>
     </>
   )
 }
