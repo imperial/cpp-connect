@@ -1,5 +1,6 @@
 "use client"
 
+import { DeleteEvent } from "@/components/DeleteEvent"
 import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 import { EditEvent } from "@/components/UpsertEvent"
@@ -74,7 +75,7 @@ const EventTable = ({
         cell: info => (
           <Flex gap="2">
             <EditEvent prevEvent={info.row.original} companyID={info.row.original.companyID} />
-            {/* <DeleteEvent id={info.row.original.id} companyID={info.row.original.companyID} /> */}
+            <DeleteEvent id={info.row.original.id} companyID={info.row.original.companyID} />
           </Flex>
         ),
         header: "",

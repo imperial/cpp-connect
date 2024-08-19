@@ -1,5 +1,6 @@
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { auth } from "@/auth"
+import { DeleteEvent } from "@/components/DeleteEvent"
 import Link from "@/components/Link"
 import { EditEvent } from "@/components/UpsertEvent"
 import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
@@ -109,6 +110,7 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
               <RestrictedAreaCompany companyId={event.companyID} showMessage={false}>
                 <Flex gap="2">
                   <EditEvent prevEvent={event} companyID={event.companyID} />
+                  <DeleteEvent id={event.id} companyID={event.companyID} redirectOnDelete />
                 </Flex>
               </RestrictedAreaCompany>
             </Flex>
