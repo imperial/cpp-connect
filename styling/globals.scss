@@ -46,10 +46,15 @@ body {
 
 .page-container {
   width: 100vw;
+  background-color: var(--color-background);
 }
 
 .page-content {
   width: min(90vw, 1200px);
   padding-top: 5vw;
   padding-bottom: 5vw;
+}
+
+.dim {
+  filter: opacity(0.5);
 }
