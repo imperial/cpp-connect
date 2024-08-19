@@ -13,11 +13,11 @@ import { useMemo } from "react"
 
 type EventRow = {
   company: CompanyProfile
-} & Event
+} & Event & {adminButtons?: string}
 
 const columnHelper = createColumnHelper<EventRow>()
 
-type ColumnName = keyof EventRow | `company.${keyof CompanyProfile}` | "adminButtons"
+type ColumnName = keyof EventRow | `company.${keyof CompanyProfile}`
 
 const EventTable = ({
   events,
