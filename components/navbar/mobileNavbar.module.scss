@@ -1,0 +1,79 @@
+.NavigationMenuViewport {
+  width: 90vw;
+  height: calc(100vh - 100px);
+  background-color: var(--blue-9);
+  z-index: 1;
+  transform: translateX(-100%);
+  border-bottom-right-radius: 0.5em;
+}
+
+.NavigationMenuViewport[data-state="open"] {
+  animation: slideIn 0.5s;
+  animation-fill-mode: forwards;
+}
+
+.NavigationMenuList {
+  height: 100px;
+  background-color: var(--blue-9);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.NavigationMenuContent {
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  padding: 2em;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.NavigationMenuItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  img {
+    max-width: 10em;
+    height: 4em;
+    width: auto;
+  }
+}
+
+.link {
+  color: white !important;
+  font-size: 1.25em !important;
+}
+
+/* Underline hover animation for links */
+.link span {
+  position: relative;
+}
+
+.link span::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: white;
+  transform-origin: bottom center;
+  transition: transform 0.1s linear;
+  transform: scaleX(0);
+}
+
+.link:hover span::after {
+  transform: scaleX(1);
+  transform-origin: bottom center;
+}
