@@ -5,6 +5,7 @@ import DesktopNavbar from "@/components/navbar/DesktopNavbar"
 import MobileNavbar from "./MobileNavbar"
 
 import { Role } from "@prisma/client"
+import { Session } from "next-auth"
 import React, { useEffect, useState } from "react"
 
 const MOBILE_WIDTH = 910
@@ -28,6 +29,8 @@ interface CompanyNavbarProps extends BaseNavbarProps {
   slug: string
 }
 
+export const isSignedIn = (data: Session | null, props: NavbarProps): props is RoleNavbarProps => !!(data && data.user)
+
 export type RoleNavbarProps = StudentNavbarProps | CompanyNavbarProps | AdminNavbarProps
 
 export type NavbarProps = RoleNavbarProps | {}
@@ -44,7 +47,7 @@ const Navbar = (props: NavbarProps) => {
     }
   }, [])
 
-  return width <= MOBILE_WIDTH ? <MobileNavbar /> : <DesktopNavbar {...props} />
+  return width <= MOBILE_WIDTH ? <MobileNavbar {...props} /> : <DesktopNavbar {...props} />
 }
 
 export default Navbar

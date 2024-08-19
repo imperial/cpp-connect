@@ -1,8 +1,9 @@
+import { NavbarProps, RoleNavbarProps, isSignedIn } from "./Navbar"
 import styles from "./mobileNavbar.module.scss"
 
 import Link from "../Link"
 import * as NavigationMenu from "@radix-ui/react-navigation-menu"
-import { Flex, IconButton } from "@radix-ui/themes"
+import { Flex, IconButton, Text } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
 import React, { ToggleEventHandler } from "react"
@@ -18,9 +19,24 @@ const UnauthenticatedContent = () => {
   )
 }
 
-const AuthenticatedContent = () => {
+const AuthenticatedContent = (props: RoleNavbarProps) => {
   return (
     <>
+      {props.role === "STUDENT" && (
+        <NavigationMenu.Link asChild>
+          <Link href={`/students/${props.shortcode}`} className={styles.link} radixProps={{ underline: "none" }}>
+            <span>Your Profile</span>
+          </Link>
+        </NavigationMenu.Link>
+      )}
+      {props.role === "COMPANY" && (
+        <NavigationMenu.Link asChild>
+          <Link href={`/companies/${props.slug}`} className={styles.link} radixProps={{ underline: "none" }}>
+            <span>Your Company</span>
+          </Link>
+        </NavigationMenu.Link>
+      )}
+      {props.role === "ADMIN" && <Text>(ADMIN)</Text>}
       <NavigationMenu.Link asChild>
         <Link href="/companies" className={styles.link} radixProps={{ underline: "none" }}>
           <span>Companies</span>
@@ -45,8 +61,8 @@ const AuthenticatedContent = () => {
   )
 }
 
-const MobileNavbar = () => {
-  const { data: session } = useSession()
+const MobileNavbar = (props: NavbarProps) => {
+  const { data } = useSession()
 
   const handleToggle = (value: string) => {
     if (value === "") {
@@ -69,7 +85,7 @@ const MobileNavbar = () => {
           </IconButton>
 
           <NavigationMenu.Content className={styles.NavigationMenuContent}>
-            {session?.user ? <AuthenticatedContent /> : <UnauthenticatedContent />}
+            {isSignedIn(data, props) ? <AuthenticatedContent {...props} /> : <UnauthenticatedContent />}
           </NavigationMenu.Content>
         </NavigationMenu.Item>
         <NavigationMenu.Item className={styles.NavigationMenuItem}>

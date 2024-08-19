@@ -3,7 +3,7 @@
 import Link from "@/components/Link"
 import ProfileDropdown from "@/components/navbar/ProfileDropdown"
 
-import { NavbarProps, RoleNavbarProps } from "./Navbar"
+import { NavbarProps, RoleNavbarProps, isSignedIn } from "./Navbar"
 import styles from "./desktopNavbar.module.scss"
 
 import { Flex } from "@radix-ui/themes"
@@ -11,8 +11,6 @@ import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
 import React from "react"
-
-const isSignedIn = (data: Session | null, props: NavbarProps): props is RoleNavbarProps => !!(data && data.user)
 
 const DesktopNavbar = (props: NavbarProps) => {
   const { data } = useSession()
