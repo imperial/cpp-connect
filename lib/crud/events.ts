@@ -1,30 +1,49 @@
 "use server"
 
+import { TIMEZONE } from "@/lib/constants"
 import { companyOnlyAction } from "@/lib/rbac"
 
 import prisma from "../db"
 import { FormPassBackState } from "../types"
+import { fromZonedTime } from "date-fns-tz"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+
+const parseDateTime = (rawDate: FormDataEntryValue | null): Date | null => {
+  if (!rawDate) {
+    return null
+  }
+  const date = new Date(rawDate.toString().trim())
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    return null
+  }
+  return fromZonedTime(date, TIMEZONE)
+}
 
 export const createEvent = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyID: number): Promise<FormPassBackState> => {
     const title = formData.get("title")?.toString().trim()
-    const dateStart = formData.get("dateStart")?.toString().trim()
-    const dateEnd = formData.get("dateEnd")?.toString().trim()
+
     const shortDescription = formData.get("shortDescription")?.toString().trim()
     const richSummary = formData.get("richSummary")?.toString().trim()
     const spaces = parseInt(formData.get("spaces")?.toString().trim() ?? "-1")
     const location = formData.get("location")?.toString().trim()
     const link = formData.get("link")?.toString().trim()
+    const dateEnd = parseDateTime(formData.get("dateEnd"))
+    const dateStart = parseDateTime(formData.get("dateStart"))
 
     // Validate things
-    if (!title) {
-      return { message: "Title is required.", status: "error" }
+    if (!dateStart) {
+      return { message: "Start date is required.", status: "error" }
     }
 
-    if (!dateStart) {
-      return { message: "Date start is required.", status: "error" }
+    if (!!dateEnd && dateEnd < dateStart) {
+      return { message: "End date must be after start date.", status: "error" }
+    }
+
+    if (!title) {
+      return { message: "Title is required.", status: "error" }
     }
 
     if (!shortDescription) {
@@ -53,7 +72,7 @@ export const createEvent = companyOnlyAction(
       }
     }
 
-    // Now add the company to the database
+    // Now add the event to the database
     try {
       const event = await prisma.event.create({
         data: { title, dateStart, dateEnd, shortDescription, richSummary, spaces, location, link, companyID },
@@ -81,21 +100,25 @@ export const createEvent = companyOnlyAction(
 export const updateEvent = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyID: number, eventID: number): Promise<FormPassBackState> => {
     const title = formData.get("title")?.toString().trim()
-    const dateStart = formData.get("dateStart")?.toString().trim()
-    const dateEnd = formData.get("dateEnd")?.toString().trim()
     const shortDescription = formData.get("shortDescription")?.toString().trim()
     const richSummary = formData.get("richSummary")?.toString().trim()
     const spaces = parseInt(formData.get("spaces")?.toString().trim() ?? "-1")
     const location = formData.get("location")?.toString().trim()
     const link = formData.get("link")?.toString().trim()
-
+    const dateEnd = parseDateTime(formData.get("dateEnd"))
+    const dateStart = parseDateTime(formData.get("dateStart"))
     // Validate things
-    if (!title) {
-      return { message: "Title is required.", status: "error" }
-    }
 
     if (!dateStart) {
-      return { message: "Date start is required.", status: "error" }
+      return { message: "Start date is required.", status: "error" }
+    }
+
+    if (!!dateEnd && dateEnd < dateStart) {
+      return { message: "End date must be after start date.", status: "error" }
+    }
+
+    if (!title) {
+      return { message: "Title is required.", status: "error" }
     }
 
     if (!shortDescription) {

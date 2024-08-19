@@ -44,7 +44,7 @@ const EventTable = ({
       },
       dateStart: {
         cell: info => (
-          <time suppressHydrationWarning={true}>{format(info.getValue(), "eeee, MMMM eo 'at' HH:mm ")}</time>
+          <time suppressHydrationWarning={true}>{format(info.getValue(), "eeee, MMMM do 'at' HH:mm ")}</time>
         ),
         header: "Start Date",
         sortingFn: "datetime",

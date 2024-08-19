@@ -1,15 +1,18 @@
 "use client"
 
-import { Dropdown } from "@/components/Dropdown"
+import DateTimePicker from "@/components/DateTimePicker"
 import { PlusButton } from "@/components/buttons/PlusButton"
 import { FormInModal } from "@/components/forms/FormInModal"
 import { GenericFormModal } from "@/components/modals/GenericFormModal"
+import { TIMEZONE } from "@/lib/constants"
 import { createEvent, updateEvent } from "@/lib/crud/events"
 import { FormPassBackState } from "@/lib/types"
 
+import { InfoCallout } from "./Callouts"
+
 import { Event } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
-import { Card, IconButton, Text, TextField } from "@radix-ui/themes"
+import { Card, Grid, IconButton, Text, TextField } from "@radix-ui/themes"
 import dynamic from "next/dynamic"
 import { useState } from "react"
 
@@ -39,7 +42,7 @@ const UpsertEventForm = ({
           Title*
         </Text>
         <TextField.Root
-          name="position"
+          name="title"
           placeholder="E.g., Summer networking event"
           required
           defaultValue={prevEvent?.title}
@@ -50,6 +53,17 @@ const UpsertEventForm = ({
           Location*
         </Text>
         <TextField.Root name="location" placeholder="E.g., London" required defaultValue={prevEvent?.location} />
+      </label>
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Short Description*
+        </Text>
+        <TextField.Root
+          name="shortDescription"
+          placeholder="E.g., Networking event in London."
+          required
+          defaultValue={prevEvent?.location}
+        />
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
@@ -69,24 +83,26 @@ const UpsertEventForm = ({
         </Text>
         <TextField.Root name="spaces" placeholder="E.g., 100" required type="number" defaultValue={prevEvent?.spaces} />
       </label>
-      <label>
-        <Text as="div" size="2" mb="1" weight="bold">
-          Start date*
-        </Text>
-        <TextField.Root
-          name="dateStart"
-          placeholder="E.g., 27/07/2024"
-          required
-          type="date"
-          defaultValue={prevEvent?.dateStart}
-        />
-      </label>
-      <label>
-        <Text as="div" size="2" mb="1" weight="bold">
-          End date
-        </Text>
-        <TextField.Root name="dateEnd" placeholder="E.g., 28/07/2024" type="date" defaultValue={prevEvent?.dateEnd} />
-      </label>
+      <InfoCallout message={`The times correspond to the ${TIMEZONE} timezone.`} />
+      <Grid columns="2" rows="1">
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            Start date*
+          </Text>
+          <DateTimePicker
+            name="dateStart"
+            placeholder="Enter start date here"
+            defaultDate={prevEvent?.dateStart}
+            required
+          />
+        </label>
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            End date
+          </Text>
+          <DateTimePicker name="dateEnd" placeholder="Enter end date here" defaultDate={prevEvent?.dateEnd} />
+        </label>
+      </Grid>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Summary*
