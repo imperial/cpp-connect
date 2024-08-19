@@ -2,6 +2,8 @@
 
 import DesktopNavbar from "@/components/navbar/DesktopNavbar"
 
+import MobileNavbar from "./MobileNavbar"
+
 import { Role } from "@prisma/client"
 import React, { useEffect, useState } from "react"
 
@@ -42,7 +44,7 @@ const Navbar = (props: NavbarProps) => {
 
   const isMobile = width <= 768
 
-  return isMobile ? <></> : <DesktopNavbar {...props} />
+  return isMobile ? <MobileNavbar /> : <DesktopNavbar {...props} />
 }
 
 export default Navbar

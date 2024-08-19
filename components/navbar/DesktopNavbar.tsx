@@ -4,7 +4,7 @@ import Link from "@/components/Link"
 import ProfileDropdown from "@/components/navbar/ProfileDropdown"
 
 import { NavbarProps, RoleNavbarProps } from "./Navbar"
-import styles from "./navbar.module.scss"
+import styles from "./desktopNavbar.module.scss"
 
 import { Flex } from "@radix-ui/themes"
 import { Session } from "next-auth"
