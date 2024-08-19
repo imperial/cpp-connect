@@ -17,7 +17,7 @@ const MobileNavbar = () => {
       document.getElementsByClassName("page-container")[0].classList.add("dim")
     }
   }
-
+  2
   return (
     <NavigationMenu.Root orientation="vertical" onValueChange={handleToggle}>
       <NavigationMenu.List className={styles.NavigationMenuList}>

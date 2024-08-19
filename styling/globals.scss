@@ -47,6 +47,7 @@ body {
 .page-container {
   width: 100vw;
   background-color: var(--color-background);
+  transition: filter .5s;
 }
 
 .page-content {

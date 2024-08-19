@@ -12,12 +12,12 @@
 }
 
 .NavigationMenuViewport[data-state="open"] {
-  animation: slideIn 0.5s;
+  animation: slideIn 0.3s ease-out;
   animation-fill-mode: forwards;
 }
 
 .NavigationMenuList {
-  height: 3.5em;
+  height: 3em;
   background-color: var(--blue-9);
   list-style: none;
   display: flex;
@@ -46,7 +46,7 @@
 
 .NavigationMenuItem {
   img {
-    max-width: 10em;
+    max-width: 12em;
     height: 3em;
     width: auto;
   }

@@ -6,6 +6,7 @@
   align-items: center;
   gap: 1em;
   position: relative;
+  box-sizing: content-box;
   z-index: 9999;
 }
 
@@ -47,7 +48,7 @@
 
   img {
     max-width: 12em;
-    height: 3.5em;
+    height: 3em;
     width: auto;
   }
 }

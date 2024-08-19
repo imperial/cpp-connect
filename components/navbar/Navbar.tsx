@@ -7,6 +7,8 @@ import MobileNavbar from "./MobileNavbar"
 import { Role } from "@prisma/client"
 import React, { useEffect, useState } from "react"
 
+const MOBILE_WIDTH = 910
+
 interface BaseNavbarProps {
   role: Role
   avatar: string
@@ -42,9 +44,7 @@ const Navbar = (props: NavbarProps) => {
     }
   }, [])
 
-  const isMobile = width <= 768
-
-  return isMobile ? <MobileNavbar /> : <DesktopNavbar {...props} />
+  return width <= MOBILE_WIDTH ? <MobileNavbar /> : <DesktopNavbar {...props} />
 }
 
 export default Navbar
