@@ -4,6 +4,7 @@ import { TIMEZONE } from "@/lib/constants"
 
 import styles from "./datetime-picker.module.scss"
 
+import { TextField } from "@radix-ui/themes"
 import { format } from "date-fns"
 import { toZonedTime } from "date-fns-tz"
 
@@ -19,7 +20,7 @@ const DateTimePicker = ({
   defaultDate: Date | null | undefined
 }) => {
   return (
-    <input
+    <TextField.Root
       className={styles.inputBox}
       type="datetime-local"
       name={name}
