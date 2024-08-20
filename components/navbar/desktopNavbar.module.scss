@@ -1,11 +1,12 @@
 .container {
   background-color: var(--blue-9);
-  padding: 1em;
+  padding: var(--space-2) var(--space-6);
   width: 100vw;
   flex-flow: row wrap;
   align-items: center;
   gap: 1em;
   position: relative;
+  box-sizing: content-box;
   z-index: 9999;
 }
 
@@ -44,12 +45,12 @@
 
 .logosContainer {
   gap: 2em;
-}
 
-.logosContainer img {
-  max-width: 12em;
-  height: 4em;
-  width: auto;
+  img {
+    max-width: 12em;
+    height: 3em;
+    width: auto;
+  }
 }
 
 .avatarButton {

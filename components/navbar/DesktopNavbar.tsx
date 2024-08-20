@@ -1,16 +1,18 @@
-import { auth } from "@/auth"
-import Link from "@/components/Link"
-import ProfileDropdown from "@/components/ProfileDropdown"
-import getUserAvatar from "@/lib/getUserAvatar"
+"use client"
 
-import styles from "./navbar.module.scss"
+import Link from "@/components/Link"
+import ProfileDropdown from "@/components/navbar/ProfileDropdown"
+
+import { NavbarProps, isSignedIn } from "./Navbar"
+import styles from "./desktopNavbar.module.scss"
 
 import { Flex } from "@radix-ui/themes"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import React from "react"
 
-const Navbar = async () => {
-  const session = await auth()
+const DesktopNavbar = (props: NavbarProps) => {
+  const { data } = useSession()
 
   return (
     <Flex className={styles.container} justify="between" asChild>
@@ -23,7 +25,7 @@ const Navbar = async () => {
             </Flex>
           </Link>
 
-          {session?.user && (
+          {isSignedIn(data, props) && (
             <Flex className={styles.linksContainer}>
               <Link href="/companies" className={styles.link}>
                 <span>Companies</span>
@@ -41,8 +43,8 @@ const Navbar = async () => {
           )}
         </Flex>
 
-        {session?.user ? (
-          <ProfileDropdown user={{ ...session.user, image: await getUserAvatar(session.user) }} />
+        {isSignedIn(data, props) ? (
+          <ProfileDropdown {...props} />
         ) : (
           <Link href="/auth/login" className={styles.link}>
             <span>Log In</span>
@@ -53,4 +55,4 @@ const Navbar = async () => {
   )
 }
 
-export default Navbar
+export default DesktopNavbar

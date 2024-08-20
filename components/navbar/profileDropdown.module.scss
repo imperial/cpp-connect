@@ -1,3 +1,14 @@
+.avatarButton {
+  outline: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.DropdownMenuContent {
+  transform: translateY(10px);
+}
+
 .DropdownCard {
   background-color: var(--color-panel-solid);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

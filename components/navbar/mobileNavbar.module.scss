@@ -1,0 +1,72 @@
+.sidebar {
+  height: calc(100vh - 3em - calc(var(--space-2) * 2));
+  background-color: var(--color-background);
+  box-shadow: 0 0 10px 5px var(--gray-5);
+  clip-path: inset(0px -15px 0px 0px);
+  z-index: 1;
+  transform: translateX(-100%);
+  width: fit-content;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 2em;
+  overflow-y: scroll !important;
+}
+
+.sidebar[data-state="open"] {
+  animation: slideIn 0.3s ease-out;
+  animation-fill-mode: forwards;
+}
+
+.mobileNavbar {
+  height: 3em;
+  background-color: var(--blue-9);
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: content-box !important;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translate(-100%, var(--space-2));
+  }
+  to {
+    transform: translate(calc(0px - var(--space-2)), var(--space-2));
+  }
+}
+
+.imageContainer {
+  img {
+    max-width: min(12em, 40vw);
+    height: 3em;
+    width: auto;
+  }
+}
+
+.link {
+  color: black !important;
+  font-size: 1.25em !important;
+  cursor: pointer !important;
+  padding: 0.5em !important;
+  border-radius: var(--radius-4) !important;
+}
+
+.link:hover {
+  // color: var(--blue-9) !important;
+  background-color: var(--blue-4) !important;
+}
+
+.Separator {
+  width: initial !important;
+  flex-shrink: 0;
+}
+
+.signOutButton {
+  justify-content: start !important;
+  background: none !important;
+  height: auto !important;
+  font-weight: normal !important;
+}
