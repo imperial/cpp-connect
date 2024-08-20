@@ -9,7 +9,7 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 3em;
+  gap: 1em;
   padding: 2em;
   overflow-y: scroll !important;
 }
@@ -50,6 +50,13 @@
   color: black !important;
   font-size: 1.25em !important;
   cursor: pointer !important;
+  padding: 0.5em !important;
+  border-radius: var(--radius-4) !important;
+}
+
+.link:hover {
+  // color: var(--blue-9) !important;
+  background-color: var(--blue-4) !important;
 }
 
 .Separator {
@@ -59,4 +66,7 @@
 
 .signOutButton {
   justify-content: start !important;
+  background: none !important;
+  height: auto !important;
+  font-weight: normal !important;
 }

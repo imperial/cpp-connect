@@ -42,7 +42,9 @@ const AuthenticatedContent = (props: RoleNavbarProps) => {
     <>
       <Flex width="100%" justify="center" direction="column" align="center" gap="2">
         <UserAvatar user={{ image: props.avatar, name: user.name }} size="5" />
-        <Heading size="5">{user.name || user.email}</Heading>
+        <Heading size="5" style={{ textAlign: "center" }}>
+          {user.name || user.email}
+        </Heading>
         {props.role === "ADMIN" && <Text>(ADMIN)</Text>}
       </Flex>
 
@@ -53,20 +55,21 @@ const AuthenticatedContent = (props: RoleNavbarProps) => {
         <SidebarLink href={`/companies/${props.slug}`} Icon={BsBuilding} displayText="Your Company" />
       )}
 
+      <Separator orientation="horizontal" className={styles.Separator} />
+
       <SidebarLink href="/companies" Icon={BsBuilding} displayText="Companies" />
       <SidebarLink href="/events" Icon={BsCalendar2Date} displayText="Events" />
       <SidebarLink href="/opportunities" Icon={BsBriefcase} displayText="Opportunities" />
       <SidebarLink href="/students" Icon={BsMortarboard} displayText="Students" />
 
       <Separator orientation="horizontal" className={styles.Separator} />
-      <RadixLink asChild className={styles.link}>
-        <Button onClick={() => signOut()} variant="ghost" className={styles.signOutButton}>
-          <Flex align="center" gap="3">
-            <BsBoxArrowLeft />
-            <Text>Sign Out</Text>
-          </Flex>
-        </Button>
-      </RadixLink>
+
+      <Button onClick={() => signOut()} className={styles.signOutButton + " " + styles.link}>
+        <Flex align="center" gap="3">
+          <BsBoxArrowLeft />
+          <Text>Sign Out</Text>
+        </Flex>
+      </Button>
     </>
   )
 }
