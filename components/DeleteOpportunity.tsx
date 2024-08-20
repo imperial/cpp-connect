@@ -4,7 +4,7 @@ import { deleteOpportunity } from "@/lib/crud/opportunities"
 import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
-import styles from "./deletecompany.module.scss"
+import styles from "./deleteCompany.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
@@ -53,7 +53,7 @@ export const DeleteOpportunity = ({
     ({ close }: { close: () => void }) => (
       <DeleteOpportunityForm close={close} id={id} companyID={companyID} redirectOnDelete={redirectOnDelete} />
     ),
-    [id, companyID],
+    [id, companyID, redirectOnDelete],
   )
 
   return (
