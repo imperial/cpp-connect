@@ -1,6 +1,6 @@
 "use client"
 
-import { deleteOpportunity } from "@/lib/crud/opportunities"
+import { deleteEvent } from "@/lib/crud/events"
 import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
@@ -12,20 +12,20 @@ import { Button, IconButton, Spinner, Text, TextField } from "@radix-ui/themes"
 import { useCallback } from "react"
 import { FaTrash } from "react-icons/fa"
 
-interface DeleteOpportunityFormProps {
+interface DeleteEventFormProps {
   close: () => void
   companyID: number
   id: number
   redirectOnDelete?: boolean
 }
 
-const DeleteOpportunityForm = ({ close, companyID, id, redirectOnDelete = false }: DeleteOpportunityFormProps) => {
-  const deleteOpportunityWithId = async (prevState: FormPassBackState, formData: FormData) =>
-    deleteOpportunity(prevState, formData, companyID, id, redirectOnDelete)
+const DeleteEventForm = ({ close, companyID, id, redirectOnDelete = false }: DeleteEventFormProps) => {
+  const deleteEventWithId = async (prevState: FormPassBackState, formData: FormData) =>
+    deleteEvent(prevState, formData, companyID, id, redirectOnDelete)
 
   return (
     <FormInModal
-      action={deleteOpportunityWithId}
+      action={deleteEventWithId}
       close={close}
       submitButton={(_, isSubmitting) => {
         return (
@@ -40,7 +40,7 @@ const DeleteOpportunityForm = ({ close, companyID, id, redirectOnDelete = false 
   )
 }
 
-export const DeleteOpportunity = ({
+export const DeleteEvent = ({
   id,
   companyID,
   redirectOnDelete = false,
@@ -51,15 +51,15 @@ export const DeleteOpportunity = ({
 }) => {
   const formRenderer = useCallback(
     ({ close }: { close: () => void }) => (
-      <DeleteOpportunityForm close={close} id={id} companyID={companyID} redirectOnDelete={redirectOnDelete} />
+      <DeleteEventForm close={close} id={id} companyID={companyID} redirectOnDelete={redirectOnDelete} />
     ),
     [id, companyID, redirectOnDelete],
   )
 
   return (
     <GenericFormModal
-      title="Delete opportunity"
-      description="Are you sure you want to delete this opportunity?"
+      title="Delete event"
+      description="Are you sure you want to delete this event?"
       form={formRenderer}
     >
       <IconButton size="3" color="red">

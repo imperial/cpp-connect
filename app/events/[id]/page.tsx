@@ -1,10 +1,16 @@
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
+import { auth } from "@/auth"
+import { DeleteEvent } from "@/components/DeleteEvent"
 import Link from "@/components/Link"
 import MdViewer from "@/components/MdViewer"
+import { EditEvent } from "@/components/UpsertEvent"
+import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
+import RestrictedAreaStudent from "@/components/rbac/RestrictedAreaStudent"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
 
+import { Role } from "@prisma/client"
 import { Box, Button, Card, Flex, Heading, Inset, Separator, Text } from "@radix-ui/themes"
 import { format, formatDistanceStrict, isSameDay } from "date-fns"
 import Image from "next/image"
@@ -61,6 +67,7 @@ const formatEventDateTime = (dateStart: Date, dateEnd: Date | null) => {
 }
 
 const EventPage = async ({ params }: { params: { id: string } }) => {
+  const session = await auth()
   const id = parseInt(params.id, 10)
 
   if (isNaN(id) || id.toString() !== params.id) {
@@ -90,33 +97,42 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
 
         <Flex wrap="wrap">
           <Flex direction="column" gap="4" p="5" className={styles.mainContent}>
-            <Box>
-              <Text color="gray" size="2">
-                {format(event.dateStart, "E dd/MM")}
-              </Text>
-              <Heading size="8">{event.title}</Heading>
+            <Flex justify="between">
               <Box>
-                <Text color="gray">By</Text> <Link href={getCompanyLink(event.company)}>{event.company.name}</Link>
+                <Text color="gray" size="2">
+                  {format(event.dateStart, "E dd/MM")}
+                </Text>
+                <Heading size="8">{event.title}</Heading>
+                <Box>
+                  <Text color="gray">By</Text> <Link href={getCompanyLink(event.company)}>{event.company.name}</Link>
+                </Box>
               </Box>
-            </Box>
+              <RestrictedAreaCompany companyId={event.companyID} showMessage={false}>
+                <Flex gap="2">
+                  <EditEvent prevEvent={event} companyID={event.companyID} />
+                  <DeleteEvent id={event.id} companyID={event.companyID} redirectOnDelete />
+                </Flex>
+              </RestrictedAreaCompany>
+            </Flex>
             <Text>{event.shortDescription}</Text>
           </Flex>
+          {session?.user.role === Role.STUDENT && (
+            <>
+              <Separator orientation="vertical" className={styles.Separator} />
+              <Flex direction="column" justify="center" align="center" gap="4" p="5">
+                <Heading>Sign Up</Heading>
 
-          <Separator orientation="vertical" className={styles.Separator} />
-
-          <Flex direction="column" justify="center" align="center" gap="4" p="5">
-            <Heading>Sign Up</Heading>
-
-            <Button size="3" className={styles.signupButton} asChild>
-              <Link href={event.link} target="_blank">
-                Register for this event
-              </Link>
-            </Button>
-
-            <Text color="gray" size="2">
-              ({event.spaces} spaces)
-            </Text>
-          </Flex>
+                <Button size="3" className={styles.signupButton} asChild>
+                  <Link href={event.link} target="_blank">
+                    Register for this event
+                  </Link>
+                </Button>
+                <Text color="gray" size="2">
+                  ({event.spaces} spaces)
+                </Text>
+              </Flex>
+            </>
+          )}
         </Flex>
       </Card>
 

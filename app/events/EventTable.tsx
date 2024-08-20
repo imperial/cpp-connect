@@ -1,11 +1,14 @@
 "use client"
 
+import { DeleteEvent } from "@/components/DeleteEvent"
 import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
+import { EditEvent } from "@/components/UpsertEvent"
 
 import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Event } from "@prisma/client"
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import { Flex } from "@radix-ui/themes"
+import { ColumnDef, DisplayColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { useMemo } from "react"
 
@@ -15,15 +18,19 @@ type EventRow = {
 
 const columnHelper = createColumnHelper<EventRow>()
 
+type DisplayColumnName = "adminButtons"
+
 type ColumnName = keyof EventRow | `company.${keyof CompanyProfile}`
 
 const EventTable = ({
   events,
   columns,
+  displayColumns = [],
   nonFilterable = [],
 }: {
   events: EventRow[]
   columns: ColumnName[]
+  displayColumns?: DisplayColumnName[]
   nonFilterable?: ColumnName[]
 }) => {
   const columnDefsMap = useMemo(() => {
@@ -42,7 +49,7 @@ const EventTable = ({
       },
       dateStart: {
         cell: info => (
-          <time suppressHydrationWarning={true}>{format(info.getValue(), "eeee, MMMM eo 'at' HH:mm ")}</time>
+          <time suppressHydrationWarning={true}>{format(info.getValue(), "eeee, MMMM do 'at' HH:mm ")}</time>
         ),
         header: "Start Date",
         sortingFn: "datetime",
@@ -97,7 +104,30 @@ const EventTable = ({
     [columnDefsMap, columns, nonFilterable],
   )
 
-  return <TanstackTable data={events} columns={columnDefs} />
+  const displayColumnDefsMap: Record<DisplayColumnName, DisplayColumnDef<EventRow, any>> = useMemo(
+    () => ({
+      adminButtons: {
+        cell: info => (
+          <Flex gap="2">
+            <EditEvent prevEvent={info.row.original} companyID={info.row.original.companyID} />
+            <DeleteEvent id={info.row.original.id} companyID={info.row.original.companyID} />
+          </Flex>
+        ),
+        header: "",
+        id: "adminButtons",
+        enableSorting: false,
+        enableColumnFilter: false,
+      },
+    }),
+    [],
+  )
+
+  const displayColumnDefs = useMemo(
+    () => displayColumns.map((columnName: DisplayColumnName) => columnHelper.display(displayColumnDefsMap[columnName])),
+    [displayColumnDefsMap, displayColumns],
+  )
+
+  return <TanstackTable data={events} columns={[...columnDefs, ...displayColumnDefs]} />
 }
 
 export default EventTable

@@ -4,6 +4,7 @@ import { auth } from "@/auth"
 import { EditCompany } from "@/components/EditCompany"
 import Link from "@/components/Link"
 import MdViewer from "@/components/MdViewer"
+import { AddEvent } from "@/components/UpsertEvent"
 import { AddOpportunity } from "@/components/UpsertOpportunity"
 import RestrictedAreaCompany, { checkCompany } from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
@@ -206,10 +207,25 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             </Box>
           </Tabs.Content>
           <Tabs.Content value="events">
+            <RestrictedAreaCompany companyId={companyProfile.id} showMessage={false}>
+              <Card variant="surface" className={styles.opportunityPanel}>
+                <Flex gap="3" direction="row" align="center" justify="between" p="2">
+                  <Heading size="6">Events panel</Heading>
+                  <Flex gap="3" direction="row" align="center">
+                    <AddEvent companyID={companyProfile.id} />
+                  </Flex>
+                </Flex>
+              </Card>
+            </RestrictedAreaCompany>
             <Box p="8">
               <EventTable
                 events={companyProfile.events}
                 columns={["title", "dateStart", "shortDescription", "location", "spaces"]}
+                displayColumns={
+                  !!session && (session.user.role === Role.ADMIN || (await checkCompany(companyProfile.id)(session)))
+                    ? ["adminButtons"]
+                    : []
+                }
                 nonFilterable={["company.name"]}
               />
             </Box>
