@@ -8,7 +8,7 @@ import { EditOpportunity } from "@/components/UpsertOpportunity"
 import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Opportunity } from "@prisma/client"
 import { Flex } from "@radix-ui/themes"
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import { ColumnDef, DisplayColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { formatDistanceToNowStrict } from "date-fns"
 import { useMemo } from "react"
 
@@ -16,17 +16,21 @@ type OpportunityRow = {
   company: CompanyProfile
 } & Opportunity
 
-type ColumnName = keyof OpportunityRow | `company.${keyof CompanyProfile}` | "adminButtons"
+type ColumnName = keyof OpportunityRow | `company.${keyof CompanyProfile}`
+
+type DisplayColumnName = "adminButtons"
 
 const columnHelper = createColumnHelper<OpportunityRow>()
 
 const OpportunityTable = ({
   opportunities,
   columns,
+  displayColumns = [],
   nonFilterable = [],
 }: {
   opportunities: OpportunityRow[]
   columns: ColumnName[]
+  displayColumns?: DisplayColumnName[]
   nonFilterable?: ColumnName[]
 }) => {
   const columnDefsMap = useMemo(() => {
@@ -66,18 +70,6 @@ const OpportunityTable = ({
         id: "posted",
         enableColumnFilter: false,
       },
-      adminButtons: {
-        cell: info => (
-          <Flex gap="2">
-            <EditOpportunity prevOpportunity={info.row.original} companyID={info.row.original.companyID} />
-            <DeleteOpportunity id={info.row.original.id} companyID={info.row.original.companyID} />
-          </Flex>
-        ),
-        header: "",
-        id: "adminButtons",
-        enableSorting: false,
-        enableColumnFilter: false,
-      },
     }
 
     for (let column of nonFilterable) {
@@ -94,7 +86,6 @@ const OpportunityTable = ({
       columns.map((columnName: ColumnName) =>
         // TODO: Allow display columns to be passed in from columns (rather than just accessor columns)
         columnHelper.accessor(
-          // @ts-expect-error: admin buttons is a display column only, yet passed as a accessor here
           columnName,
           columnDefsMap[columnName] ?? {
             // default column definition, so that all company values are also accessible
@@ -109,7 +100,30 @@ const OpportunityTable = ({
     [columns, columnDefsMap, nonFilterable],
   )
 
-  return <TanstackTable data={opportunities} columns={columnDefs} />
+  const displayColumnDefsMap: Record<DisplayColumnName, DisplayColumnDef<OpportunityRow, any>> = useMemo(
+    () => ({
+      adminButtons: {
+        cell: info => (
+          <Flex gap="2">
+            <EditOpportunity prevOpportunity={info.row.original} companyID={info.row.original.companyID} />
+            <DeleteOpportunity id={info.row.original.id} companyID={info.row.original.companyID} />
+          </Flex>
+        ),
+        header: "",
+        id: "adminButtons",
+        enableSorting: false,
+        enableColumnFilter: false,
+      },
+    }),
+    [],
+  )
+
+  const displayColumnDefs = useMemo(
+    () => displayColumns.map((columnName: DisplayColumnName) => columnHelper.display(displayColumnDefsMap[columnName])),
+    [displayColumnDefsMap, displayColumns],
+  )
+
+  return <TanstackTable data={opportunities} columns={[...columnDefs, ...displayColumnDefs]} />
 }
 
 export default OpportunityTable

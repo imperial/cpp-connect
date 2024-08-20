@@ -196,10 +196,11 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             <Box p="8">
               <OpportunityTable
                 opportunities={companyProfile.opportunities}
-                columns={
+                columns={["position", "location", "type", "createdAt"]}
+                displayColumns={
                   !!session && (session.user.role === Role.ADMIN || (await checkCompany(companyProfile.id)(session)))
-                    ? ["position", "location", "type", "createdAt", "adminButtons"]
-                    : ["position", "location", "type", "createdAt"]
+                    ? ["adminButtons"]
+                    : []
                 }
               />
             </Box>
