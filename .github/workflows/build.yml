@@ -106,6 +106,6 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
-          push: ${{ github.refs == 'refs/heads/main' && true || false }} # only push if main
+          push: ${{ github.ref == 'refs/heads/main' && true || false }} # only push if main
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
