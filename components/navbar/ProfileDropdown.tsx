@@ -52,13 +52,7 @@ const ProfileDropdown = (props: RoleNavbarProps) => {
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content className={styles.DropdownMenuContent}>
-        <DropdownCard
-          {...props}
-          user={{
-            name: user.name,
-            email: user.email,
-          }}
-        >
+        <DropdownCard {...props} user={user}>
           {props.role === Role.STUDENT && (
             <Button variant="outline" asChild>
               <Link
