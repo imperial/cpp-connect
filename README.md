@@ -168,6 +168,14 @@ Email templates are stored in `emails/`. To see changes to email templates in th
 npm run dev:email
 ```
 
+## Help! I change the database schema/seed files and need to start/seed the DB from fresh
+> [!CAUTION]
+> The below will delete all data in the database!
+> Never run this in production!
+
+Use `npm run db:reset`: this will clear the database, re-run the migrations and re-seed the database.
+
+
 ### Project structure
 
 #### Directories
