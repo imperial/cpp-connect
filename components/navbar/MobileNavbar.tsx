@@ -2,14 +2,15 @@ import { NavbarProps, RoleNavbarProps, isSignedIn } from "./Navbar"
 import styles from "./mobileNavbar.module.scss"
 
 import Link from "../Link"
+import UserAvatar from "../UserAvatar"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
-import * as NavigationMenu from "@radix-ui/react-navigation-menu"
-import { Button, Flex, IconButton, Link as RadixLink, Separator, Text } from "@radix-ui/themes"
+import { Button, Flex, Heading, IconButton, Link as RadixLink, Separator, Text } from "@radix-ui/themes"
 import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
-import React, { ToggleEventHandler } from "react"
+import React from "react"
 import {
   BsBoxArrowLeft,
+  BsBoxArrowRight,
   BsBriefcase,
   BsBuilding,
   BsCalendar2Date,
@@ -31,23 +32,27 @@ const SidebarLink = ({ href, Icon, displayText }: { href: string; Icon: IconType
 }
 
 const UnauthenticatedContent = () => {
-  return (
-    <Link href="/auth/login" className={styles.link} radixProps={{ underline: "none" }}>
-      Login
-    </Link>
-  )
+  return <SidebarLink href="/auth/login" Icon={BsBoxArrowRight} displayText="Login" />
 }
 
 const AuthenticatedContent = (props: RoleNavbarProps) => {
+  const { data } = useSession()
+  const user = data?.user! // This component is only rendered when the user is logged in
   return (
     <>
+      <Flex width="100%" justify="center" direction="column" align="center" gap="2">
+        <UserAvatar user={{ image: props.avatar, name: user.name }} size="5" />
+        <Heading size="5">{user.name || user.email}</Heading>
+        {props.role === "ADMIN" && <Text>(ADMIN)</Text>}
+      </Flex>
+
       {props.role === "STUDENT" && (
         <SidebarLink href={`/students/${props.shortcode}`} Icon={BsPersonCircle} displayText="Your Profile" />
       )}
       {props.role === "COMPANY" && (
         <SidebarLink href={`/companies/${props.slug}`} Icon={BsBuilding} displayText="Your Company" />
       )}
-      {props.role === "ADMIN" && <Text>(ADMIN)</Text>}
+
       <SidebarLink href="/companies" Icon={BsBuilding} displayText="Companies" />
       <SidebarLink href="/events" Icon={BsCalendar2Date} displayText="Events" />
       <SidebarLink href="/opportunities" Icon={BsBriefcase} displayText="Opportunities" />
