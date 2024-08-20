@@ -6,7 +6,8 @@ import MobileNavbar from "./MobileNavbar"
 
 import { Role } from "@prisma/client"
 import { Session } from "next-auth"
-import React, { useEffect, useState } from "react"
+import React from "react"
+import { useMediaQuery } from "react-responsive"
 
 const MOBILE_WIDTH = 910
 
@@ -35,19 +36,11 @@ export type RoleNavbarProps = StudentNavbarProps | CompanyNavbarProps | AdminNav
 
 export type NavbarProps = RoleNavbarProps | {}
 
-const Navbar = (props: NavbarProps) => {
-  const [width, setWidth] = useState(window.innerWidth)
-
-  const handleWindowSizeChange = () => setWidth(window.innerWidth)
-
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange)
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange)
-    }
-  }, [])
-
-  return width <= MOBILE_WIDTH ? <MobileNavbar {...props} /> : <DesktopNavbar {...props} />
-}
+const Navbar = (props: NavbarProps) =>
+  useMediaQuery({ query: `(max-width: ${MOBILE_WIDTH}px)` }) ? (
+    <MobileNavbar {...props} />
+  ) : (
+    <DesktopNavbar {...props} />
+  )
 
 export default Navbar
