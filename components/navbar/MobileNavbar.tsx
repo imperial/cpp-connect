@@ -7,13 +7,35 @@ import { Button, Flex, IconButton, Link as RadixLink, Separator, Text } from "@r
 import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
 import React, { ToggleEventHandler } from "react"
-import { BsBoxArrowRight, BsList } from "react-icons/bs"
+import {
+  BsBoxArrowLeft,
+  BsBriefcase,
+  BsBuilding,
+  BsCalendar2Date,
+  BsList,
+  BsMortarboard,
+  BsPersonCircle,
+} from "react-icons/bs"
+import { IconType } from "react-icons/lib"
+
+const SidebarLink = ({ href, Icon, displayText }: { href: string; Icon: IconType; displayText: string }) => {
+  return (
+    <NavigationMenu.Link asChild>
+      <Link href={href} className={styles.link} radixProps={{ underline: "none" }}>
+        <Flex align="center" gap="3">
+          <Icon />
+          <Text>{displayText}</Text>
+        </Flex>
+      </Link>
+    </NavigationMenu.Link>
+  )
+}
 
 const UnauthenticatedContent = () => {
   return (
     <NavigationMenu.Link asChild>
       <Link href="/auth/login" className={styles.link} radixProps={{ underline: "none" }}>
-        <span>Login</span>
+        Login
       </Link>
     </NavigationMenu.Link>
   )
@@ -23,46 +45,26 @@ const AuthenticatedContent = (props: RoleNavbarProps) => {
   return (
     <>
       {props.role === "STUDENT" && (
-        <NavigationMenu.Link asChild>
-          <Link href={`/students/${props.shortcode}`} className={styles.link} radixProps={{ underline: "none" }}>
-            <span>Your Profile</span>
-          </Link>
-        </NavigationMenu.Link>
+        <SidebarLink href={`/students/${props.shortcode}`} Icon={BsPersonCircle} displayText="Your Profile" />
       )}
       {props.role === "COMPANY" && (
-        <NavigationMenu.Link asChild>
-          <Link href={`/companies/${props.slug}`} className={styles.link} radixProps={{ underline: "none" }}>
-            <span>Your Company</span>
-          </Link>
-        </NavigationMenu.Link>
+        <SidebarLink href={`/companies/${props.slug}`} Icon={BsBuilding} displayText="Your Company" />
       )}
       {props.role === "ADMIN" && <Text>(ADMIN)</Text>}
-      <NavigationMenu.Link asChild>
-        <Link href="/companies" className={styles.link} radixProps={{ underline: "none" }}>
-          <span>Companies</span>
-        </Link>
-      </NavigationMenu.Link>
-      <NavigationMenu.Link asChild>
-        <Link href="/events" className={styles.link} radixProps={{ underline: "none" }}>
-          <span>Events</span>
-        </Link>
-      </NavigationMenu.Link>
-      <NavigationMenu.Link asChild>
-        <Link href="/opportunities" className={styles.link} radixProps={{ underline: "none" }}>
-          <span>Opportunities</span>
-        </Link>
-      </NavigationMenu.Link>
-      <NavigationMenu.Link asChild>
-        <Link href="/students" className={styles.link} radixProps={{ underline: "none" }}>
-          <span>Students</span>
-        </Link>
-      </NavigationMenu.Link>
+      <SidebarLink href="/companies" Icon={BsBuilding} displayText="Companies" />
+      <SidebarLink href="/events" Icon={BsCalendar2Date} displayText="Events" />
+      <SidebarLink href="/opportunities" Icon={BsBriefcase} displayText="Opportunities" />
+      <SidebarLink href="/students" Icon={BsMortarboard} displayText="Students" />
+
       <Separator orientation="horizontal" className={styles.Separator} />
-      <RadixLink asChild className={styles.link}>
+      <NavigationMenu.Link asChild className={styles.link}>
         <Button onClick={() => signOut()} variant="ghost" className={styles.signOutButton}>
-          <Text>Sign out</Text>
+          <Flex align="center" gap="3">
+            <BsBoxArrowLeft />
+            <Text>Sign Out</Text>
+          </Flex>
         </Button>
-      </RadixLink>
+      </NavigationMenu.Link>
     </>
   )
 }
