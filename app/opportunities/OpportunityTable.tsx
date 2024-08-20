@@ -94,7 +94,6 @@ const OpportunityTable = ({
       columns.map((columnName: ColumnName) =>
         // TODO: Allow display columns to be passed in from columns (rather than just accessor columns)
         columnHelper.accessor(
-          // @ts-expect-error: admin buttons is a display column only, yet passed as a accessor here
           columnName,
           columnDefsMap[columnName] ?? {
             // default column definition, so that all company values are also accessible
