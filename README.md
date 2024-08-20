@@ -16,7 +16,7 @@ The application allows students to sign-in using Microsoft Single Sign On, denyi
 
 Companies can sign-in using magic links sent to their email using SMTP.
 
-Admins are set using the `CPP_ALLOWED_ADMINS` environment variable, which is a comma-separated list of email addresses.
+Admins are set using the `CPP_ALLOWED_ADMINS` environment variable, which is a comma-separated list of email addresses. Note that if this is changed, the users in questions will need to log out and log back in again to see the changes.
 
 If you haven’t already, read the [React Quick Start tutorial](https://react.dev/learn) so that you understand the key concepts of React, as well as the [Next.js documentation](https://nextjs.org/docs) to understand how Next.js works.
 
@@ -122,6 +122,12 @@ docker build -t imperial/cpp-connect .
 
 ## Misc. Dev Notes
 
+### Hot reload
+
+The application will hot reload when you make changes to the code for everything **except** the database schema (prisma client).
+
+If you make changes to the database schema, you will need to run `npm run db:generate` to regenerate the prisma client, and then restart the server for changes to take effect. Note that when generating migrations the client is generally regenerated for you.
+
 ### Formatting
 
 To format all TypeScript source code files in the repo using prettier, run:
@@ -168,13 +174,15 @@ Email templates are stored in `emails/`. To see changes to email templates in th
 npm run dev:email
 ```
 
-## Help! I change the database schema/seed files and need to start/seed the DB from fresh
+## Help! I change the database schema/seed file and need to start/seed the DB from fresh
+
 > [!CAUTION]
 > The below will delete all data in the database!
 > Never run this in production!
 
 Use `npm run db:reset`: this will clear the database, re-run the migrations and re-seed the database.
 
+This is especially useful if you've changed the database seed data and need to re-seed the database - for the schema, you should use migrations instead.
 
 ### Project structure
 
