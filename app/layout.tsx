@@ -1,6 +1,7 @@
 import { Client } from "@/components/Client"
 import Footer from "@/components/Footer"
 import NavbarWrapper from "@/components/navbar/NavbarWrapper"
+import { CONTENT_ID } from "@/components/util/constants"
 import "@/styling/globals.scss"
 
 import { Theme, ThemePanel } from "@radix-ui/themes"
@@ -34,7 +35,7 @@ const RootLayout = ({
             <Flex direction="column" justify="between" minHeight="100vh">
               <NavbarWrapper />
               <Flex
-                id="page-container"
+                id={CONTENT_ID}
                 className="page-container"
                 align="center"
                 direction="column"

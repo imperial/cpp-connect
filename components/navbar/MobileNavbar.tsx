@@ -3,6 +3,7 @@ import styles from "./mobileNavbar.module.scss"
 
 import Link from "../Link"
 import UserAvatar from "../UserAvatar"
+import { CONTENT_ID, FOOTER_ID } from "../util/constants"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Button, Flex, Heading, IconButton, Link as RadixLink, Separator, Text } from "@radix-ui/themes"
 import { signOut, useSession } from "next-auth/react"
@@ -82,14 +83,14 @@ const MobileNavbar = (props: NavbarProps) => {
       // Prevent scrolling when the menu is open
       document.documentElement.style.overflow = "hidden"
       // Dim rest of the page when the menu is open
-      document.getElementById("page-container")?.classList.add("dim")
-      document.getElementById("footer")?.classList.add("dim")
+      document.getElementById(CONTENT_ID)?.classList.add("dim")
+      document.getElementById(FOOTER_ID)?.classList.add("dim")
     } else {
       // Allow scrolling when the menu is closed
       document.documentElement.style.overflow = "auto"
       // Undim rest of the page when the menu is closed
-      document.getElementById("page-container")?.classList.remove("dim")
-      document.getElementById("footer")?.classList.remove("dim")
+      document.getElementById(CONTENT_ID)?.classList.remove("dim")
+      document.getElementById(FOOTER_ID)?.classList.remove("dim")
     }
   }
 
