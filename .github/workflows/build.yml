@@ -104,7 +104,6 @@ jobs:
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        if: github.ref == 'refs/heads/main'
         with:
           context: .
           push: ${{ github.refs == 'refs/heads/main' && true || false }} # only push if main
