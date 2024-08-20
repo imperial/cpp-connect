@@ -48,7 +48,7 @@ const ProfileDropdown = (props: RoleNavbarProps) => {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button className={styles.avatarButton}>
-          <UserAvatar user={{ image: props.avatar, name: user.name ?? undefined }} size="4" />
+          <UserAvatar user={{ image: props.avatar, name: user.name ?? undefined }} size="3" />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content className={styles.DropdownMenuContent}>

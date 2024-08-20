@@ -6,7 +6,7 @@ import React from "react"
 
 const Footer = () => {
   return (
-    <Flex className={styles.container} justify="center" p="5" id="footer">
+    <Flex className={styles.container} justify="center" p="3" id="footer">
       <Text>
         © 2024. Found a bug or want to improve CPP Connect yourself? Head over to{" "}
         <Link
