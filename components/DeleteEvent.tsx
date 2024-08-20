@@ -4,7 +4,7 @@ import { deleteEvent } from "@/lib/crud/events"
 import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
-import styles from "./deletecompany.module.scss"
+import styles from "./delete-company.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 

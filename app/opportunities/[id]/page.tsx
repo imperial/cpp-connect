@@ -2,6 +2,7 @@ import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import Chip from "@/components/Chip"
 import { DeleteOpportunity } from "@/components/DeleteOpportunity"
 import Link from "@/components/Link"
+import MdViewer from "@/components/MdViewer"
 import { EditOpportunity } from "@/components/UpsertOpportunity"
 import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
@@ -14,7 +15,6 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
 import { BsBoxArrowUpRight, BsBriefcase, BsCalendar, BsCheckCircle, BsPinMap, BsXCircle } from "react-icons/bs"
-import Markdown from "react-markdown"
 
 const OpportunityPage = async ({ params }: { params: { id: string } }) => {
   const id = parseInt(params.id, 10)
@@ -88,7 +88,7 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
         <Flex direction="column" gap="3">
           <Flex direction="column" gap="2">
             <Heading>Full Opportunity Description</Heading>
-            <Markdown>{opportunity.description}</Markdown>
+            <MdViewer markdown={opportunity.description} />
           </Flex>
 
           <Flex direction="column" gap="2">

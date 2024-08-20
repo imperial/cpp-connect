@@ -1,5 +1,5 @@
 model StudentProfile {
-  user             User @relation(fields: [userId], references: [id])
+  user             User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           String @id
   bio              String?
   personalWebsite  String?

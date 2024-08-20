@@ -1,4 +1,5 @@
 import { Client } from "@/components/Client"
+import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
 import "@/styling/globals.scss"
 
@@ -35,6 +36,7 @@ const RootLayout = ({
               <Client>{children}</Client>
             </Box>
           </Flex>
+          <Footer />
         </Theme>
       </body>
     </html>

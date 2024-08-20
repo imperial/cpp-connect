@@ -3,6 +3,7 @@ import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import { auth } from "@/auth"
 import { EditCompany } from "@/components/EditCompany"
 import Link from "@/components/Link"
+import MdViewer from "@/components/MdViewer"
 import { AddEvent } from "@/components/UpsertEvent"
 import { AddOpportunity } from "@/components/UpsertOpportunity"
 import RestrictedAreaCompany, { checkCompany } from "@/components/rbac/RestrictedAreaCompany"
@@ -18,10 +19,6 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
 import { BsBuildings, BsEnvelope, BsGlobe, BsTelephone } from "react-icons/bs"
-import Markdown from "react-markdown"
-import rehypeRaw from "rehype-raw"
-import remarkBreaks from "remark-breaks"
-import remarkGfm from "remark-gfm"
 
 /**
  * Conditional rendering of company detail. Will only render if children are truthy.
@@ -162,15 +159,7 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
               <Collapsible.Root className={styles.CollapsibleRoot}>
                 <Box className={styles.summaryContainer}>
                   <CompanyDetail title="Summary">
-                    {companyProfile.summary && (
-                      <Markdown
-                        className={styles.markdownContainer}
-                        remarkPlugins={[remarkGfm, remarkBreaks]}
-                        rehypePlugins={[rehypeRaw]}
-                      >
-                        {companyProfile.summary}
-                      </Markdown>
-                    )}
+                    {companyProfile.summary && <MdViewer markdown={companyProfile.summary} />}
                   </CompanyDetail>
 
                   <CompanyDetail title="Website">
@@ -208,10 +197,11 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             <Box p="8">
               <OpportunityTable
                 opportunities={companyProfile.opportunities}
-                columns={
+                columns={["position", "location", "type", "createdAt"]}
+                displayColumns={
                   !!session && (session.user.role === Role.ADMIN || (await checkCompany(companyProfile.id)(session)))
-                    ? ["position", "location", "type", "createdAt", "adminButtons"]
-                    : ["position", "location", "type", "createdAt"]
+                    ? ["adminButtons"]
+                    : []
                 }
               />
             </Box>
@@ -230,10 +220,11 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             <Box p="8">
               <EventTable
                 events={companyProfile.events}
-                columns={
+                columns={["title", "dateStart", "shortDescription", "location", "spaces"]}
+                displayColumns={
                   !!session && (session.user.role === Role.ADMIN || (await checkCompany(companyProfile.id)(session)))
-                    ? ["title", "dateStart", "shortDescription", "location", "spaces", "adminButtons"]
-                    : ["title", "dateStart", "shortDescription", "location", "spaces"]
+                    ? ["adminButtons"]
+                    : []
                 }
                 nonFilterable={["company.name"]}
               />
