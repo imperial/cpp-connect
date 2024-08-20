@@ -14,7 +14,7 @@ import { useMemo } from "react"
 
 type OpportunityRow = {
   company: CompanyProfile
-} & Opportunity & { adminButtons?: void }
+} & Opportunity
 
 type ColumnName = keyof OpportunityRow | `company.${keyof CompanyProfile}`
 
