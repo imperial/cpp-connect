@@ -47,7 +47,7 @@
 }
 
 .link {
-  color: black !important;
+  color: var(--color) !important;
   font-size: 1.25em !important;
   cursor: pointer !important;
   padding: 0.5em !important;
@@ -55,7 +55,6 @@
 }
 
 .link:hover {
-  // color: var(--blue-9) !important;
   background-color: var(--blue-4) !important;
 }
 
