@@ -76,7 +76,6 @@ jobs:
       - format-check
     runs-on: ubuntu-latest
     # Only run if main
-    if: github.ref == 'refs/heads/main'
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
@@ -105,8 +104,9 @@ jobs:
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        if: github.ref == 'refs/heads/main'
         with:
           context: .
-          push: true
+          push: ${{ github.refs == 'refs/heads/main' && true || false }} # only push if main
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
