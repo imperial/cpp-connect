@@ -2,6 +2,7 @@ import { NavbarProps, RoleNavbarProps, isSignedIn } from "./Navbar"
 import styles from "./mobileNavbar.module.scss"
 
 import Link from "../Link"
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import * as NavigationMenu from "@radix-ui/react-navigation-menu"
 import { Button, Flex, IconButton, Link as RadixLink, Separator, Text } from "@radix-ui/themes"
 import { signOut, useSession } from "next-auth/react"
@@ -20,24 +21,20 @@ import { IconType } from "react-icons/lib"
 
 const SidebarLink = ({ href, Icon, displayText }: { href: string; Icon: IconType; displayText: string }) => {
   return (
-    <NavigationMenu.Link asChild>
-      <Link href={href} className={styles.link} radixProps={{ underline: "none" }}>
-        <Flex align="center" gap="3">
-          <Icon />
-          <Text>{displayText}</Text>
-        </Flex>
-      </Link>
-    </NavigationMenu.Link>
+    <Link href={href} className={styles.link} radixProps={{ underline: "none" }}>
+      <Flex align="center" gap="3">
+        <Icon />
+        <Text>{displayText}</Text>
+      </Flex>
+    </Link>
   )
 }
 
 const UnauthenticatedContent = () => {
   return (
-    <NavigationMenu.Link asChild>
-      <Link href="/auth/login" className={styles.link} radixProps={{ underline: "none" }}>
-        Login
-      </Link>
-    </NavigationMenu.Link>
+    <Link href="/auth/login" className={styles.link} radixProps={{ underline: "none" }}>
+      Login
+    </Link>
   )
 }
 
@@ -57,14 +54,14 @@ const AuthenticatedContent = (props: RoleNavbarProps) => {
       <SidebarLink href="/students" Icon={BsMortarboard} displayText="Students" />
 
       <Separator orientation="horizontal" className={styles.Separator} />
-      <NavigationMenu.Link asChild className={styles.link}>
+      <RadixLink asChild className={styles.link}>
         <Button onClick={() => signOut()} variant="ghost" className={styles.signOutButton}>
           <Flex align="center" gap="3">
             <BsBoxArrowLeft />
             <Text>Sign Out</Text>
           </Flex>
         </Button>
-      </NavigationMenu.Link>
+      </RadixLink>
     </>
   )
 }
@@ -72,47 +69,42 @@ const AuthenticatedContent = (props: RoleNavbarProps) => {
 const MobileNavbar = (props: NavbarProps) => {
   const { data } = useSession()
 
-  const handleToggle = (value: string) => {
-    if (value === "") {
-      // Allow scrolling when the menu is closed
-      document.documentElement.style.overflow = "auto"
-      // Undim rest of the page when the menu is closed
-      document.getElementById("page-container")?.classList.remove("dim")
-      document.getElementById("footer")?.classList.remove("dim")
-    } else {
+  const handleToggle = (open: boolean) => {
+    if (open) {
       // Prevent scrolling when the menu is open
       document.documentElement.style.overflow = "hidden"
       // Dim rest of the page when the menu is open
       document.getElementById("page-container")?.classList.add("dim")
       document.getElementById("footer")?.classList.add("dim")
+    } else {
+      // Allow scrolling when the menu is closed
+      document.documentElement.style.overflow = "auto"
+      // Undim rest of the page when the menu is closed
+      document.getElementById("page-container")?.classList.remove("dim")
+      document.getElementById("footer")?.classList.remove("dim")
     }
   }
 
   return (
-    <NavigationMenu.Root orientation="vertical" onValueChange={handleToggle}>
-      <NavigationMenu.List className={styles.NavigationMenuList}>
-        <NavigationMenu.Item className={styles.NavigationMenuItem}>
-          <IconButton size="4" asChild>
-            <NavigationMenu.Trigger>
-              <BsList size="2em" />
-            </NavigationMenu.Trigger>
-          </IconButton>
+    <Flex className={styles.mobileNavbar} p="2">
+      <DropdownMenu.Root onOpenChange={handleToggle}>
+        <IconButton size="4" asChild>
+          <DropdownMenu.Trigger>
+            <BsList size="2em" />
+          </DropdownMenu.Trigger>
+        </IconButton>
 
-          <NavigationMenu.Content className={styles.NavigationMenuContent}>
-            {isSignedIn(data, props) ? <AuthenticatedContent {...props} /> : <UnauthenticatedContent />}
-          </NavigationMenu.Content>
-        </NavigationMenu.Item>
-        <NavigationMenu.Item className={styles.NavigationMenuItem}>
-          <Link href="/" asChild>
-            <Flex gap="2em">
-              <Image src="/images/cpp-connect-logo.svg" alt="cpp connect logo" width={0} height={0} />
-              <Image src="/images/imperial-logo.svg" alt="imperial logo" width={0} height={0} />
-            </Flex>
-          </Link>
-        </NavigationMenu.Item>
-      </NavigationMenu.List>
-      <NavigationMenu.Viewport className={styles.NavigationMenuViewport} />
-    </NavigationMenu.Root>
+        <DropdownMenu.Content className={styles.sidebar} align="start">
+          {isSignedIn(data, props) ? <AuthenticatedContent {...props} /> : <UnauthenticatedContent />}
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+      <Link href="/" asChild>
+        <Flex gap="2em" className={styles.imageContainer}>
+          <Image src="/images/cpp-connect-logo.svg" alt="cpp connect logo" width={0} height={0} />
+          <Image src="/images/imperial-logo.svg" alt="imperial logo" width={0} height={0} />
+        </Flex>
+      </Link>
+    </Flex>
   )
 }
 
