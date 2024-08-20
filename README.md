@@ -1,22 +1,26 @@
-# ImPaaS Deployment Template App
+# CPP Connect
 
-This is a simple Next.JS todo app using React and TypeScript, demonstrating how to deploy a simple single-sign-on (SSO) application to Imperial’s ImPaaS platform, with a MySQL database and file volumes.
+This repository contains the code for the Department of Computing's Coporate Partnership Programme (CPP) Connect platform. CPP Connect is a platform that allows students to connect with companies and find internships, placements and graduate roles.
 
-If you haven’t already, read the [React Quick Start tutorial](https://react.dev/learn) so that you understand the key concepts of React, which you’ll need to develop on this app.
+The platform is built on:
 
-Read more about Next.js [here](https://nextjs.org/) as well.
+- [Next.js](https://nextjs.org/) - a React framework for building server-rendered applications
+- [TypeScript](https://www.typescriptlang.org) - a statically typed superset of JavaScript
+- [PostgreSQL](https://www.postgresql.org) - a powerful, open source object-relational database system
+- [Prisma ORM](https://www.prisma.io) - a modern database toolkit that makes it easy to work with databases in TypeScript.
+- [Docker](https://www.docker.com) - a platform for developing, shipping, and running applications in containers. This repo include a Dockerfile you can use to build a container image for deployment to ImPaaS or another platform, and a docker compose file for development
 
-Read more about TypeScript [here](https://www.typescriptlang.org).
-
-Once you understand these things, you can make a start on deploying the app.
+If you haven’t already, read the [React Quick Start tutorial](https://react.dev/learn) so that you understand the key concepts of React, which you’ll need to develop using this app.
 
 # Setup
 
 For ease of use, we recommend developing on Linux, macOS or Windows Subsystem for Linux (WSL).
 
-## Install Node.js
+## Install Node.js & Docker
 
 Install Node.js from the [Node.js website](https://nodejs.org).
+
+Install Docker from the [Docker website](https://www.docker.com/products/docker-desktop). (note: if you're on WSL, install Docker Desktop for Windows instead of installing docker directly inside of linux)
 
 ## Install Packages with NPM
 
@@ -24,57 +28,56 @@ Run this command to install all the necessary packages:
 
 ```bash
 npm install
+npm run db:generate # generate prisma client
 ```
 
 # Development Guide
 
-## Set up MySQL locally (Development Database)
+## Getting Started
 
-For development, the template app uses a MySQL database, which you will need to create an instance of. The easiest way to do so is with Docker.
+To get started, make a copy of `.env.template` as `.env.local` and fill it in as required (the comment give more info)
 
-First, install Docker. We recommend installing [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+### Notes on certain environment variables
 
-Then, start an instance of a MySQL database using a Docker image as follows, replacing `mysql` with the name of the database (this can be anything) and  `pass` with a chosen password. Make sure to note both of these down for later. This command will pull the MySQL Docker image and start the container.
+### Required steps for uploads
 
-**Note:** `—-publish` exposes port 3306 locally (the default MySQL port) as port 3306 on the container.
+TODO
 
-```bash
-docker run --name some-mysql \
-	--env MYSQL_ROOT_PASSWORD=pass \
-	--env MYSQL_DATABASE=mysql \
-	--env MYSQL_USER=user \
-	--env MYSQL_PASSWORD=pass \
-	--publish 3306:3306 \
-	--detach mysql:latest
-```
+## Running with Docker
 
-Make a copy of `.env.template` as `.env` and fill in these variables, where `pass` and `mysql` are the password and name chosen above.
-
-```xml
-...
-MYSQL_DATABASE_NAME=mysql
-MYSQL_HOST=localhost
-MYSQL_PASSWORD=pass
-MYSQL_PORT=3306
-MYSQL_USER=user
-...
-```
-
-## Volumes
-
-A volume is used for persistent file storage in your deployed app. A volume must be mounted at a certain directory. We suggest `./uploads` in development. Make this folder:
+We've included a `dev.docker-compose.yml` files, which contains everything (including a database) you need to get started:
 
 ```bash
-mkdir uploads
+docker compose -f dev.docker-compose.yml up
+docker exec $(docker ps -qf "name=cpp-connect-app" | head -n1) npm run db:migrate-dev
 ```
 
-Update the `.env.local` file accordingly:
+If all goes well, the app should now be available at `http://localhost:3000`
 
+## Running without Docker
+
+1. Start a PostgreSQL database (e.g. using Docker)
+2. Update the `DATABASE_URL` environment variable in the `.env` file to point to your database
+3. Run the following commands to start the app:
+
+```bash
+npm run db:migrate-dev
+npm run dev
 ```
-...
-UPLOAD_DIR=./uploads
-...
+
+## Building
+
+Run `npm run build` to build the app for production.
+
+You can also build a docker image:
+
+```bash
+docker build -t imperial/cpp-connect .
 ```
+
+# CI Setup
+
+TODO
 
 ## Authentication - Azure SSO
 
@@ -98,16 +101,6 @@ In your project’s `.env` file, set:
 From the app’s Active Directory page, navigate to “Certificates & secrets”, then click on “New client secret”. Enter any description and leave the expiration as 6 months (Note: this means you will have to generate a new client secret in 6 months’ time). Click “Add”.
 
 Copy the value from the secret into the `AZURE_AD_CLIENT_SECRET` row in the `.env` file.
-
-## Running Locally
-
-Assuming you’ve, make a copy of `.env.template` as `.env`  and filled it in as required, you can start the app as follows:
-
-```bash
-npm run dev
-```
-
-If all goes well, the app should now be available at `http://localhost:3000`
 
 # Deployment Guide
 
@@ -139,18 +132,21 @@ Add members to the team as required:
 impaas role-assign team-member <EMAIL_ADDRESS> <TEAM_NAME>
 ```
 
-Create a new app:
+Create a new app (make <APP_NAME> something suitable like `cpp-connect`):
 
 ```bash
 impaas app create <APP_NAME> --team <TEAM_NAME>
 ```
 
->[!NOTE]
+> [!NOTE]
 > See information about your app by running `impaas app info -a <APP_NAME>` to confirm that it was successfully created
 
 ## Adding a Volume
 
-As described above, a volume is used for persistent file storage in your deployed app. A volume must be mounted at a certain directory. To create a volume:
+CPP Connect allows file uploads, and these are by default saved to `upload/`. In production, you should use a impaas volume for persistent file storage. A volume must be mounted at a certain directory. To create a volume:
+
+> [!NOTE]
+> You will likely want a higher capacity than 512MiB
 
 ```bash
 impaas volume create <VOLUME_NAME> azurefile \
@@ -174,13 +170,15 @@ impaas env set UPLOAD_DIR=/<MOUNT_POINT_NAME> --app <APP_NAME>
 
 ## Adding a Database
 
+TODO: Switch to Postgres
+
 Create a MySQL instance for your team, specifying `DB_NAME` (the name of the MySQL instance):
 
 ```bash
 impaas service instance add mysql <DB_NAME> --team <TEAM_NAME>
 ```
 
->[!NOTE]
+> [!NOTE]
 > To check the instance was made: `impaas service instance info mysql <DB_NAME>`
 
 Bind the MySQL instance to the app.
@@ -207,12 +205,12 @@ impaas app deploy \
   --dockerfile Dockerfile
 ```
 
-If you encounter a `Request Entity Too Large` error when deploying the app, ensure the `.tsuruignore` includes your development volumes directory (`/<MOUNT_POINT_NAME>`) as this should not be included in deployment. 
+If you encounter a `Request Entity Too Large` error when deploying the app, ensure the `.tsuruignore` includes your development volumes directory (`/<MOUNT_POINT_NAME>`) as this should not be included in deployment.
 
 To view logs for the deployed app, run the following:
 
->[!NOTE]
-> See logs for your deployed app:  `impaas app log -a <APP_NAME> -l 100 --follow`
+> [!NOTE]
+> See logs for your deployed app: `impaas app log -a <APP_NAME> -l 100 --follow`
 
 </aside>
 
@@ -230,7 +228,7 @@ npm run format
 
 ### Directories
 
-- `app/`  - Next.js app router (different from the older page router) - see [https://nextjs.org/docs/app](https://nextjs.org/docs/app). Put layouts, pages & API routes here
+- `app/` - Next.js app router (different from the older page router) - see [https://nextjs.org/docs/app](https://nextjs.org/docs/app). Put layouts, pages & API routes here
 - `components/` - components used by pages & layouts
 - `lib/` - Other TypeScript logic code e.g. next.js server actions, types, database logic
 - `public/` - Next.js directory for static files

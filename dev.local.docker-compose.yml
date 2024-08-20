@@ -1,3 +1,4 @@
+# Run docker compose, connecting to a database on the host machine
 services:
   app:
     image: edtech/cpp-connect
@@ -6,17 +7,16 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      # Either create cpp-connect as a DB on the host machine, or change the DATABASE_URL to the name of the DB you want to connect to
+      # Also you might need to set "postgres:postgres" to your username and password, though you should do this by using a .env file and not hardcoding it
       - DATABASE_URL=postgres://postgres:postgres@host.docker.internal:5432/cpp-connect
       - UPLOAD_DIR=/uploads
     ports:
       - "3000:3000"
     volumes:
       - .:/app
-      - uploads:/uploads
+      - ./uploads:/uploads
     command:
       - "npm"
       - "run"
       - "dev"
-
-volumes:
-  uploads:
