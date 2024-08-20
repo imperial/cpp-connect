@@ -1,5 +1,6 @@
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import Link from "@/components/Link"
+import MdViewer from "@/components/MdViewer"
 import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
@@ -10,7 +11,6 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
 import { BsBoxArrowUpRight, BsCalendar, BsPinMap } from "react-icons/bs"
-import Markdown from "react-markdown"
 
 /**
  * Format an event's date to JSX
@@ -152,8 +152,7 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
 
         <Flex gap="2" direction="column">
           <Heading>About</Heading>
-
-          <Markdown>{event.richSummary}</Markdown>
+          <MdViewer markdown={event.richSummary} />
         </Flex>
       </Card>
     </Flex>

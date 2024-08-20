@@ -3,6 +3,7 @@ import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import { auth } from "@/auth"
 import { EditCompany } from "@/components/EditCompany"
 import Link from "@/components/Link"
+import MdViewer from "@/components/MdViewer"
 import { AddOpportunity } from "@/components/UpsertOpportunity"
 import RestrictedAreaCompany, { checkCompany } from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
@@ -17,10 +18,6 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
 import { BsBuildings, BsEnvelope, BsGlobe, BsTelephone } from "react-icons/bs"
-import Markdown from "react-markdown"
-import rehypeRaw from "rehype-raw"
-import remarkBreaks from "remark-breaks"
-import remarkGfm from "remark-gfm"
 
 /**
  * Conditional rendering of company detail. Will only render if children are truthy.
@@ -161,15 +158,7 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
               <Collapsible.Root className={styles.CollapsibleRoot}>
                 <Box className={styles.summaryContainer}>
                   <CompanyDetail title="Summary">
-                    {companyProfile.summary && (
-                      <Markdown
-                        className={styles.markdownContainer}
-                        remarkPlugins={[remarkGfm, remarkBreaks]}
-                        rehypePlugins={[rehypeRaw]}
-                      >
-                        {companyProfile.summary}
-                      </Markdown>
-                    )}
+                    {companyProfile.summary && <MdViewer markdown={companyProfile.summary} />}
                   </CompanyDetail>
 
                   <CompanyDetail title="Website">
