@@ -45,7 +45,7 @@ const StudentWebsiteLink = ({ href, icon: Icon }: { href?: string | null; icon: 
   href ? (
     <Flex align="center" gap="2">
       <Link href={href} target="_blank">
-        <Icon size={linkIconSize} color="black" />
+        <Icon size={linkIconSize} color="var(--gray-12)" />
       </Link>
     </Flex>
   ) : (

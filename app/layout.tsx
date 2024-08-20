@@ -10,6 +10,7 @@ import "@radix-ui/themes/components.css"
 import "@radix-ui/themes/tokens/base.css"
 import "@radix-ui/themes/utilities.css"
 import { Metadata } from "next"
+import { ThemeProvider } from "next-themes"
 import { Inter } from "next/font/google"
 import { ReactNode } from "react"
 
@@ -29,25 +30,27 @@ const RootLayout = ({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Theme accentColor="blue" grayColor="gray">
-          <ThemePanel defaultOpen={false} />
-          <Client>
-            <Flex direction="column" justify="between" minHeight="100vh">
-              <NavbarWrapper />
-              <Flex
-                id={CONTENT_ID}
-                className="page-container"
-                align="center"
-                direction="column"
-                height="100%"
-                flexGrow="1"
-              >
-                <Box className="page-content">{children}</Box>
+        <ThemeProvider attribute="class">
+          <Theme accentColor="blue" grayColor="gray">
+            <ThemePanel defaultOpen={false} />
+            <Client>
+              <Flex direction="column" justify="between" minHeight="100vh">
+                <NavbarWrapper />
+                <Flex
+                  id={CONTENT_ID}
+                  className="page-container"
+                  align="center"
+                  direction="column"
+                  height="100%"
+                  flexGrow="1"
+                >
+                  <Box className="page-content">{children}</Box>
+                </Flex>
+                <Footer />
               </Flex>
-              <Footer />
-            </Flex>
-          </Client>
-        </Theme>
+            </Client>
+          </Theme>
+        </ThemeProvider>
       </body>
     </html>
   )
