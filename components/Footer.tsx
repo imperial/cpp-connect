@@ -1,12 +1,13 @@
 import Link from "./Link"
 import styles from "./footer.module.scss"
+import { FOOTER_ID } from "./util/constants"
 
 import { Flex, Text } from "@radix-ui/themes"
 import React from "react"
 
 const Footer = () => {
   return (
-    <Flex className={styles.container} justify="center" p="3">
+    <Flex className={styles.container} justify="center" p="3" id={FOOTER_ID}>
       <Text>
         © 2024. Found a bug or want to improve CPP Connect yourself? Head over to{" "}
         <Link
