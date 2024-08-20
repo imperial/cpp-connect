@@ -55,7 +55,7 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
             <InfoCircledIcon style={{ marginBottom: "3px" }} />
           </Tooltip>
         </Flex>
-        <Flex direction="row" gap="1" align="center">
+        <Flex direction="row" gap="1" align="center" wrap="wrap">
           <Text>{SLUG_START}</Text>
           <TextField.Root name="slug" required value={slug} onChange={e => setSlug(e.target.value)} />
         </Flex>

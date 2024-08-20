@@ -36,18 +36,18 @@ const MdEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
       plugins={[
         toolbarPlugin({
           toolbarContents: () => (
-            <>
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
               {/* HACK: avoid unintented focus on the first button on hover*/}
               <button disabled style={{ display: "none" }}></button>
               <UndoRedo />
+              <Separator />
               <BoldItalicUnderlineToggles />
-              <BlockTypeSelect />
-              <CodeToggle />
               <InsertTable />
               <InsertThematicBreak />
               <Separator />
               <ListsToggle />
-            </>
+              <BlockTypeSelect />
+            </div>
           ),
         }),
         tablePlugin(),
