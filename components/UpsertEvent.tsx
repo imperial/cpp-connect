@@ -15,6 +15,7 @@ import { Pencil1Icon } from "@radix-ui/react-icons"
 import { Card, Grid, IconButton, Text, TextField } from "@radix-ui/themes"
 import dynamic from "next/dynamic"
 import { useState } from "react"
+import { useMediaQuery } from "react-responsive"
 
 const MdEditor = dynamic(() => import("@/components/MdEditor"), { ssr: false })
 
@@ -28,6 +29,8 @@ const UpsertEventForm = ({
   companyID?: number
 }) => {
   const [summary, setSummary] = useState(prevEvent?.richSummary ?? "")
+  const SMALL_SCREEN_PIXELS = 560
+  const isSmallScreen = useMediaQuery({ query: `(max-width: ${SMALL_SCREEN_PIXELS}px)` })
 
   const createEventWithArgs = async (prevState: FormPassBackState, formData: FormData) =>
     createEvent(prevState, formData, companyID ?? -1)
@@ -84,7 +87,7 @@ const UpsertEventForm = ({
         <TextField.Root name="spaces" placeholder="E.g., 100" required type="number" defaultValue={prevEvent?.spaces} />
       </label>
       <InfoCallout message={`The times correspond to the ${TIMEZONE} timezone.`} />
-      <Grid columns="2" rows="1">
+      <Grid columns={isSmallScreen ? "1" : "2"} rows={isSmallScreen ? "2" : "1"}>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
             Start date*

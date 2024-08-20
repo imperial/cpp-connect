@@ -68,7 +68,7 @@ export const AddCompany = () => {
   return (
     <GenericFormModal title="Add new company" description="Add a new company profile" form={AddCompanyForm}>
       <PlusButton>
-        <Text>Add Company</Text>
+        <Text>Company</Text>
       </PlusButton>
     </GenericFormModal>
   )
