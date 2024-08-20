@@ -21,13 +21,23 @@ const parseDateTime = (rawDate: FormDataEntryValue | null): Date | null => {
   return fromZonedTime(date, TIMEZONE)
 }
 
+const parseNonNegativeInt = (rawNum: FormDataEntryValue | null): number => {
+  if (!rawNum) {
+    return NaN
+  }
+  const num = parseInt(rawNum.toString().trim())
+  if (isNaN(num) || num < 0) {
+    return NaN
+  }
+  return num
+}
+
 export const createEvent = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyID: number): Promise<FormPassBackState> => {
     const title = formData.get("title")?.toString().trim()
-
     const shortDescription = formData.get("shortDescription")?.toString().trim()
     const richSummary = formData.get("richSummary")?.toString().trim()
-    const spaces = parseInt(formData.get("spaces")?.toString().trim() ?? "-1")
+    const spaces = parseNonNegativeInt(formData.get("spaces"))
     const location = formData.get("location")?.toString().trim()
     const link = formData.get("link")?.toString().trim()
     const dateEnd = parseDateTime(formData.get("dateEnd"))
@@ -54,8 +64,8 @@ export const createEvent = companyOnlyAction(
       return { message: "Summary is required.", status: "error" }
     }
 
-    if (spaces == -1) {
-      return { message: "Spaces is required.", status: "error" }
+    if (isNaN(spaces)) {
+      return { message: "Invalid number of spaces. Please enter a non-negative integer.", status: "error" }
     }
 
     if (!location) {
@@ -102,7 +112,7 @@ export const updateEvent = companyOnlyAction(
     const title = formData.get("title")?.toString().trim()
     const shortDescription = formData.get("shortDescription")?.toString().trim()
     const richSummary = formData.get("richSummary")?.toString().trim()
-    const spaces = parseInt(formData.get("spaces")?.toString().trim() ?? "-1")
+    const spaces = parseNonNegativeInt(formData.get("spaces"))
     const location = formData.get("location")?.toString().trim()
     const link = formData.get("link")?.toString().trim()
     const dateEnd = parseDateTime(formData.get("dateEnd"))
@@ -129,8 +139,8 @@ export const updateEvent = companyOnlyAction(
       return { message: "Summary is required.", status: "error" }
     }
 
-    if (spaces == -1) {
-      return { message: "Spaces is required.", status: "error" }
+    if (isNaN(spaces)) {
+      return { message: "Invalid number of spaces. Please enter a non-negative integer.", status: "error" }
     }
 
     if (!location) {
