@@ -87,7 +87,7 @@ const UpsertEventForm = ({
         <TextField.Root name="spaces" placeholder="E.g., 100" required type="number" defaultValue={prevEvent?.spaces} />
       </label>
       <InfoCallout message={`The times correspond to the ${TIMEZONE} timezone.`} />
-      <Grid columns={isSmallScreen ? "1" : "2"} rows={isSmallScreen ? "2" : "1"}>
+      <Grid columns={isSmallScreen ? "1" : "2"} rows={isSmallScreen ? "2" : "1"} gapY="3">
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
             Start date*
