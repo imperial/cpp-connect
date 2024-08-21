@@ -65,7 +65,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
   }
 
   return (
-    <RestrictedArea allowedRoles={["STUDENT"]}>
+    <RestrictedArea allowedRoles={["STUDENT", "COMPANY"]}>
       <Card className={styles.container}>
         <Flex gap="3" direction="row" wrap="wrap">
           <Flex direction="column" align="center" gap="5" className={styles.shortDetailsCard} p="5">
