@@ -8,6 +8,7 @@ import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import RestrictedAreaStudent from "@/components/rbac/RestrictedAreaStudent"
 import prisma from "@/lib/db"
 
+import FormattedClientDateTime from "./FormattedClientDateTime"
 import styles from "./page.module.scss"
 
 import { Role } from "@prisma/client"
@@ -40,16 +41,26 @@ import { BsBoxArrowUpRight, BsCalendar, BsPinMap } from "react-icons/bs"
  *   </>
  */
 const formatEventDateTime = (dateStart: Date, dateEnd: Date | null) => {
-  const formattedStart = <b>{format(dateStart, "E, dd MMM kk:mm")}</b>
+  const formattedStart = (
+    <b>
+      <time>{format(dateStart, "E, dd MMM kk:mm")}</time>
+    </b>
+  )
   const formattedEnd = dateEnd ? (
     isSameDay(dateStart, dateEnd) ? (
       <>
-        -<b>{format(dateEnd, "kk:mm")}</b>
+        -
+        <b>
+          <time>{format(dateEnd, "kk:mm")}</time>
+        </b>
       </>
     ) : (
       <>
         {" "}
-        to <b>{format(dateEnd, "E, dd MMM kk:mm")}</b>
+        to{" "}
+        <b>
+          <time>{format(dateEnd, "E, dd MMM kk:mm")}</time>
+        </b>
       </>
     )
   ) : (
@@ -141,8 +152,7 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
           <Heading>Date & Time</Heading>
 
           <Flex align="center" gap="2">
-            <BsCalendar />
-            <Text>{formatEventDateTime(event.dateStart, event.dateEnd)}</Text>
+            <FormattedClientDateTime dateStart={event.dateStart} dateEnd={event.dateEnd} />
           </Flex>
         </Flex>
 
