@@ -6,7 +6,6 @@ import ProfileDropdown from "@/components/navbar/ProfileDropdown"
 import { NavbarProps, isSignedIn } from "./Navbar"
 import styles from "./desktopNavbar.module.scss"
 
-import RestrictedArea from "../rbac/RestrictedArea"
 import RestrictedAreaClient from "../rbac/RestrictedAreaClient"
 import { Role } from "@prisma/client"
 import { Flex } from "@radix-ui/themes"
