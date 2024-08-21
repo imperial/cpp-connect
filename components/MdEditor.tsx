@@ -3,7 +3,6 @@
 import {
   BlockTypeSelect,
   BoldItalicUnderlineToggles,
-  CodeToggle,
   InsertTable,
   InsertThematicBreak,
   ListsToggle,
@@ -13,7 +12,6 @@ import {
   UndoRedo,
   headingsPlugin,
   listsPlugin,
-  quotePlugin,
   tablePlugin,
   thematicBreakPlugin,
   toolbarPlugin,
@@ -54,7 +52,6 @@ const MdEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
         thematicBreakPlugin(),
         listsPlugin(),
         headingsPlugin(),
-        quotePlugin(),
       ]}
       markdown={markdown}
       ref={editorRef}
