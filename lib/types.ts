@@ -16,3 +16,17 @@ export enum FileCategory {
   IMAGE,
   DOCUMENT,
 }
+
+export type FormFieldParser<T> = (rawData: FormDataEntryValue) => T
+
+export type FormValidator<T> = (value: T) => string | null
+
+export interface FormField<T> {
+  parser?: FormFieldParser<T>
+  optional?: boolean
+  validators?: Array<FormValidator<T>>
+}
+
+export type FormConfig<T> = {
+  [K in keyof T]: FormField<T[K]>
+}
