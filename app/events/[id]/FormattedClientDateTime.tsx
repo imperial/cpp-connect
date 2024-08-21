@@ -5,17 +5,48 @@ import { format, formatDistanceStrict, isSameDay } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { BsCalendar } from "react-icons/bs"
 
+/**
+ * Format an event's date to JSX
+ * @param dateStart The start date time
+ * @param dateEnd The end date time
+ * @example
+ *   formatEventDateTime(
+ *     new Date("2022-01-01T12:00:00Z"),
+ *     new Date("2022-01-01T14:00:00Z")
+ *   ) =>
+ *     <>
+ *       <b><time>Sat, 01 Jan 12:00</time></b>-<b><time>14:00</time></b> GMT+0 (2 hours)
+ *     </>
+ * @example
+ *   formatEventDateTime(
+ *     new Date("2022-01-01T12:00:00Z"),
+ *     new Date("2022-01-02T14:00:00Z")
+ *   ) =>
+ *   <>
+ *     <b><time>Sat, 01 Jan 12:00</time></b> to <b><time>Sun, 02 Jan 14:00</time></b> GMT+0 (1 day)
+ *   </>
+ */
 const formatEventDateTime = (dateStart: Date, dateEnd: Date | null) => {
-  const formattedStart = <b>{format(dateStart, "E, dd MMM kk:mm")}</b>
+  const formattedStart = (
+    <b>
+      <time>{format(dateStart, "E, dd MMM kk:mm")}</time>
+    </b>
+  )
   const formattedEnd = dateEnd ? (
     isSameDay(dateStart, dateEnd) ? (
       <>
-        -<b>{format(dateEnd, "kk:mm")}</b>
+        -
+        <b>
+          <time>{format(dateEnd, "kk:mm")}</time>
+        </b>
       </>
     ) : (
       <>
         {" "}
-        to <b>{format(dateEnd, "E, dd MMM kk:mm")}</b>
+        to{" "}
+        <b>
+          <time>{format(dateEnd, "E, dd MMM kk:mm")}</time>
+        </b>
       </>
     )
   ) : (
