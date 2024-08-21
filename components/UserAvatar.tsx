@@ -12,7 +12,6 @@ const UserAvatar = ({
   size: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 }) => (
   <Avatar
-    highContrast
     alt="Profile"
     radius="full"
     src={(user.image ?? undefined) && `/api/uploads/${user.image}`}
