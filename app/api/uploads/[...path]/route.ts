@@ -14,6 +14,11 @@ import path from "path"
  * @returns A response if the user is unauthorised to view the requested CV, or "authorised" if they are authorised
  */
 const checkAuthorisedForCV = async (session: Session, suffix: string): Promise<Response | "authorised"> => {
+  // Only check for CVs
+  if (suffix.split("/")[0] !== "cvs") {
+    return "authorised"
+  }
+
   // Only companies and admins can view any CV
   if (session.user.role === "COMPANY" || session.user.role === "ADMIN") {
     return "authorised"
