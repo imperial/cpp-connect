@@ -1,4 +1,4 @@
-import { stringParser } from "@/lib/parsers"
+import { parseString } from "@/lib/parsers"
 import { FormConfig, FormFieldParser } from "@/lib/types"
 
 export function processForm<T>(formData: FormData, config: FormConfig<T>): T {
@@ -16,7 +16,7 @@ export function processForm<T>(formData: FormData, config: FormConfig<T>): T {
       }
     }
     // if parser is not provided, assume the field is a string and use stringParser
-    const parser = field?.parser ?? (stringParser as FormFieldParser<T[keyof T]>)
+    const parser = field?.parser ?? (parseString as FormFieldParser<T[keyof T]>)
     const value = parser(formEntry)
     for (let validator of field?.validators ?? []) {
       const errorMsg = validator(value)

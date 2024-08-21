@@ -1,9 +1,10 @@
 import { TIMEZONE } from "@/lib/constants"
 import { FormFieldParser } from "@/lib/types"
 
+import { OpportunityType } from "@prisma/client"
 import { fromZonedTime } from "date-fns-tz"
 
-export const stringParser: FormFieldParser<string> = (rawData: FormDataEntryValue): string => {
+export const parseString: FormFieldParser<string> = (rawData: FormDataEntryValue): string => {
   const res = rawData.toString().trim()
   if (!!res) {
     return res
@@ -27,4 +28,11 @@ export const parseNonNegativeInt: FormFieldParser<number> = (rawNum: FormDataEnt
     throw new Error("Parsing error. Number must be a non-negative integer.")
   }
   return num
+}
+
+export const parseOpportunityType: FormFieldParser<OpportunityType> = (
+  rawType: FormDataEntryValue,
+): OpportunityType => {
+  const type = parseString(rawType)
+  return type as OpportunityType
 }

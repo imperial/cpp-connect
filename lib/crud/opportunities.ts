@@ -1,53 +1,45 @@
 "use server"
 
+import { parseOpportunityType } from "@/lib/parsers"
 import { companyOnlyAction } from "@/lib/rbac"
+import { FormConfig, FormPassBackState } from "@/lib/types"
 
 import prisma from "../db"
-import { FormPassBackState } from "../types"
-import { OpportunityType } from "@prisma/client"
+import { processForm } from "../util/forms"
+import { urlValidator } from "../validators"
+import { Opportunity, OpportunityType } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
+type OpportunityFormData = Pick<Opportunity, "position" | "location" | "link" | "type" | "description">
+
+const formConfig: FormConfig<OpportunityFormData> = {
+  position: {},
+  location: {},
+  description: {},
+  link: {
+    validators: [urlValidator],
+  },
+  type: {
+    parser: parseOpportunityType,
+  },
+}
+
 export const createOpportunity = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyID: number): Promise<FormPassBackState> => {
-    // Validate things
-    const position = formData.get("position")?.toString().trim()
-    const location = formData.get("location")?.toString().trim()
-    const link = formData.get("link")?.toString().trim()
-    const type = formData.get("type")?.toString().trim() as OpportunityType
-    const description = formData.get("description")?.toString().trim()
+    let parsedOpportunity: OpportunityFormData
+    try {
+      parsedOpportunity = processForm(formData, formConfig)
+    } catch (e: any) {
+      return { message: e.message, status: "error" }
+    }
+
     const available = true
 
-    if (!position) {
-      return { message: "Position is required.", status: "error" }
-    }
-
-    if (!location) {
-      return { message: "Location is required.", status: "error" }
-    }
-
-    if (!link) {
-      return { message: "Link is required.", status: "error" }
-    } else {
-      try {
-        new URL(link.toString())
-      } catch (_) {
-        return { message: "Invalid link URL.", status: "error" }
-      }
-    }
-
-    if (!type) {
-      return { message: "Type is required.", status: "error" }
-    }
-
-    if (!description) {
-      return { message: "Description is required.", status: "error" }
-    }
-
-    // Now add the company to the database
+    // Now add the opportunity to the database
     try {
       const opportunity = await prisma.opportunity.create({
-        data: { companyID, position, location, available, link, type, description },
+        data: { companyID, available, ...parsedOpportunity },
         include: {
           company: {
             select: {
@@ -79,44 +71,19 @@ export const updateOpportunity = companyOnlyAction(
     // TODO: Validate user session
 
     // Validate things
-    const position = formData.get("position")?.toString().trim()
-    const location = formData.get("location")?.toString().trim()
-    const link = formData.get("link")?.toString().trim()
-    const type = formData.get("type")?.toString().trim() as OpportunityType
-    const description = formData.get("description")?.toString().trim()
+    let parsedOpportunity: OpportunityFormData
+    try {
+      parsedOpportunity = processForm(formData, formConfig)
+    } catch (e: any) {
+      return { message: e.message, status: "error" }
+    }
     const available = true
-
-    if (!position) {
-      return { message: "Position is required.", status: "error" }
-    }
-
-    if (!location) {
-      return { message: "Location is required.", status: "error" }
-    }
-
-    if (!link) {
-      return { message: "Link is required.", status: "error" }
-    } else {
-      try {
-        new URL(link.toString())
-      } catch (_) {
-        return { message: "Invalid link URL.", status: "error" }
-      }
-    }
-
-    if (!type) {
-      return { message: "Type is required.", status: "error" }
-    }
-
-    if (!description) {
-      return { message: "Description is required.", status: "error" }
-    }
 
     // Now add the company to the database
     try {
       const opportunity = await prisma.opportunity.update({
         where: { id: opportunityID },
-        data: { position, location, available, link, type, description },
+        data: { ...parsedOpportunity, available },
         include: {
           company: {
             select: {
