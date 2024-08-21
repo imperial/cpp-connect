@@ -3,6 +3,7 @@ import prisma from "@/lib/db"
 
 import EventTable from "./EventTable"
 
+import { Flex, Heading } from "@radix-ui/themes"
 import React from "react"
 
 const EventsPage = async () => {
@@ -15,10 +16,13 @@ const EventsPage = async () => {
 
   return (
     <RestrictedArea allowedRoles={["STUDENT"]}>
-      <EventTable
-        events={events}
-        columns={["company.logo", "company.name", "title", "dateStart", "shortDescription", "location", "spaces"]}
-      />
+      <Flex direction="column" gap="5" align="center" width="100%">
+        <Heading size="8">Events</Heading>
+        <EventTable
+          events={events}
+          columns={["company.logo", "company.name", "title", "dateStart", "shortDescription", "location", "spaces"]}
+        />
+      </Flex>
     </RestrictedArea>
   )
 }

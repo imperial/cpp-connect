@@ -2,6 +2,7 @@ import OpportunityTable from "@/app/opportunities/OpportunityTable"
 import RestrictedArea from "@/components/rbac/RestrictedArea"
 import prisma from "@/lib/db"
 
+import { Flex, Heading } from "@radix-ui/themes"
 import React from "react"
 
 const OpportunitiesPage = async () => {
@@ -14,10 +15,13 @@ const OpportunitiesPage = async () => {
 
   return (
     <RestrictedArea allowedRoles={["STUDENT"]}>
-      <OpportunityTable
-        opportunities={opportunities}
-        columns={["company.logo", "company.name", "position", "location", "type", "createdAt"]}
-      />
+      <Flex direction="column" gap="5" align="center" width="100%">
+        <Heading size="8">Opportunities</Heading>
+        <OpportunityTable
+          opportunities={opportunities}
+          columns={["company.logo", "company.name", "position", "location", "type", "createdAt"]}
+        />
+      </Flex>
     </RestrictedArea>
   )
 }
