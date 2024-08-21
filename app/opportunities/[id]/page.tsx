@@ -14,7 +14,7 @@ import { format } from "date-fns"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
-import { BsBoxArrowUpRight, BsBriefcase, BsCalendar, BsCheckCircle, BsPinMap, BsXCircle } from "react-icons/bs"
+import { BsBoxArrowUpRight, BsBriefcase, BsCalendar, BsCheckCircle, BsClock, BsPinMap, BsXCircle } from "react-icons/bs"
 
 const OpportunityPage = async ({ params }: { params: { id: string } }) => {
   const id = parseInt(params.id, 10)
@@ -94,13 +94,7 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
           <Flex direction="column" gap="2">
             <Heading>Opportunity Details</Heading>
 
-            <Grid
-              // display="inline-grid"
-              columns="min-content auto auto"
-              gap="2"
-              align="center"
-              className={styles.opportunityDetails}
-            >
+            <Grid columns="min-content auto auto" gap="2" align="center" className={styles.opportunityDetails}>
               <BsPinMap />
               <Text>Location</Text>
               <Text>{opportunity.location}</Text>
@@ -108,6 +102,10 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
               <BsBriefcase />
               <Text>Opportunity type</Text>
               <Text>{opportunity.type}</Text>
+
+              <BsClock />
+              <Text>Deadline</Text>
+              <Text>{format(opportunity.deadline, "dd/MM/yyyy HH:mm")}</Text>
 
               {opportunity.available ? (
                 <>
