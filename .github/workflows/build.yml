@@ -126,5 +126,7 @@ jobs:
         run: tsuru target add impaas https://impaas.uk -s
       - name: Write token to file to login
         run: echo $IMPAAS_DEPLOY_TOKEN > ~/.tsuru/token
+      - name: Check token present
+        run: cat ~/.tsuru/token && wc -c ~/.tsuru
       - name: Deploy app
         run: tsuru app deploy -a $IMPAAS_APP_NAME --dockerfile Dockerfile --message "GitHub deployment for commit ${{ github.sha }} branch ${{ github.ref }}"
