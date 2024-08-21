@@ -7,6 +7,8 @@ name: Node.js CI
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  IMPAAS_APP_NAME: cpp-connect
+  IMPAAS_DEPLOY_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
 
 on:
   push:
@@ -109,3 +111,20 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' && true || false }} # only push if main
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  # Deploy!
+  deploy-impaas:
+    # needs:
+    #   - build-and-push-image
+    # if : github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install tsuru
+        run: curl -fsSL "https://tsuru.io/get" | bash
+      - name: Add ImPaaS target
+        run: tsuru target add impaas https://impaas.uk -s
+      - name: Write token to file to login
+        run: echo $IMPAAS_DEPLOY_TOKEN > ~/.tsuru/token
+      - name: Deploy app
+        run: tsuru app deploy -a $IMPAAS_APP_NAME --dockerfile Dockerfile --message "GitHub deployment for commit ${{ github.sha }} branch ${{ github.ref }}"
