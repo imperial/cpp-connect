@@ -6,6 +6,8 @@ import ProfileDropdown from "@/components/navbar/ProfileDropdown"
 import { NavbarProps, isSignedIn } from "./Navbar"
 import styles from "./desktopNavbar.module.scss"
 
+import RestrictedAreaClient from "../rbac/RestrictedAreaClient"
+import { Role } from "@prisma/client"
 import { Flex } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
@@ -27,15 +29,17 @@ const DesktopNavbar = (props: NavbarProps) => {
 
           {isSignedIn(data, props) && (
             <Flex className={styles.linksContainer}>
-              <Link href="/companies" className={styles.link}>
-                <span>Companies</span>
-              </Link>
-              <Link href="/events" className={styles.link}>
-                <span>Events</span>
-              </Link>
-              <Link href="/opportunities" className={styles.link}>
-                <span>Opportunities</span>
-              </Link>
+              <RestrictedAreaClient allowedRoles={[Role.STUDENT]} showMessage={false}>
+                <Link href="/companies" className={styles.link}>
+                  <span>Companies</span>
+                </Link>
+                <Link href="/events" className={styles.link}>
+                  <span>Events</span>
+                </Link>
+                <Link href="/opportunities" className={styles.link}>
+                  <span>Opportunities</span>
+                </Link>
+              </RestrictedAreaClient>
               <Link href="/students" className={styles.link}>
                 <span>Students</span>
               </Link>
