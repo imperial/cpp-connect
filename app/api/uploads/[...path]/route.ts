@@ -1,10 +1,48 @@
 import { auth } from "@/auth"
+import prisma from "@/lib/db"
 import { validateFilePath } from "@/lib/files/saveFile"
 
 import fs from "fs/promises"
 import mime from "mime-types"
+import { Session } from "next-auth"
 import { NextRequest } from "next/server"
 import path from "path"
+
+/**
+ * @param session The user's session
+ * @param suffix The suffix of the file path
+ * @returns A response if the user is unauthorised to view the requested CV, or "authorised" if they are authorised
+ */
+const checkAuthorisedForCV = async (session: Session, suffix: string): Promise<Response | "authorised"> => {
+  // Only companies and admins can view any CV
+  if (session.user.role === "COMPANY" || session.user.role === "ADMIN") {
+    return "authorised"
+  }
+
+  // Students can only view their own CV
+  if (session.user.role === "STUDENT") {
+    const studentProfile = await prisma.studentProfile.findUnique({
+      select: {
+        cv: true,
+      },
+      where: {
+        userId: session.user.id,
+      },
+    })
+
+    if (!studentProfile) {
+      return new Response("Student profile not found", { status: 404 })
+    }
+
+    if (suffix !== "/" + studentProfile.cv) {
+      return new Response("Unauthorised to view this CV", { status: 403 })
+    }
+
+    return "authorised"
+  }
+
+  return new Response("Unexpected error", { status: 500 })
+}
 
 /**
  * Upon request: return the file provided at the path in the volume
@@ -27,6 +65,12 @@ export const GET = async (req: NextRequest) => {
 
   if (!validateFilePath(suffix)) {
     return new Response("Invalid path", { status: 400 })
+  }
+
+  const res = await checkAuthorisedForCV(session, suffix)
+
+  if (res !== "authorised") {
+    return res
   }
 
   const filePath = path.join(process.env.UPLOAD_DIR, suffix)
