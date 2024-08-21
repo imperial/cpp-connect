@@ -8,7 +8,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   IMPAAS_APP_NAME: cpp-connect
-  TSURU_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
+  # TSURU_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
 
 on:
   push:
@@ -124,9 +124,9 @@ jobs:
         run: curl -fsSL "https://tsuru.io/get" | bash
       - name: Add ImPaaS target
         run: tsuru target add impaas https://impaas.uk -s
-      - name: Write token to file to login
-        run: echo $TSURU_TOKEN > ~/.tsuru/token
-      - name: Check token present
-        run: wc -c ~/.tsuru/token
-      - name: Deploy app
-        run: tsuru app deploy -a $IMPAAS_APP_NAME --dockerfile Dockerfile --message "GitHub deployment for commit ${{ github.sha }} branch ${{ github.ref }}"
+      # - name: Write token to file to login
+      #   run: echo $TSURU_TOKEN > ~/.tsuru/token
+      # - name: Check token present
+      #   run: wc -c ~/.tsuru/token
+      # - name: Deploy app
+      #   run: tsuru app deploy -a $IMPAAS_APP_NAME --dockerfile Dockerfile --message "GitHub deployment for commit ${{ github.sha }} branch ${{ github.ref }}"
