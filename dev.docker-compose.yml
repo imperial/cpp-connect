@@ -1,5 +1,5 @@
 services:
-  app:
+  cpp-connect-app:
     image: imperial/cpp-connect
     pull_policy: never
     build:
@@ -16,7 +16,7 @@ services:
       - "3000:3000"
     volumes:
       - .:/app
-      - uploads:/uploads
+      - ./uploads:/uploads
     command:
       - "npm"
       - "run"
@@ -35,4 +35,3 @@ services:
 
 volumes:
   database-data:
-  uploads:
