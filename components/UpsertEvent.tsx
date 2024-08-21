@@ -14,7 +14,7 @@ import { Event } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
 import { Card, Grid, IconButton, Text, TextField } from "@radix-ui/themes"
 import dynamic from "next/dynamic"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useMediaQuery } from "react-responsive"
 
 const MdEditor = dynamic(() => import("@/components/MdEditor"), { ssr: false })
