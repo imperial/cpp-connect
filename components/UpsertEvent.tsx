@@ -147,7 +147,7 @@ export const AddEvent = ({ companyID }: { companyID: number }) => {
   return (
     <UpsertEvent companyID={companyID}>
       <PlusButton>
-        <Text>Add Event</Text>
+        <Text>Event</Text>
       </PlusButton>
     </UpsertEvent>
   )

@@ -122,7 +122,7 @@ export const AddOpportunity = ({ companyID }: { companyID: number }) => {
   return (
     <UpsertOpportunity companyID={companyID}>
       <PlusButton>
-        <Text>Add Opportunity</Text>
+        <Text>Opportunity</Text>
       </PlusButton>
     </UpsertOpportunity>
   )

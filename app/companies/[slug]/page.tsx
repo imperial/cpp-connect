@@ -185,7 +185,7 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
           <Tabs.Content value="opportunities">
             <RestrictedAreaCompany companyId={companyProfile.id} showMessage={false}>
               <Card variant="surface" className={styles.opportunityPanel}>
-                <Flex gap="3" direction="row" align="center" justify="between" p="2">
+                <Flex gap="3" direction="row" align="center" justify="between" p="2" wrap="wrap">
                   <Heading size="6">Opportunities panel</Heading>
                   <Flex gap="3" direction="row" align="center">
                     <AddOpportunity companyID={companyProfile.id} />
