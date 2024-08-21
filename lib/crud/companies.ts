@@ -4,53 +4,59 @@ import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { deleteFile } from "@/lib/files/deleteFile"
 import { updateUpload } from "@/lib/files/updateUpload"
 import { adminOnlyAction, companyOnlyAction } from "@/lib/rbac"
-import { FileCategory } from "@/lib/types"
+import { FileCategory, FormConfig } from "@/lib/types"
+import { slugValidator, urlValidator } from "@/lib/validators"
 
 import prisma from "../db"
 import { FormPassBackState } from "../types"
+import { processForm } from "../util/forms"
 import { encodeSignInUrl } from "../util/signInTokens"
-import { Role } from "@prisma/client"
+import { CompanyProfile, Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
+type CompanyCreateFormData = Pick<CompanyProfile, "name" | "slug" | "website" | "sector">
+type CompanyUpdateFormData = Omit<CompanyProfile, "id" | "logo" | "banner">
+type CompanyUserCreateFormData = { email: string; baseUrl: string }
+
+const formConfigCreate: FormConfig<CompanyCreateFormData> = {
+  name: {},
+  slug: {
+    validators: [slugValidator],
+  },
+  website: {
+    validators: [urlValidator],
+  },
+  sector: {},
+}
+
+const formConfigUpdate: FormConfig<CompanyUpdateFormData> = {
+  ...formConfigCreate,
+  summary: { optional: true },
+  size: { optional: true },
+  hq: { optional: true },
+  email: { optional: true },
+  phone: { optional: true },
+  founded: { optional: true },
+}
+
+const formConfigUserCreate: FormConfig<CompanyUserCreateFormData> = {
+  email: {},
+  baseUrl: {},
+}
+
 export const createCompany = adminOnlyAction(async (_, formData) => {
-  // Validate things
-  const name = formData.get("name")?.toString().trim()
-  const slug = formData.get("slug")?.toString().trim()
-  const website = formData.get("website")?.toString().trim()
-  const sector = formData.get("sector")?.toString().trim()
-
-  if (!name) {
-    return { message: "Name is required.", status: "error" }
-  }
-
-  if (!slug) {
-    return { message: "Slug is required.", status: "error" }
-  }
-
-  if (!website) {
-    return { message: "Website is required.", status: "error" }
-  } else {
-    try {
-      new URL(website.toString())
-    } catch (_) {
-      return { message: "Invalid website URL.", status: "error" }
-    }
-  }
-
-  if (!sector) {
-    return { message: "Sector is required.", status: "error" }
+  let parsedCompany: CompanyCreateFormData
+  try {
+    parsedCompany = processForm(formData, formConfigCreate)
+  } catch (e: any) {
+    return { message: e.message, status: "error" }
   }
 
   // Now add the company to the database
   try {
     await prisma.companyProfile.create({
-      data: {
-        name: name.toString(),
-        slug: slug.toString(),
-        website: website.toString(),
-        sector: sector.toString(),
-      },
+      data: parsedCompany,
     })
   } catch (e: any) {
     if (e?.code === "P2002" && e?.meta?.target?.includes("slug")) {
@@ -74,14 +80,13 @@ export const createCompany = adminOnlyAction(async (_, formData) => {
 
 export const createCompanyUser = companyOnlyAction<FormPassBackState & { signInURL?: string }>(
   async (_, formData, companyId: number) => {
-    const email = formData.get("email")?.toString().trim()
-    const baseUrl = formData.get("baseUrl")?.toString().trim()
-    if (!email) {
-      return { message: "Email is required.", status: "error" }
+    let parsedForm: CompanyUserCreateFormData
+    try {
+      parsedForm = processForm(formData, formConfigUserCreate)
+    } catch (e: any) {
+      return { status: "error", message: e.message }
     }
-    if (!baseUrl) {
-      return { message: "Base URL is required.", status: "error" }
-    }
+    const { email, baseUrl } = parsedForm
 
     // Get slug
     const company = await prisma.companyProfile.findUnique({
@@ -121,44 +126,14 @@ export const createCompanyUser = companyOnlyAction<FormPassBackState & { signInU
 
 export const updateCompany = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyId: number): Promise<FormPassBackState> => {
-    const name = formData.get("name")?.toString().trim()
-    const slug = formData.get("slug")?.toString().trim()
-    const summary = formData.get("summary")?.toString().trim()
     const banner = formData.get("banner") as File
     const logo = formData.get("logo") as File
-    const website = formData.get("website")?.toString().trim()
-    const sector = formData.get("sector")?.toString().trim()
-    const size = formData.get("size")?.toString().trim()
-    const hq = formData.get("hq")?.toString().trim()
-    const email = formData.get("email")?.toString().trim()
-    const phone = formData.get("phone")?.toString().trim()
-    const founded = formData.get("founded")?.toString().trim()
 
-    if (!name) {
-      return { message: "Name is required.", status: "error" }
-    }
-
-    if (!slug) {
-      return { message: "Slug is required.", status: "error" }
-    } else if (!slug.match(/^[a-z0-9\-]+$/)) {
-      return {
-        message: "Invalid characters in slug. Only lowercase alphanumeric characters and hyphens are allowed.",
-        status: "error",
-      }
-    }
-
-    if (!website) {
-      return { message: "Website is required.", status: "error" }
-    } else {
-      try {
-        new URL(website.toString())
-      } catch (_) {
-        return { message: "Invalid website URL.", status: "error" }
-      }
-    }
-
-    if (!sector) {
-      return { message: "Sector is required.", status: "error" }
+    let parsedCompany: CompanyUpdateFormData
+    try {
+      parsedCompany = processForm(formData, formConfigUpdate)
+    } catch (e: any) {
+      return { message: e.message, status: "error" }
     }
 
     let prevSlug: string
@@ -178,7 +153,7 @@ export const updateCompany = companyOnlyAction(
 
       await prisma.companyProfile.update({
         where: { id: companyId },
-        data: { name, summary, website, sector, size, hq, email, phone, founded, slug },
+        data: parsedCompany,
       })
     } catch (e: any) {
       if (e?.code === "P2002" && e?.meta?.target?.includes("slug")) {
@@ -231,10 +206,10 @@ export const updateCompany = companyOnlyAction(
     if (logoUpdateRes.status === "error") return logoUpdateRes
 
     // If slug changed, redirect
-    if (prevSlug !== slug) {
-      redirect(getCompanyLink({ slug: slug }))
+    if (prevSlug !== parsedCompany.slug) {
+      redirect(getCompanyLink({ slug: parsedCompany.slug }))
     } else {
-      revalidatePath(getCompanyLink({ slug: slug }))
+      revalidatePath(getCompanyLink({ slug: parsedCompany.slug }))
     }
 
     return {

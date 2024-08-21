@@ -8,3 +8,10 @@ export const urlValidator: FormValidator<string> = (value: string): string | nul
     return "Invalid URL."
   }
 }
+
+export const slugValidator: FormValidator<string> = (slug: string): string | null => {
+  if (!slug.match(/^[a-z0-9\-]+$/)) {
+    return "Invalid characters in slug. Only lowercase alphanumeric characters and hyphens are allowed."
+  }
+  return null
+}
