@@ -37,7 +37,7 @@ const MdEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
         toolbarPlugin({
           toolbarContents: () => (
             <div style={{ display: "flex", flexWrap: "wrap" }}>
-              {/* HACK: avoid unintented focus on the first button on hover*/}
+              {/* HACK: avoid unintended focus on the first button on hover*/}
               <button disabled style={{ display: "none" }}></button>
               <UndoRedo />
               <Separator />
