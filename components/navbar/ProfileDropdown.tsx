@@ -81,7 +81,7 @@ const ProfileDropdown = (props: RoleNavbarProps) => {
           )}
           {props.role === "ADMIN" && <Text>(ADMIN)</Text>}
         </DropdownCard>
-        <DropdownMenu.Arrow fill="white" />
+        <DropdownMenu.Arrow className={styles.DropdownMenuArrow} />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   )

@@ -16,6 +16,7 @@ import {
   thematicBreakPlugin,
   toolbarPlugin,
 } from "@mdxeditor/editor"
+import { useTheme } from "next-themes"
 import { FC } from "react"
 
 interface EditorProps {
@@ -29,6 +30,7 @@ interface EditorProps {
  * proxying the ref is necessary. Next.js dynamically imported components don't support refs.
  */
 const MdEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
+  const { resolvedTheme } = useTheme()
   return (
     <MDXEditor
       plugins={[
@@ -56,6 +58,7 @@ const MdEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
       markdown={markdown}
       ref={editorRef}
       onChange={onChange}
+      className={resolvedTheme === "dark" ? "dark-theme" : "light-theme"}
     />
   )
 }

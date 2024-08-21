@@ -28,11 +28,13 @@ const linkIconSize = "25"
 const formatLookingFor = (lookingFor: OpportunityType) => {
   switch (lookingFor) {
     case "Internship":
-      return "an internship"
+      return "Looking for an internship"
     case "Placement":
-      return "a placement"
+      return "Looking for a placement"
     case "Graduate":
-      return "a graduate job"
+      return "Looking for a graduate job"
+    case "Not_Looking_For_Work":
+      return "Not looking for work"
   }
 }
 
@@ -45,7 +47,7 @@ const StudentWebsiteLink = ({ href, icon: Icon }: { href?: string | null; icon: 
   href ? (
     <Flex align="center" gap="2">
       <Link href={href} target="_blank">
-        <Icon size={linkIconSize} color="black" />
+        <Icon size={linkIconSize} color="var(--gray-12)" />
       </Link>
     </Flex>
   ) : (
@@ -65,7 +67,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
   }
 
   return (
-    <RestrictedArea allowedRoles={["STUDENT"]}>
+    <RestrictedArea allowedRoles={["STUDENT", "COMPANY"]}>
       <Card className={styles.container}>
         <Flex gap="3" direction="row" wrap="wrap">
           <Flex direction="column" align="center" gap="5" className={styles.shortDetailsCard} p="5">
@@ -84,7 +86,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
 
             {(studentProfile.lookingFor || studentProfile.graduationDate) && (
               <Flex gap="2" direction="column">
-                {studentProfile.lookingFor && <Text>Looking for {formatLookingFor(studentProfile.lookingFor)}</Text>}
+                {studentProfile.lookingFor && <Text>{formatLookingFor(studentProfile.lookingFor)}</Text>}
                 {studentProfile.graduationDate && (
                   <Text>Graduating in {format(studentProfile.graduationDate, "MMMM, yyyy")}</Text>
                 )}
@@ -92,12 +94,20 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
             )}
 
             {studentProfile.cv && (
-              <Flex align="center" gap="2" asChild>
-                <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" underline="none">
-                  <BsFileEarmarkText title="download cv" color="black" />
-                  <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}&apos;s CV</Text>
-                </Link>
-              </Flex>
+              <RestrictedArea
+                showMessage={false}
+                allowedRoles={["COMPANY", "STUDENT"]}
+                additionalCheck={async session =>
+                  session.user.role === "COMPANY" || session.user.id === studentProfile.userId
+                }
+              >
+                <Flex align="center" gap="2" asChild>
+                  <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" underline="none">
+                    <BsFileEarmarkText title="download cv" color="var(--gray-12)" />
+                    <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}&apos;s CV</Text>
+                  </Link>
+                </Flex>
+              </RestrictedArea>
             )}
             <Flex align="center" gap="2">
               <BsEnvelope />

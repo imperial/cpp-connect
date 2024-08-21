@@ -149,14 +149,14 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
 
       <Card>
         <Tabs.Root defaultValue="about">
-          <Tabs.List>
+          <Tabs.List highContrast>
             <Tabs.Trigger value="about">About</Tabs.Trigger>
             <Tabs.Trigger value="opportunities">Opportunities</Tabs.Trigger>
             <Tabs.Trigger value="events">Events</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="about">
             <Box className={styles.aboutCard}>
-              <Collapsible.Root className={styles.CollapsibleRoot}>
+              <Collapsible.Root className={styles.CollapsibleRoot} defaultOpen={session?.user.role === "STUDENT"}>
                 <Box className={styles.summaryContainer}>
                   <CompanyDetail title="Summary">
                     {companyProfile.summary && <MdViewer markdown={companyProfile.summary} />}

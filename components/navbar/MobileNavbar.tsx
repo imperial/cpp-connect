@@ -3,7 +3,9 @@ import styles from "./mobileNavbar.module.scss"
 
 import Link from "../Link"
 import UserAvatar from "../UserAvatar"
+import RestrictedAreaClient from "../rbac/RestrictedAreaClient"
 import { CONTENT_ID, FOOTER_ID } from "../util/constants"
+import { Role } from "@prisma/client"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Button, Flex, Heading, IconButton, Link as RadixLink, Separator, Text } from "@radix-ui/themes"
 import { signOut, useSession } from "next-auth/react"
@@ -57,10 +59,11 @@ const AuthenticatedContent = (props: RoleNavbarProps) => {
       )}
 
       <Separator orientation="horizontal" className={styles.Separator} />
-
-      <SidebarLink href="/companies" Icon={BsBuilding} displayText="Companies" />
-      <SidebarLink href="/events" Icon={BsCalendar2Date} displayText="Events" />
-      <SidebarLink href="/opportunities" Icon={BsBriefcase} displayText="Opportunities" />
+      <RestrictedAreaClient allowedRoles={[Role.STUDENT]} showMessage={false}>
+        <SidebarLink href="/companies" Icon={BsBuilding} displayText="Companies" />
+        <SidebarLink href="/events" Icon={BsCalendar2Date} displayText="Events" />
+        <SidebarLink href="/opportunities" Icon={BsBriefcase} displayText="Opportunities" />
+      </RestrictedAreaClient>
       <SidebarLink href="/students" Icon={BsMortarboard} displayText="Students" />
 
       <Separator orientation="horizontal" className={styles.Separator} />

@@ -128,7 +128,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
                 <Select.Label>Looking for</Select.Label>
                 {Object.values(OpportunityType).map((type, id) => (
                   <Select.Item key={id} value={type}>
-                    {type}
+                    {type.replaceAll("_", " ")} {/* Sorts e.g. Not_Looking_For in the enum to Not Looking For */}
                   </Select.Item>
                 ))}
               </Select.Group>
