@@ -1,5 +1,6 @@
 "use client"
 
+import Chip from "./Chip"
 import { Dropdown } from "./Dropdown"
 import styles from "./tanstack-table.module.scss"
 
@@ -13,7 +14,7 @@ import {
   DoubleArrowRightIcon,
   MagnifyingGlassIcon,
 } from "@radix-ui/react-icons"
-import { Select, Spinner, TextField } from "@radix-ui/themes"
+import { Spinner, TextField } from "@radix-ui/themes"
 import { Box, Button, Flex, Grid, IconButton, Table, Text } from "@radix-ui/themes"
 import {
   ColumnDef,
@@ -107,9 +108,11 @@ export default function TanstackTable<T>({
   const [searchQuery, setSearchQuery] = useState("")
   const [currentFilteredColumn, setCurrentFilteredColumn] = useState(filterableColumns[0]?.id ?? "")
 
+  const [prevFilters, setPrevFilters] = useState<ColumnFiltersState>([])
+
   useEffect(() => {
-    table.setColumnFilters([{ id: currentFilteredColumn, value: searchQuery }])
-  }, [table, searchQuery, currentFilteredColumn])
+    table.setColumnFilters([...prevFilters, { id: currentFilteredColumn, value: searchQuery }])
+  }, [table, searchQuery, currentFilteredColumn, prevFilters])
 
   if (!isClient) {
     return (
@@ -122,34 +125,54 @@ export default function TanstackTable<T>({
 
   const FooterWrapper = isLowWidth ? Flex : Grid
 
+  const addFilter = () => {
+    setPrevFilters([...prevFilters, { id: currentFilteredColumn, value: searchQuery }])
+    setSearchQuery("")
+  }
+
+  const deleteFilter = (index: number) => {
+    setPrevFilters(prevFilters.filter((_, i) => i !== index))
+  }
+
   return (
     <Flex gap="4" direction="column" width="100%">
       {enableSearch && (
-        <Flex direction="row" gap="3" className={styles.searchBarContainer}>
-          <TextField.Root
-            placeholder={`Search by ${table.getColumn(currentFilteredColumn)?.columnDef.header?.toString() ?? "..."}`}
-            className={styles.searchBar}
-            onChange={e => setSearchQuery(e.target.value)}
-            value={searchQuery}
-          >
-            <TextField.Slot>
-              <MagnifyingGlassIcon height="16" width="16" />
-            </TextField.Slot>
-            <TextField.Slot>
-              <Button variant="ghost" onClick={() => setSearchQuery("")}>
-                Reset
-              </Button>
-            </TextField.Slot>
-          </TextField.Root>
-          <Dropdown
-            items={filterableColumns.map(col => ({ item: col.columnDef.header!.toString(), value: col.columnDef.id! }))}
-            defaultValue={filterableColumns[0].id ?? ""}
-            onValueChange={setCurrentFilteredColumn}
-            triggerProps={{
-              "aria-label": "Filter by column",
-              title: "Filter by column",
-            }}
-          />
+        <Flex direction="column" gap="3">
+          <Flex gap="3" className={styles.searchBarContainer}>
+            <TextField.Root
+              placeholder={`Search by ${table.getColumn(currentFilteredColumn)?.columnDef.header?.toString() ?? "..."}`}
+              className={styles.searchBar}
+              onChange={e => setSearchQuery(e.target.value)}
+              value={searchQuery}
+            >
+              <TextField.Slot>
+                <MagnifyingGlassIcon height="16" width="16" />
+              </TextField.Slot>
+              <TextField.Slot>
+                <Button variant="ghost" onClick={() => setSearchQuery("")}>
+                  Reset
+                </Button>
+              </TextField.Slot>
+            </TextField.Root>
+            <Dropdown
+              items={filterableColumns.map(col => ({
+                item: col.columnDef.header!.toString(),
+                value: col.columnDef.id!,
+              }))}
+              defaultValue={filterableColumns[0].id ?? ""}
+              onValueChange={setCurrentFilteredColumn}
+              triggerProps={{
+                "aria-label": "Filter by column",
+                title: "Filter by column",
+              }}
+            />
+            <Button onClick={addFilter}>Add filter</Button>
+          </Flex>
+          <Flex gap="2" justify="center">
+            {prevFilters.map(({ id, value }, index) => (
+              <Chip key={index} label={`${id}: ${value}`} deletable onDelete={() => deleteFilter(index)} />
+            ))}
+          </Flex>
         </Flex>
       )}
 
