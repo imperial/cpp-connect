@@ -4,7 +4,7 @@ import prisma from "@/lib/db"
 
 import { CompanyAdminActions } from "./CompanyAdminActions"
 
-import { Flex } from "@radix-ui/themes"
+import { Flex, Heading } from "@radix-ui/themes"
 import React from "react"
 
 const OpportunitiesPage = async () => {
@@ -21,7 +21,8 @@ const OpportunitiesPage = async () => {
 
   return (
     <RestrictedArea allowedRoles={["STUDENT"]}>
-      <Flex gap="5" direction="column">
+      <Flex gap="5" direction="column" align="center">
+        <Heading size="8">Companies</Heading>
         <CompanyAdminActions />
         <CompanyTable columns={["logo", "name", "sector", "size", "hq"]} companies={companies} />
       </Flex>

@@ -5,11 +5,14 @@ import Link from "@/components/Link"
 import TanstackTable from "@/components/TanstackTable"
 import { EditEvent } from "@/components/UpsertEvent"
 
+import styles from "./eventTable.module.scss"
+
 import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Event } from "@prisma/client"
 import { Flex } from "@radix-ui/themes"
 import { ColumnDef, DisplayColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { format } from "date-fns"
+import Image from "next/image"
 import { useMemo } from "react"
 
 type EventRow = {
@@ -40,6 +43,26 @@ const EventTable = ({
         header: "Company",
         id: "company.name",
         sortingFn: "alphanumeric",
+      },
+      "company.logo": {
+        cell: info => (
+          <Flex align="center" justify="center">
+            <Flex justify="center" height="4em" maxWidth="8em">
+              {info.getValue() && (
+                <Image
+                  unoptimized
+                  src={`/api/uploads/${info.getValue()}`}
+                  alt="profile teaser"
+                  width={100}
+                  height={100}
+                  className={styles.logo}
+                />
+              )}
+            </Flex>
+          </Flex>
+        ),
+        header: "",
+        enableSorting: false,
       },
       title: {
         cell: info => <Link href={`/events/${info.row.original.id}`}>{info.getValue()}</Link>,
