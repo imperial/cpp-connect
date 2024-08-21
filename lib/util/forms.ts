@@ -1,7 +1,7 @@
 import { stringParser } from "@/lib/parsers"
 import { FormConfig, FormFieldParser } from "@/lib/types"
 
-function processForm<T>(formData: FormData, config: FormConfig<T>): T {
+export function processForm<T>(formData: FormData, config: FormConfig<T>): T {
   const processedData = {} as T
   // get keys of T
   const keys = Object.keys(config) as Array<keyof T>

@@ -1,91 +1,51 @@
 "use server"
 
-import { TIMEZONE } from "@/lib/constants"
 import { companyOnlyAction } from "@/lib/rbac"
+import { FormConfig, FormPassBackState } from "@/lib/types"
+import { urlValidator } from "@/lib/validators"
 
 import prisma from "../db"
-import { FormPassBackState } from "../types"
-import { fromZonedTime } from "date-fns-tz"
+import { parseDateTime, parseNonNegativeInt } from "../parsers"
+import { processForm } from "../util/forms"
+import { Event } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-const parseDateTime = (rawDate: FormDataEntryValue | null): Date | null => {
-  if (!rawDate) {
-    return null
-  }
-  const date = new Date(rawDate.toString().trim())
-  // Check if the date is valid
-  if (isNaN(date.getTime())) {
-    return null
-  }
-  return fromZonedTime(date, TIMEZONE)
-}
+type EventFormData = Omit<Event, "id" | "companyID" | "createdAt" | "updatedAt">
 
-const parseNonNegativeInt = (rawNum: FormDataEntryValue | null): number => {
-  if (!rawNum) {
-    return NaN
-  }
-  const num = parseInt(rawNum.toString().trim())
-  if (isNaN(num) || num < 0) {
-    return NaN
-  }
-  return num
+const formConfig: FormConfig<EventFormData> = {
+  title: {},
+  shortDescription: {},
+  richSummary: {},
+  location: {},
+  spaces: {
+    parser: parseNonNegativeInt,
+  },
+  link: {
+    validators: [urlValidator],
+  },
+  dateStart: {
+    parser: parseDateTime,
+  },
+  dateEnd: {
+    parser: parseDateTime,
+    optional: true,
+  },
 }
 
 export const createEvent = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyID: number): Promise<FormPassBackState> => {
-    const title = formData.get("title")?.toString().trim()
-    const shortDescription = formData.get("shortDescription")?.toString().trim()
-    const richSummary = formData.get("richSummary")?.toString().trim()
-    const spaces = parseNonNegativeInt(formData.get("spaces"))
-    const location = formData.get("location")?.toString().trim()
-    const link = formData.get("link")?.toString().trim()
-    const dateEnd = parseDateTime(formData.get("dateEnd"))
-    const dateStart = parseDateTime(formData.get("dateStart"))
-
-    // Validate things
-    if (!dateStart) {
-      return { message: "Start date is required.", status: "error" }
-    }
-
-    if (!!dateEnd && dateEnd < dateStart) {
-      return { message: "End date must be after start date.", status: "error" }
-    }
-
-    if (!title) {
-      return { message: "Title is required.", status: "error" }
-    }
-
-    if (!shortDescription) {
-      return { message: "Short description is required.", status: "error" }
-    }
-
-    if (!richSummary) {
-      return { message: "Summary is required.", status: "error" }
-    }
-
-    if (isNaN(spaces)) {
-      return { message: "Invalid number of spaces. Please enter a non-negative integer.", status: "error" }
-    }
-
-    if (!location) {
-      return { message: "Location is required.", status: "error" }
-    }
-
-    if (!link) {
-      return { message: "Link is required.", status: "error" }
-    } else {
-      try {
-        new URL(link.toString())
-      } catch (_) {
-        return { message: "Invalid link URL.", status: "error" }
-      }
+    let parsedEvent: EventFormData
+    try {
+      parsedEvent = processForm(formData, formConfig)
+    } catch (e: any) {
+      return { message: e.message, status: "error" }
     }
 
     // Now add the event to the database
     try {
       const event = await prisma.event.create({
-        data: { title, dateStart, dateEnd, shortDescription, richSummary, spaces, location, link, companyID },
+        data: { ...parsedEvent, companyID },
         include: {
           company: {
             select: {
@@ -109,59 +69,17 @@ export const createEvent = companyOnlyAction(
 
 export const updateEvent = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyID: number, eventID: number): Promise<FormPassBackState> => {
-    const title = formData.get("title")?.toString().trim()
-    const shortDescription = formData.get("shortDescription")?.toString().trim()
-    const richSummary = formData.get("richSummary")?.toString().trim()
-    const spaces = parseNonNegativeInt(formData.get("spaces"))
-    const location = formData.get("location")?.toString().trim()
-    const link = formData.get("link")?.toString().trim()
-    const dateEnd = parseDateTime(formData.get("dateEnd"))
-    const dateStart = parseDateTime(formData.get("dateStart"))
-    // Validate things
-
-    if (!dateStart) {
-      return { message: "Start date is required.", status: "error" }
+    let parsedEvent: EventFormData
+    try {
+      parsedEvent = processForm(formData, formConfig)
+    } catch (e: any) {
+      return { message: e.message, status: "error" }
     }
-
-    if (!!dateEnd && dateEnd < dateStart) {
-      return { message: "End date must be after start date.", status: "error" }
-    }
-
-    if (!title) {
-      return { message: "Title is required.", status: "error" }
-    }
-
-    if (!shortDescription) {
-      return { message: "Short description is required.", status: "error" }
-    }
-
-    if (!richSummary) {
-      return { message: "Summary is required.", status: "error" }
-    }
-
-    if (isNaN(spaces)) {
-      return { message: "Invalid number of spaces. Please enter a non-negative integer.", status: "error" }
-    }
-
-    if (!location) {
-      return { message: "Location is required.", status: "error" }
-    }
-
-    if (!link) {
-      return { message: "Link is required.", status: "error" }
-    } else {
-      try {
-        new URL(link.toString())
-      } catch (_) {
-        return { message: "Invalid link URL.", status: "error" }
-      }
-    }
-
     // Now add the company to the database
     try {
       const event = await prisma.event.update({
         where: { id: eventID },
-        data: { title, dateStart, dateEnd, shortDescription, richSummary, spaces, location, link },
+        data: parsedEvent,
         include: {
           company: {
             select: {
