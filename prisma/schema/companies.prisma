@@ -35,6 +35,7 @@ model Opportunity {
   createdAt   DateTime        @default(now())
   link        String
   description String
+  deadline    DateTime
 }
 
 model Event {

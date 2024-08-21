@@ -1,5 +1,6 @@
 "use server"
 
+import { parseDateTime } from "@/lib/parseDateTime"
 import { companyOnlyAction } from "@/lib/rbac"
 
 import prisma from "../db"
@@ -15,6 +16,7 @@ export const createOpportunity = companyOnlyAction(
     const location = formData.get("location")?.toString().trim()
     const link = formData.get("link")?.toString().trim()
     const type = formData.get("type")?.toString().trim() as OpportunityType
+    const deadline = parseDateTime(formData.get("deadline"))
     const description = formData.get("description")?.toString().trim()
     const available = true
 
@@ -40,6 +42,10 @@ export const createOpportunity = companyOnlyAction(
       return { message: "Type is required.", status: "error" }
     }
 
+    if (!deadline) {
+      return { message: "Application deadline is required.", status: "error" }
+    }
+
     if (!description) {
       return { message: "Description is required.", status: "error" }
     }
@@ -47,7 +53,7 @@ export const createOpportunity = companyOnlyAction(
     // Now add the company to the database
     try {
       const opportunity = await prisma.opportunity.create({
-        data: { companyID, position, location, available, link, type, description },
+        data: { companyID, position, location, available, link, type, deadline, description },
         include: {
           company: {
             select: {
@@ -83,6 +89,7 @@ export const updateOpportunity = companyOnlyAction(
     const location = formData.get("location")?.toString().trim()
     const link = formData.get("link")?.toString().trim()
     const type = formData.get("type")?.toString().trim() as OpportunityType
+    const deadline = parseDateTime(formData.get("deadline"))
     const description = formData.get("description")?.toString().trim()
     const available = true
 
@@ -108,6 +115,10 @@ export const updateOpportunity = companyOnlyAction(
       return { message: "Type is required.", status: "error" }
     }
 
+    if (!deadline) {
+      return { message: "Application deadline is required.", status: "error" }
+    }
+
     if (!description) {
       return { message: "Description is required.", status: "error" }
     }
@@ -116,7 +127,7 @@ export const updateOpportunity = companyOnlyAction(
     try {
       const opportunity = await prisma.opportunity.update({
         where: { id: opportunityID },
-        data: { position, location, available, link, type, description },
+        data: { position, location, available, link, type, deadline, description },
         include: {
           company: {
             select: {

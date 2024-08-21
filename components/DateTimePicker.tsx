@@ -17,7 +17,7 @@ const DateTimePicker = ({
   name: string
   placeholder: string
   required?: boolean
-  defaultDate: Date | null | undefined
+  defaultDate?: Date | null
 }) => {
   return (
     <TextField.Root

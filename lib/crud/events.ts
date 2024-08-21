@@ -1,25 +1,12 @@
 "use server"
 
-import { TIMEZONE } from "@/lib/constants"
+import { parseDateTime } from "@/lib/parseDateTime"
 import { companyOnlyAction } from "@/lib/rbac"
 
 import prisma from "../db"
 import { FormPassBackState } from "../types"
-import { fromZonedTime } from "date-fns-tz"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-
-const parseDateTime = (rawDate: FormDataEntryValue | null): Date | null => {
-  if (!rawDate) {
-    return null
-  }
-  const date = new Date(rawDate.toString().trim())
-  // Check if the date is valid
-  if (isNaN(date.getTime())) {
-    return null
-  }
-  return fromZonedTime(date, TIMEZONE)
-}
 
 const parseNonNegativeInt = (rawNum: FormDataEntryValue | null): number => {
   if (!rawNum) {

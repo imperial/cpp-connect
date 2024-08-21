@@ -1,5 +1,6 @@
 "use client"
 
+import DateTimePicker from "@/components/DateTimePicker"
 import { Dropdown } from "@/components/Dropdown"
 import { PlusButton } from "@/components/buttons/PlusButton"
 import { FormInModal } from "@/components/forms/FormInModal"
@@ -80,6 +81,17 @@ const UpsertOpportunityForm = ({
           onValueChange={(type: string) => setOpportunityType(type as OpportunityType)}
         ></Dropdown>
         <input type="hidden" readOnly name="type" value={opportunityType} />
+      </label>
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
+          Application deadline*
+        </Text>
+        <DateTimePicker
+          name="deadline"
+          placeholder="Enter deadline here"
+          defaultDate={prevOpportunity?.deadline}
+          required
+        />
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
