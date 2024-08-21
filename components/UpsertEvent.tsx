@@ -12,7 +12,7 @@ import { InfoCallout } from "./Callouts"
 
 import { Event } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
-import { Card, Grid, IconButton, Text, TextField } from "@radix-ui/themes"
+import { Card, Flex, IconButton, Text, TextField } from "@radix-ui/themes"
 import dynamic from "next/dynamic"
 import React, { useState } from "react"
 import { useMediaQuery } from "react-responsive"
@@ -87,8 +87,8 @@ const UpsertEventForm = ({
         <TextField.Root name="spaces" placeholder="E.g., 100" required type="number" defaultValue={prevEvent?.spaces} />
       </label>
       <InfoCallout message={`The times correspond to the ${TIMEZONE} timezone.`} />
-      <Grid columns={isSmallScreen ? "1" : "2"} rows={isSmallScreen ? "2" : "1"} gapY="3">
-        <label>
+      <Flex justify="left" wrap="wrap" gapY="3">
+        <label style={{ flexGrow: 1 }}>
           <Text as="div" size="2" mb="1" weight="bold">
             Start date*
           </Text>
@@ -99,13 +99,13 @@ const UpsertEventForm = ({
             required
           />
         </label>
-        <label>
+        <label style={{ flexGrow: 1 }}>
           <Text as="div" size="2" mb="1" weight="bold">
             End date
           </Text>
           <DateTimePicker name="dateEnd" placeholder="Enter end date here" defaultDate={prevEvent?.dateEnd} />
         </label>
-      </Grid>
+      </Flex>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Summary*
