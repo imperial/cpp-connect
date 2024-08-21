@@ -1,12 +1,12 @@
 import { auth, signIn } from "@/auth"
 import Link from "@/components/Link"
+import ThemedLogo from "@/components/ThemedLogo"
 
 import styles from "./page.module.scss"
 
 import { Button, Flex, Separator, Text } from "@radix-ui/themes"
 import { Heading } from "@react-email/components"
 import { AuthError } from "next-auth"
-import Image from "next/image"
 import { redirect } from "next/navigation"
 import React from "react"
 
@@ -36,7 +36,7 @@ const LoginPage = async () => {
   return (
     <Flex gap="6" direction="column">
       <Flex className={styles.logosContainer}>
-        <Image src="/images/imperial-logo-blue.svg" alt="imperial logo in blue" width={0} height={0} />
+        <ThemedLogo />
       </Flex>
       <Flex pl="9" pr="9" direction="column" gap="5">
         <Flex direction="column" justify="center" align="center">

@@ -63,7 +63,7 @@ const LoginPage = () => {
         </TextField.Root>
 
         <Button size="3" style={{ width: "100%" }}>
-          {isPending ? <Spinner /> : "Sign In With Magic Link"}
+          {isPending ? <Spinner /> : "Sign in with magic link"}
         </Button>
       </form>
     </Flex>

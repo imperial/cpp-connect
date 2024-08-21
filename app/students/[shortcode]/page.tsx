@@ -94,12 +94,20 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
             )}
 
             {studentProfile.cv && (
-              <Flex align="center" gap="2" asChild>
-                <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" underline="none">
-                  <BsFileEarmarkText title="download cv" color="black" />
-                  <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}&apos;s CV</Text>
-                </Link>
-              </Flex>
+              <RestrictedArea
+                showMessage={false}
+                allowedRoles={["COMPANY", "STUDENT"]}
+                additionalCheck={async session =>
+                  session.user.role === "COMPANY" || session.user.id === studentProfile.userId
+                }
+              >
+                <Flex align="center" gap="2" asChild>
+                  <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" underline="none">
+                    <BsFileEarmarkText title="download cv" color="var(--gray-12)" />
+                    <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}&apos;s CV</Text>
+                  </Link>
+                </Flex>
+              </RestrictedArea>
             )}
             <Flex align="center" gap="2">
               <BsEnvelope />
