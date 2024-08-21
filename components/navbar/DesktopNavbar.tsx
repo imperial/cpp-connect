@@ -51,7 +51,7 @@ const DesktopNavbar = (props: NavbarProps) => {
         </Flex>
 
         <Flex align="center" gap="5">
-          <DarkModeToggle />
+          <DarkModeToggle fill="white" />
           {isSignedIn(data, props) ? (
             <ProfileDropdown {...props} />
           ) : (

@@ -8,7 +8,10 @@ import { useMediaQuery } from "react-responsive"
 
 let previousSystemTheme: boolean
 
-const DarkModeToggle = () => {
+const DarkModeToggle = ({ fill }: { fill?: string }) => {
+  if (!fill) {
+    fill = "currentColor"
+  }
   const { theme, setTheme } = useTheme()
 
   const prefersDarkMode = useMediaQuery({ query: "(prefers-color-scheme: dark)" })
@@ -28,8 +31,14 @@ const DarkModeToggle = () => {
 
   return (
     <Tooltip content={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>
-      <IconButton variant="solid" radius="full" size="3" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-        {theme === "dark" ? <BsSunFill size="1.5em" /> : <BsFillMoonFill size="1.5em" />}
+      <IconButton
+        variant="ghost"
+        radius="full"
+        size="3"
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        style={{ width: "fit-content", alignSelf: "center" }}
+      >
+        {theme === "dark" ? <BsSunFill size="1.5em" fill={fill} /> : <BsFillMoonFill size="1.5em" fill={fill} />}
       </IconButton>
     </Tooltip>
   )
