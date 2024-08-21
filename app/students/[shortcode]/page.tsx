@@ -28,11 +28,13 @@ const linkIconSize = "25"
 const formatLookingFor = (lookingFor: OpportunityType) => {
   switch (lookingFor) {
     case "Internship":
-      return "an internship"
+      return "Looking for an internship"
     case "Placement":
-      return "a placement"
+      return "Looking for a placement"
     case "Graduate":
-      return "a graduate job"
+      return "Looking for a graduate job"
+    case "Not_Looking_For_Work":
+      return "Not looking for work"
   }
 }
 
@@ -84,7 +86,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
 
             {(studentProfile.lookingFor || studentProfile.graduationDate) && (
               <Flex gap="2" direction="column">
-                {studentProfile.lookingFor && <Text>Looking for {formatLookingFor(studentProfile.lookingFor)}</Text>}
+                {studentProfile.lookingFor && <Text>{formatLookingFor(studentProfile.lookingFor)}</Text>}
                 {studentProfile.graduationDate && (
                   <Text>Graduating in {format(studentProfile.graduationDate, "MMMM, yyyy")}</Text>
                 )}
