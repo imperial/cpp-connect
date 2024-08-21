@@ -1,7 +1,5 @@
 .inputBox {
   color-scheme: light;
-  display: inline-block;
-  input {
-    height: 100%;
-  }
+  display: inline-flex;
+  align-items: center;
 }

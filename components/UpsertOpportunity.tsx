@@ -12,7 +12,7 @@ import { Opportunity, OpportunityType } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
 import { Card, IconButton, Text, TextField } from "@radix-ui/themes"
 import dynamic from "next/dynamic"
-import { useState } from "react"
+import React, { useState } from "react"
 
 const defaultOpportunityType = OpportunityType.Internship
 
@@ -134,7 +134,7 @@ export const AddOpportunity = ({ companyID }: { companyID: number }) => {
   return (
     <UpsertOpportunity companyID={companyID}>
       <PlusButton>
-        <Text>Add Opportunity</Text>
+        <Text>Opportunity</Text>
       </PlusButton>
     </UpsertOpportunity>
   )

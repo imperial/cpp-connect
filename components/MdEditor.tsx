@@ -3,7 +3,6 @@
 import {
   BlockTypeSelect,
   BoldItalicUnderlineToggles,
-  CodeToggle,
   InsertTable,
   InsertThematicBreak,
   ListsToggle,
@@ -13,7 +12,6 @@ import {
   UndoRedo,
   headingsPlugin,
   listsPlugin,
-  quotePlugin,
   tablePlugin,
   thematicBreakPlugin,
   toolbarPlugin,
@@ -38,25 +36,24 @@ const MdEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
       plugins={[
         toolbarPlugin({
           toolbarContents: () => (
-            <>
-              {/* HACK: avoid unintented focus on the first button on hover*/}
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              {/* HACK: avoid unintended focus on the first button on hover*/}
               <button disabled style={{ display: "none" }}></button>
               <UndoRedo />
+              <Separator />
               <BoldItalicUnderlineToggles />
-              <BlockTypeSelect />
-              <CodeToggle />
               <InsertTable />
               <InsertThematicBreak />
               <Separator />
               <ListsToggle />
-            </>
+              <BlockTypeSelect />
+            </div>
           ),
         }),
         tablePlugin(),
         thematicBreakPlugin(),
         listsPlugin(),
         headingsPlugin(),
-        quotePlugin(),
       ]}
       markdown={markdown}
       ref={editorRef}

@@ -11,7 +11,7 @@ export const CompanyAdminActions = () => {
       <Card style={{ width: "100%" }} variant="surface">
         <Flex gap="3" direction="row" align="center" justify="between" p="2">
           <Heading size="6">Admin Actions</Heading>
-          <Flex gap="3" direction="row" align="center">
+          <Flex direction="row" align="center">
             <AddCompany />
           </Flex>
         </Flex>

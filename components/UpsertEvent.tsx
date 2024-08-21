@@ -12,9 +12,9 @@ import { InfoCallout } from "./Callouts"
 
 import { Event } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
-import { Card, Grid, IconButton, Text, TextField } from "@radix-ui/themes"
+import { Card, Flex, IconButton, Text, TextField } from "@radix-ui/themes"
 import dynamic from "next/dynamic"
-import { useState } from "react"
+import React, { useState } from "react"
 
 const MdEditor = dynamic(() => import("@/components/MdEditor"), { ssr: false })
 
@@ -84,8 +84,8 @@ const UpsertEventForm = ({
         <TextField.Root name="spaces" placeholder="E.g., 100" required type="number" defaultValue={prevEvent?.spaces} />
       </label>
       <InfoCallout message={`The times correspond to the ${TIMEZONE} timezone.`} />
-      <Grid columns="2" rows="1">
-        <label>
+      <Flex justify="start" wrap="wrap" gapY="3">
+        <label style={{ flexGrow: 1 }}>
           <Text as="div" size="2" mb="1" weight="bold">
             Start date*
           </Text>
@@ -96,13 +96,13 @@ const UpsertEventForm = ({
             required
           />
         </label>
-        <label>
+        <label style={{ flexGrow: 1 }}>
           <Text as="div" size="2" mb="1" weight="bold">
             End date
           </Text>
           <DateTimePicker name="dateEnd" placeholder="Enter end date here" defaultDate={prevEvent?.dateEnd} />
         </label>
-      </Grid>
+      </Flex>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Summary*
@@ -144,7 +144,7 @@ export const AddEvent = ({ companyID }: { companyID: number }) => {
   return (
     <UpsertEvent companyID={companyID}>
       <PlusButton>
-        <Text>Add Event</Text>
+        <Text>Event</Text>
       </PlusButton>
     </UpsertEvent>
   )
