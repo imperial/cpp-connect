@@ -8,10 +8,7 @@ import { useMediaQuery } from "react-responsive"
 
 let previousSystemTheme: boolean
 
-const DarkModeToggle = ({ fill }: { fill?: string }) => {
-  if (!fill) {
-    fill = "currentColor"
-  }
+const DarkModeToggle = ({ fill = "currentColor" }: { fill?: string }) => {
   const { theme, setTheme } = useTheme()
 
   const prefersDarkMode = useMediaQuery({ query: "(prefers-color-scheme: dark)" })
