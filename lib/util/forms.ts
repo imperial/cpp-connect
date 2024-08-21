@@ -8,7 +8,7 @@ export function processForm<T>(formData: FormData, config: FormConfig<T>): T {
   for (let key of keys) {
     const field = config[key]
     const formEntry = formData.get(key.toString())
-    if (formEntry === null) {
+    if (!formEntry) {
       if (field?.optional) {
         continue
       } else {
