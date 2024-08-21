@@ -6,7 +6,7 @@
 }
 
 .DropdownMenuContent {
-  transform: translateY(10px);
+  transform: translateY(5px);
 }
 
 .DropdownCard {
@@ -21,4 +21,8 @@
   button {
     cursor: pointer;
   }
+}
+
+.DropdownMenuArrow {
+  fill: var(--color-panel-solid);
 }
