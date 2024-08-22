@@ -31,7 +31,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { isAfter } from "date-fns"
+import { format, isAfter } from "date-fns"
 import React, { useEffect, useMemo, useState } from "react"
 import { Pagination } from "react-headless-pagination"
 import { useMediaQuery } from "react-responsive"
@@ -44,6 +44,20 @@ interface TanstackTableProps<T> {
   enablePagination?: boolean
   enableSearch?: boolean
   invisibleColumns?: VisibilityState
+}
+
+const formatDateRange = (dates: [string, string]): string => {
+  const [start, end] = dates
+  if (start && end) {
+    return `between "${format(start, "dd-MM-yyyy")}" and "${format(end, "dd-MM-yyyy")}"`
+  }
+  if (start) {
+    return `on or after "${format(start, "dd-MM-yyyy")}"`
+  }
+  if (end) {
+    return `on or before "${format(end, "dd-MM-yyyy")}"`
+  }
+  return ""
 }
 
 export const dateFilterFn = <T,>(row: Row<T>, id: string, filterValue: any[]): boolean =>
@@ -139,6 +153,8 @@ export default function TanstackTable<T>({
         ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
         { id: currentFilteredColumn, value: [dateStart, dateEnd] },
       ])
+      setDateStart("")
+      setDateEnd("")
     } else {
       setPrevFilters([
         ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
@@ -213,6 +229,7 @@ export default function TanstackTable<T>({
                     setDateStart(e.target.value)
                     updateChips([e.target.value, dateEnd])
                   }}
+                  value={dateStart}
                 />
                 <DateTimePicker
                   showTime={false}
@@ -222,6 +239,7 @@ export default function TanstackTable<T>({
                     setDateEnd(e.target.value)
                     updateChips([dateStart, e.target.value])
                   }}
+                  value={dateEnd}
                 />
               </Flex>
             )}
@@ -238,7 +256,7 @@ export default function TanstackTable<T>({
               }}
             />
             <Button
-              disabled={dateFilterColumns.includes(currentFilteredColumn) ? !(dateStart && dateEnd) : !searchQuery}
+              disabled={dateFilterColumns.includes(currentFilteredColumn) ? !(dateStart || dateEnd) : !searchQuery}
               onClick={addFilter}
             >
               Add filter
@@ -250,7 +268,7 @@ export default function TanstackTable<T>({
                 key={index}
                 label={
                   dateFilterColumns.includes(currentFilteredColumn)
-                    ? `${columns.find(def => def.id === id)?.header} between "${(value as any[])[0]}" and "${(value as any[])[1]}"`
+                    ? `${columns.find(def => def.id === id)?.header} ${formatDateRange(value as [string, string])}`
                     : `${columns.find(def => def.id === id)?.header} includes "${value}"`
                 }
                 deletable

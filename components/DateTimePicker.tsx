@@ -15,6 +15,7 @@ const DateTimePicker = ({
   defaultDate,
   onChange,
   showTime = true,
+  value,
 }: {
   name: string
   placeholder: string
@@ -22,6 +23,7 @@ const DateTimePicker = ({
   defaultDate?: Date | null
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   showTime?: boolean
+  value?: string
 }) => {
   return (
     <TextField.Root
@@ -34,6 +36,7 @@ const DateTimePicker = ({
         !!defaultDate ? format(toZonedTime(defaultDate, TIMEZONE), showTime ? "yyyy-MM-dd'T'HH:mm" : "yyyy-MM-dd") : ""
       }
       onChange={onChange}
+      value={value}
     />
   )
 }
