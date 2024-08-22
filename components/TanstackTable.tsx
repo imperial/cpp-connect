@@ -47,7 +47,8 @@ interface TanstackTableProps<T> {
 }
 
 export const dateFilterFn = <T,>(row: Row<T>, id: string, filterValue: any[]): boolean =>
-  isAfter(row.getValue(id), filterValue[0]) && (!filterValue[1] || isAfter(filterValue[1], row.getValue(id)))
+  (!filterValue[0] || isAfter(row.getValue(id), filterValue[0])) &&
+  (!filterValue[1] || isAfter(filterValue[1], row.getValue(id)))
 
 const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
   switch (isSorted) {
@@ -227,7 +228,12 @@ export default function TanstackTable<T>({
                 title: "Filter by column",
               }}
             />
-            <Button onClick={addFilter}>Add filter</Button>
+            <Button
+              disabled={dateFilterColumns.includes(currentFilteredColumn) ? !(dateStart || dateEnd) : !searchQuery}
+              onClick={addFilter}
+            >
+              Add filter
+            </Button>
           </Flex>
           <Flex gap="2" justify="center">
             {prevFilters.map(({ id, value }, index) => (
