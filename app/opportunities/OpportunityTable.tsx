@@ -2,7 +2,7 @@
 
 import { DeleteOpportunity } from "@/components/DeleteOpportunity"
 import Link from "@/components/Link"
-import TanstackTable from "@/components/TanstackTable"
+import TanstackTable, { dateFilterFn } from "@/components/TanstackTable"
 import { EditOpportunity } from "@/components/UpsertOpportunity"
 
 import styles from "./opportunityTable.module.scss"
@@ -87,7 +87,18 @@ const OpportunityTable = ({
         header: "Posted",
         sortingFn: "datetime",
         id: "posted",
-        enableColumnFilter: false,
+        filterFn: dateFilterFn,
+      },
+      deadline: {
+        cell: info => (
+          <time suppressHydrationWarning={true}>
+            {formatDistanceToNowStrict(info.getValue(), { addSuffix: true })}{" "}
+          </time>
+        ),
+        header: "Application Deadline",
+        sortingFn: "datetime",
+        id: "deadline",
+        filterFn: dateFilterFn,
       },
     }
 

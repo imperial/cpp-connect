@@ -45,7 +45,6 @@ const StudentTable = ({
         header: "Graduating",
         sortingFn: "datetime",
         id: "graduationDate",
-        enableColumnFilter: true,
         filterFn: dateFilterFn,
       },
       course: {

@@ -112,7 +112,7 @@ const EventTable = ({
           columnName,
           columnDefsMap[columnName] ?? {
             // default column definition, so that all company values are also accessible
-            cell: info => info.getValue() || "N/A",
+            cell: info => info.getValue(),
             header: columnName,
             sortingFn: "alphanumeric",
             id: columnName,
