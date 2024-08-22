@@ -7,6 +7,8 @@ name: Node.js CI
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  IMPAAS_APP_NAME: cpp-connect
+  IMPAAS_DEPLOY_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
 
 on:
   push:
@@ -37,14 +39,6 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
       - run: npm ci
       - run: npm run lint
-      # - run: npm run lint -- -f json -o eslint_report.json
-      #   # Continue to the next step even if this fails
-      #   continue-on-error: true
-      # - name: Annotate Code Linting Results
-      #   uses: ataylorme/eslint-annotate-action@v3
-      #   with:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     report-json: "eslint_report.json"
 
   format-check:
     runs-on: ubuntu-latest
@@ -98,6 +92,12 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
       # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
       # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
       # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
@@ -106,6 +106,24 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
-          push: ${{ github.ref == 'refs/heads/main' && true || false }} # only push if main
+          # pushes regardless; only main tagged with latest
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  # Deploy!
+  deploy-impaas:
+    needs:
+      - build-and-push-image
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Deploy to ImPaaS
+        id: impaas-deploy
+        uses: /impaas/impaas-deploy@v3
+        with:
+          app-name: ${{ env.IMPAAS_APP_NAME }}
+          deployment-token: ${{ env.IMPAAS_DEPLOY_TOKEN }}
+          # TODO: Change to DOCKER_IMAGE once public repo
+          method: DOCKER_BUILD
