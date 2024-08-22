@@ -32,14 +32,14 @@ const CompanyTable = ({
 
   const columnDefsMap = useMemo(() => {
     const columnDefsMap_: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = {
-      logo: {
+      name: {
         cell: info => (
-          <Flex align="center" justify="center">
-            <Flex justify="center" height="4em" maxWidth="8em">
+          <Flex align="center" gap="4">
+            <Flex height="4em" width="8em">
               {info.getValue() && (
                 <Image
                   unoptimized
-                  src={`/api/uploads/${info.getValue()}`}
+                  src={`/api/uploads/${info.row.original.logo}`}
                   alt="profile teaser"
                   width={100}
                   height={100}
@@ -47,13 +47,9 @@ const CompanyTable = ({
                 />
               )}
             </Flex>
+            <Link href={getCompanyLink(info.row.original)}>{info.getValue()}</Link>
           </Flex>
         ),
-        header: "",
-        enableSorting: false,
-      },
-      name: {
-        cell: info => <Link href={getCompanyLink(info.row.original)}>{info.getValue()}</Link>,
         header: "Company",
         id: "name",
         sortingFn: "text",

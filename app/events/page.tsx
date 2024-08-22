@@ -20,7 +20,7 @@ const EventsPage = async () => {
         <Heading size="8">Events</Heading>
         <EventTable
           events={events}
-          columns={["company.logo", "company.name", "title", "dateStart", "shortDescription", "location", "spaces"]}
+          columns={["company.name", "title", "dateStart", "shortDescription", "location", "spaces"]}
         />
       </Flex>
     </RestrictedArea>

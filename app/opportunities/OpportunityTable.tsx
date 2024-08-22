@@ -39,19 +39,13 @@ const OpportunityTable = ({
   const columnDefsMap = useMemo(() => {
     const columnDefsMap_: Partial<Record<ColumnName, ColumnDef<OpportunityRow, any>>> = {
       "company.name": {
-        cell: info => <Link href={getCompanyLink(info.row.original.company)}>{info.getValue()}</Link>,
-        header: "Company",
-        id: "company.name",
-        sortingFn: "alphanumeric",
-      },
-      "company.logo": {
         cell: info => (
-          <Flex align="center" justify="center">
+          <Flex align="center" justify="start" gap="4">
             <Flex justify="center" height="4em" maxWidth="8em">
               {info.getValue() && (
                 <Image
                   unoptimized
-                  src={`/api/uploads/${info.getValue()}`}
+                  src={`/api/uploads/${info.row.original.company.logo}`}
                   alt="profile teaser"
                   width={100}
                   height={100}
@@ -59,10 +53,12 @@ const OpportunityTable = ({
                 />
               )}
             </Flex>
+            <Link href={getCompanyLink(info.row.original.company)}>{info.getValue()}</Link>
           </Flex>
         ),
-        header: "",
-        enableSorting: false,
+        header: "Company",
+        id: "company.name",
+        sortingFn: "alphanumeric",
       },
       position: {
         cell: info => <Link href={`/opportunities/${info.row.original.id}`}>{info.getValue()}</Link>,
