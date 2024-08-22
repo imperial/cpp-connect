@@ -12,6 +12,11 @@ export const parseString: FormFieldParser<string> = (rawData: FormDataEntryValue
   throw new Error("Parsing error. Given value is empty.")
 }
 
+/**
+ * The function returns a Date object but as it doesn't contain tz information, we add an appropriate
+ * offset according to the TIMEZONE variable
+ * @param rawdate - a raw date that comes from FormData
+ */
 export const parseDateTime: FormFieldParser<Date> = (rawDate: FormDataEntryValue): Date => {
   const date = new Date(rawDate.toString().trim())
   // Check if the date is valid
