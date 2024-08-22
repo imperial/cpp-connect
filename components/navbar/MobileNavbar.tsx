@@ -7,8 +7,9 @@ import RestrictedAreaClient from "../rbac/RestrictedAreaClient"
 import { CONTENT_ID, FOOTER_ID } from "../util/constants"
 import { Role } from "@prisma/client"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
-import { Button, Flex, Heading, IconButton, Link as RadixLink, Separator, Text } from "@radix-ui/themes"
+import { Button, Flex, Heading, IconButton, Separator, Text } from "@radix-ui/themes"
 import { signOut, useSession } from "next-auth/react"
+import dynamic from "next/dynamic"
 import Image from "next/image"
 import React from "react"
 import {
@@ -22,6 +23,8 @@ import {
   BsPersonCircle,
 } from "react-icons/bs"
 import { IconType } from "react-icons/lib"
+
+const DarkModeToggle = dynamic(() => import("@/components/DarkModeToggle"), { ssr: false })
 
 const SidebarLink = ({ href, Icon, displayText }: { href: string; Icon: IconType; displayText: string }) => {
   return (
@@ -107,7 +110,10 @@ const MobileNavbar = (props: NavbarProps) => {
         </IconButton>
 
         <DropdownMenu.Content className={styles.sidebar} align="start">
-          {isSignedIn(data, props) ? <AuthenticatedContent {...props} /> : <UnauthenticatedContent />}
+          <Flex direction="column" justify="between" height="100%">
+            {isSignedIn(data, props) ? <AuthenticatedContent {...props} /> : <UnauthenticatedContent />}
+            <DarkModeToggle />
+          </Flex>
         </DropdownMenu.Content>
       </DropdownMenu.Root>
       <Link href="/" asChild>

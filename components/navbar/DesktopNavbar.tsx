@@ -10,8 +10,11 @@ import RestrictedAreaClient from "../rbac/RestrictedAreaClient"
 import { Role } from "@prisma/client"
 import { Flex } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
+import dynamic from "next/dynamic"
 import Image from "next/image"
 import React from "react"
+
+const DarkModeToggle = dynamic(() => import("@/components/DarkModeToggle"), { ssr: false })
 
 const DesktopNavbar = (props: NavbarProps) => {
   const { data } = useSession()
@@ -47,13 +50,16 @@ const DesktopNavbar = (props: NavbarProps) => {
           )}
         </Flex>
 
-        {isSignedIn(data, props) ? (
-          <ProfileDropdown {...props} />
-        ) : (
-          <Link href="/auth/login" className={styles.link}>
-            <span>Log In</span>
-          </Link>
-        )}
+        <Flex align="center" gap="5">
+          <DarkModeToggle fill="white" />
+          {isSignedIn(data, props) ? (
+            <ProfileDropdown {...props} />
+          ) : (
+            <Link href="/auth/login" className={styles.link}>
+              <span>Log In</span>
+            </Link>
+          )}
+        </Flex>
       </nav>
     </Flex>
   )

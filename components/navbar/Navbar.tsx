@@ -9,7 +9,7 @@ import { Session } from "next-auth"
 import React from "react"
 import { useMediaQuery } from "react-responsive"
 
-const MOBILE_WIDTH = 910
+const MOBILE_WIDTH = 1000
 
 interface BaseNavbarProps {
   role: Role
