@@ -1,17 +1,17 @@
 "use server"
 
-import { parseOpportunityType } from "@/lib/parsers"
+import { parseDateTime, parseOpportunityType } from "@/lib/parsers"
 import { companyOnlyAction } from "@/lib/rbac"
 import { FormConfig, FormPassBackState } from "@/lib/types"
 
 import prisma from "../db"
 import { processForm } from "../util/forms"
 import { urlValidator } from "../validators"
-import { Opportunity, OpportunityType } from "@prisma/client"
+import { Opportunity } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-type OpportunityFormData = Pick<Opportunity, "position" | "location" | "link" | "type" | "description">
+type OpportunityFormData = Pick<Opportunity, "position" | "location" | "link" | "type" | "description" | "deadline">
 
 const formConfig: FormConfig<OpportunityFormData> = {
   position: {},
@@ -22,6 +22,9 @@ const formConfig: FormConfig<OpportunityFormData> = {
   },
   type: {
     parser: parseOpportunityType,
+  },
+  deadline: {
+    parser: parseDateTime,
   },
 }
 
@@ -35,7 +38,6 @@ export const createOpportunity = companyOnlyAction(
     }
 
     const available = true
-
     // Now add the opportunity to the database
     try {
       const opportunity = await prisma.opportunity.create({

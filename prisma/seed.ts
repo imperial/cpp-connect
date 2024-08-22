@@ -11,6 +11,7 @@ function createFakeOpportunity() {
     available: faker.datatype.boolean(0.75),
     description: faker.lorem.paragraphs(5),
     link: faker.internet.url(),
+    deadline: faker.date.future(),
   }
 }
 

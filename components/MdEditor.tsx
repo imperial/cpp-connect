@@ -3,7 +3,6 @@
 import {
   BlockTypeSelect,
   BoldItalicUnderlineToggles,
-  CodeToggle,
   InsertTable,
   InsertThematicBreak,
   ListsToggle,
@@ -13,11 +12,11 @@ import {
   UndoRedo,
   headingsPlugin,
   listsPlugin,
-  quotePlugin,
   tablePlugin,
   thematicBreakPlugin,
   toolbarPlugin,
 } from "@mdxeditor/editor"
+import { useTheme } from "next-themes"
 import { FC } from "react"
 
 interface EditorProps {
@@ -31,34 +30,35 @@ interface EditorProps {
  * proxying the ref is necessary. Next.js dynamically imported components don't support refs.
  */
 const MdEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
+  const { resolvedTheme } = useTheme()
   return (
     <MDXEditor
       plugins={[
         toolbarPlugin({
           toolbarContents: () => (
-            <>
-              {/* HACK: avoid unintented focus on the first button on hover*/}
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              {/* HACK: avoid unintended focus on the first button on hover*/}
               <button disabled style={{ display: "none" }}></button>
               <UndoRedo />
+              <Separator />
               <BoldItalicUnderlineToggles />
-              <BlockTypeSelect />
-              <CodeToggle />
               <InsertTable />
               <InsertThematicBreak />
               <Separator />
               <ListsToggle />
-            </>
+              <BlockTypeSelect />
+            </div>
           ),
         }),
         tablePlugin(),
         thematicBreakPlugin(),
         listsPlugin(),
         headingsPlugin(),
-        quotePlugin(),
       ]}
       markdown={markdown}
       ref={editorRef}
       onChange={onChange}
+      className={resolvedTheme === "dark" ? "dark-theme" : "light-theme"}
     />
   )
 }

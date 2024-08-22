@@ -22,6 +22,7 @@ enum OpportunityType {
   Internship
   Placement
   Graduate
+  Not_Looking_For_Work
 }
 
 model Opportunity {
@@ -35,6 +36,7 @@ model Opportunity {
   createdAt   DateTime        @default(now())
   link        String
   description String
+  deadline    DateTime
 }
 
 model Event {

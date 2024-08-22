@@ -1,5 +1,6 @@
 "use client"
 
+import DateTimePicker from "@/components/DateTimePicker"
 import { Dropdown } from "@/components/Dropdown"
 import { PlusButton } from "@/components/buttons/PlusButton"
 import { FormInModal } from "@/components/forms/FormInModal"
@@ -11,7 +12,7 @@ import { Opportunity, OpportunityType } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
 import { Card, IconButton, Text, TextField } from "@radix-ui/themes"
 import dynamic from "next/dynamic"
-import { useState } from "react"
+import React, { useState } from "react"
 
 const defaultOpportunityType = OpportunityType.Internship
 
@@ -83,6 +84,17 @@ const UpsertOpportunityForm = ({
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
+          Application deadline*
+        </Text>
+        <DateTimePicker
+          name="deadline"
+          placeholder="Enter deadline here"
+          defaultDate={prevOpportunity?.deadline}
+          required
+        />
+      </label>
+      <label>
+        <Text as="div" size="2" mb="1" weight="bold">
           Description*
         </Text>
         <Card>
@@ -122,7 +134,7 @@ export const AddOpportunity = ({ companyID }: { companyID: number }) => {
   return (
     <UpsertOpportunity companyID={companyID}>
       <PlusButton>
-        <Text>Add Opportunity</Text>
+        <Text>Opportunity</Text>
       </PlusButton>
     </UpsertOpportunity>
   )

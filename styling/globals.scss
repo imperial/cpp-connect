@@ -62,3 +62,7 @@ body {
 .dim {
   filter: opacity(0.5);
 }
+
+.dark .dim {
+  filter: blur(1px);
+}

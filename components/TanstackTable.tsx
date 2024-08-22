@@ -123,7 +123,7 @@ export default function TanstackTable<T>({
   const FooterWrapper = isLowWidth ? Flex : Grid
 
   return (
-    <Flex gap="4" direction="column">
+    <Flex gap="4" direction="column" width="100%">
       {enableSearch && (
         <Flex direction="row" gap="3" className={styles.searchBarContainer}>
           <TextField.Root

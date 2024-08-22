@@ -75,7 +75,7 @@ export const updateEvent = companyOnlyAction(
     } catch (e: any) {
       return { message: e.message, status: "error" }
     }
-    // Now add the company to the database
+    // Now add the event to the database
     try {
       const event = await prisma.event.update({
         where: { id: eventID },

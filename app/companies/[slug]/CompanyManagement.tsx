@@ -16,7 +16,7 @@ export const CompanyManagement = ({ company }: { company: CompanyProfile & { com
         <Flex direction="column" gap="3" p="4">
           <Flex gap="3" direction="row" align="center" justify="between" wrap={"wrap"}>
             <Heading size="6">Company Management</Heading>
-            <Flex gap="2">
+            <Flex gap="2" wrap="wrap">
               <AddUser key={company.id} company={company} />
               <DeleteCompany name={company.name} id={company.id} />
             </Flex>
