@@ -41,7 +41,7 @@ WORKDIR /app
 # Make UPLOAD_DIRs
 ENV UPLOAD_DIR /app/uploads
 RUN mkdir $UPLOAD_DIR
-RUN mkdir $UPLOAD_DIR/banner $UPLOAD_DIR/cvs $UPLOAD_DIR/avatars $UPLOAD_DIR/logos
+RUN mkdir $UPLOAD_DIR/banners $UPLOAD_DIR/cvs $UPLOAD_DIR/avatars $UPLOAD_DIR/logos
 
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.

@@ -82,7 +82,7 @@ In development, run these commands to create the required directories (assuming 
 ```bash
 export UPLOAD_DIR=./uploads
 mkdir $UPLOAD_DIR
-mkdir $UPLOAD_DIR/banner $UPLOAD_DIR/cvs $UPLOAD_DIR/avatars $UPLOAD_DIR/logos
+mkdir $UPLOAD_DIR/banners $UPLOAD_DIR/cvs $UPLOAD_DIR/avatars $UPLOAD_DIR/logos
 ```
 
 ## Running with Docker
