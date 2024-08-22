@@ -177,7 +177,7 @@ export default function TanstackTable<T>({
 
     // Live-update filter chips which are currently displayed (i.e. in prevFilters)
     if (prevFilters.find(f => f.id === currentFilteredColumn)) {
-      if (!value) {
+      if (!value || (Array.isArray(value) && value.every(v => !v))) {
         // Delete the chip if the search query is now empty
         setPrevFilters(prevFilters.filter(f => f.id !== currentFilteredColumn))
       } else {
