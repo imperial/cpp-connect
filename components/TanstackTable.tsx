@@ -122,8 +122,10 @@ export default function TanstackTable<T>({
   const FooterWrapper = isLowWidth ? Flex : Grid
 
   const addFilter = () => {
-    const newFilters = [...prevFilters, { id: currentFilteredColumn, value: searchQuery }]
-    setPrevFilters(newFilters)
+    setPrevFilters([
+      ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+      { id: currentFilteredColumn, value: searchQuery },
+    ])
     setSearchQuery("")
   }
 
@@ -147,7 +149,25 @@ export default function TanstackTable<T>({
               }}
               onChange={e => {
                 setSearchQuery(e.target.value)
-                setColumnFilters([...prevFilters, { id: currentFilteredColumn, value: e.target.value }])
+
+                const newFilters = [
+                  ...columnFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+                  { id: currentFilteredColumn, value: e.target.value }, // Add the new filter for this column
+                ]
+
+                // Live-update filter chips which are currently displayed (i.e. in prevFilters)
+                if (prevFilters.find(f => f.id === currentFilteredColumn)) {
+                  if (e.target.value === "") {
+                    // Delete the chip if the search query is now empty
+                    setPrevFilters(prevFilters.filter(f => f.id !== currentFilteredColumn))
+                  } else {
+                    // Update the chip with the new search query
+                    setPrevFilters(newFilters)
+                  }
+                }
+
+                // Update the actual filters that are applied to the table
+                setColumnFilters(newFilters)
               }}
               value={searchQuery}
             >
@@ -176,7 +196,7 @@ export default function TanstackTable<T>({
           </Flex>
           <Flex gap="2" justify="center">
             {prevFilters.map(({ id, value }, index) => (
-              <Chip key={index} label={`${id}: ${value}`} deletable onDelete={() => deleteFilter(index)} />
+              <Chip key={index} label={`${id} includes ${value}`} deletable onDelete={() => deleteFilter(index)} />
             ))}
           </Flex>
         </Flex>
