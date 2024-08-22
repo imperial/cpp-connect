@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "@/components/Link"
-import TanstackTable from "@/components/TanstackTable"
+import TanstackTable, { dateFilterFn } from "@/components/TanstackTable"
 import UserAvatar from "@/components/UserAvatar"
 
 import { StudentProfile, User } from "@prisma/client"
@@ -46,6 +46,7 @@ const StudentTable = ({
         sortingFn: "datetime",
         id: "graduationDate",
         enableColumnFilter: true,
+        filterFn: dateFilterFn,
       },
       course: {
         cell: info => info.getValue(),

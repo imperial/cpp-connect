@@ -1,6 +1,7 @@
 "use client"
 
 import Chip from "./Chip"
+import DateTimePicker from "./DateTimePicker"
 import { Dropdown } from "./Dropdown"
 import styles from "./tanstack-table.module.scss"
 
@@ -19,6 +20,7 @@ import { Box, Button, Flex, Grid, IconButton, Table, Text } from "@radix-ui/them
 import {
   ColumnDef,
   ColumnFiltersState,
+  Row,
   SortDirection,
   SortingState,
   VisibilityState,
@@ -29,6 +31,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { isAfter } from "date-fns"
 import React, { useEffect, useMemo, useState } from "react"
 import { Pagination } from "react-headless-pagination"
 import { useMediaQuery } from "react-responsive"
@@ -42,6 +45,9 @@ interface TanstackTableProps<T> {
   enableSearch?: boolean
   invisibleColumns?: VisibilityState
 }
+
+export const dateFilterFn = <T,>(row: Row<T>, id: string, filterValue: any[]): boolean =>
+  isAfter(row.getValue(id), filterValue[0]) && (!filterValue[1] || isAfter(filterValue[1], row.getValue(id)))
 
 const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
   switch (isSorted) {
@@ -95,6 +101,10 @@ export default function TanstackTable<T>({
     setIsClient(true)
   }, [])
 
+  const dateFilterColumns = useMemo(() => {
+    return columns.filter(column => column.sortingFn === "datetime").map(column => column.id)
+  }, [columns])
+
   const filterableColumns = useMemo(
     () =>
       table
@@ -107,8 +117,9 @@ export default function TanstackTable<T>({
 
   const [searchQuery, setSearchQuery] = useState("")
   const [currentFilteredColumn, setCurrentFilteredColumn] = useState(filterableColumns[0]?.id ?? "")
-
   const [prevFilters, setPrevFilters] = useState<ColumnFiltersState>([])
+  const [dateStart, setDateStart] = useState("")
+  const [dateEnd, setDateEnd] = useState("")
 
   if (!isClient) {
     return (
@@ -134,52 +145,76 @@ export default function TanstackTable<T>({
     setColumnFilters([...columnFilters.filter((_, i) => i !== index)])
   }
 
+  const updateChips = (value: any) => {
+    const newFilters = [
+      ...columnFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+      { id: currentFilteredColumn, value }, // Add the new filter for this column
+    ]
+
+    // Live-update filter chips which are currently displayed (i.e. in prevFilters)
+    if (prevFilters.find(f => f.id === currentFilteredColumn)) {
+      if (!value) {
+        // Delete the chip if the search query is now empty
+        setPrevFilters(prevFilters.filter(f => f.id !== currentFilteredColumn))
+      } else {
+        // Update the chip with the new search query
+        setPrevFilters(newFilters)
+      }
+    }
+
+    // Update the actual filters that are applied to the table
+    setColumnFilters(newFilters)
+  }
+
   return (
     <Flex gap="4" direction="column" width="100%">
       {enableSearch && (
         <Flex direction="column" gap="3">
-          <Flex gap="3" className={styles.searchBarContainer}>
-            <TextField.Root
-              placeholder={`Search by ${table.getColumn(currentFilteredColumn)?.columnDef.header?.toString() ?? "..."}`}
-              className={styles.searchBar}
-              onKeyDown={e => {
-                if (e.key === "Enter") {
-                  addFilter()
-                }
-              }}
-              onChange={e => {
-                setSearchQuery(e.target.value)
-
-                const newFilters = [
-                  ...columnFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
-                  { id: currentFilteredColumn, value: e.target.value }, // Add the new filter for this column
-                ]
-
-                // Live-update filter chips which are currently displayed (i.e. in prevFilters)
-                if (prevFilters.find(f => f.id === currentFilteredColumn)) {
-                  if (e.target.value === "") {
-                    // Delete the chip if the search query is now empty
-                    setPrevFilters(prevFilters.filter(f => f.id !== currentFilteredColumn))
-                  } else {
-                    // Update the chip with the new search query
-                    setPrevFilters(newFilters)
+          <Flex justify="center" gap="3" className={styles.searchBarContainer}>
+            {!dateFilterColumns.includes(currentFilteredColumn) ? (
+              <TextField.Root
+                placeholder={`Search by ${table.getColumn(currentFilteredColumn)?.columnDef.header?.toString() ?? "..."}`}
+                className={styles.searchBar}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    addFilter()
                   }
-                }
-
-                // Update the actual filters that are applied to the table
-                setColumnFilters(newFilters)
-              }}
-              value={searchQuery}
-            >
-              <TextField.Slot>
-                <MagnifyingGlassIcon height="16" width="16" />
-              </TextField.Slot>
-              <TextField.Slot>
-                <Button variant="ghost" onClick={() => setSearchQuery("")}>
-                  Reset
-                </Button>
-              </TextField.Slot>
-            </TextField.Root>
+                }}
+                onChange={e => {
+                  setSearchQuery(e.target.value)
+                  updateChips(e.target.value)
+                }}
+                value={searchQuery}
+              >
+                <TextField.Slot>
+                  <MagnifyingGlassIcon height="16" width="16" />
+                </TextField.Slot>
+                <TextField.Slot>
+                  <Button variant="ghost" onClick={() => setSearchQuery("")}>
+                    Reset
+                  </Button>
+                </TextField.Slot>
+              </TextField.Root>
+            ) : (
+              <Flex gap="3">
+                <DateTimePicker
+                  name="dateStart"
+                  placeholder="Enter start date here"
+                  onChange={e => {
+                    setDateStart(e.target.value)
+                    updateChips([e.target.value, dateEnd])
+                  }}
+                />
+                <DateTimePicker
+                  name="dateEnd"
+                  placeholder="Enter end date here"
+                  onChange={e => {
+                    setDateEnd(e.target.value)
+                    updateChips([dateStart, e.target.value])
+                  }}
+                />
+              </Flex>
+            )}
             <Dropdown
               items={filterableColumns.map(col => ({
                 item: col.columnDef.header!.toString(),
