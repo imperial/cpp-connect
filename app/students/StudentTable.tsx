@@ -16,7 +16,7 @@ type StudentRow = {
 
 const columnHelper = createColumnHelper<StudentRow>()
 
-type ColumnName = keyof StudentRow | `user.${keyof Pick<User, "name" | "updatedAt" | "image" | "role">}`
+type ColumnName = keyof StudentRow | `user.${keyof Pick<User, "name" | "updatedAt" | "role">}`
 
 const StudentTable = ({
   students,
@@ -30,7 +30,12 @@ const StudentTable = ({
   const columnDefsMap = useMemo(() => {
     const columnDefsMap_: Partial<Record<ColumnName, ColumnDef<StudentRow, any>>> = {
       "user.name": {
-        cell: info => <Link href={`/students/${info.row.original.studentShortcode}`}>{info.getValue()}</Link>,
+        cell: info => (
+          <Flex align="center" justify="start" gap="4">
+            <UserAvatar user={info.row.original.user} size="2" />
+            <Link href={`/students/${info.row.original.studentShortcode}`}>{info.getValue()}</Link>
+          </Flex>
+        ),
         header: "Name",
         id: "name",
         sortingFn: "text",
@@ -57,16 +62,6 @@ const StudentTable = ({
         header: "Last Updated",
         id: "updatedAt",
         sortingFn: "datetime",
-      },
-      "user.image": {
-        cell: info => (
-          <Flex align="center" justify="center">
-            <UserAvatar user={info.row.original.user} size="2" />
-          </Flex>
-        ),
-        header: "",
-        id: "user.image",
-        enableSorting: false,
       },
     }
 
