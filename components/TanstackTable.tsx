@@ -122,17 +122,14 @@ export default function TanstackTable<T>({
   const FooterWrapper = isLowWidth ? Flex : Grid
 
   const addFilter = () => {
-    setPrevFilters([...prevFilters, { id: currentFilteredColumn, value: searchQuery }])
-    table.setColumnFilters([...prevFilters, { id: currentFilteredColumn, value: searchQuery }])
+    const newFilters = [...prevFilters, { id: currentFilteredColumn, value: searchQuery }]
+    setPrevFilters(newFilters)
     setSearchQuery("")
   }
 
   const deleteFilter = (index: number) => {
     setPrevFilters(prevFilters.filter((_, i) => i !== index))
-    table.setColumnFilters([
-      ...prevFilters.filter((_, i) => i !== index),
-      { id: currentFilteredColumn, value: searchQuery },
-    ])
+    setColumnFilters([...columnFilters.filter((_, i) => i !== index)])
   }
 
   return (
@@ -150,7 +147,7 @@ export default function TanstackTable<T>({
               }}
               onChange={e => {
                 setSearchQuery(e.target.value)
-                table.setColumnFilters([...prevFilters, { id: currentFilteredColumn, value: e.target.value }])
+                setColumnFilters([...prevFilters, { id: currentFilteredColumn, value: e.target.value }])
               }}
               value={searchQuery}
             >
