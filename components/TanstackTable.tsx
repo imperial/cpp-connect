@@ -110,10 +110,6 @@ export default function TanstackTable<T>({
 
   const [prevFilters, setPrevFilters] = useState<ColumnFiltersState>([])
 
-  useEffect(() => {
-    table.setColumnFilters([...prevFilters, { id: currentFilteredColumn, value: searchQuery }])
-  }, [table, searchQuery, currentFilteredColumn, prevFilters])
-
   if (!isClient) {
     return (
       <Flex align="center" justify="center" p="4" gap="3">
@@ -127,11 +123,16 @@ export default function TanstackTable<T>({
 
   const addFilter = () => {
     setPrevFilters([...prevFilters, { id: currentFilteredColumn, value: searchQuery }])
+    table.setColumnFilters([...prevFilters, { id: currentFilteredColumn, value: searchQuery }])
     setSearchQuery("")
   }
 
   const deleteFilter = (index: number) => {
     setPrevFilters(prevFilters.filter((_, i) => i !== index))
+    table.setColumnFilters([
+      ...prevFilters.filter((_, i) => i !== index),
+      { id: currentFilteredColumn, value: searchQuery },
+    ])
   }
 
   return (
@@ -142,7 +143,15 @@ export default function TanstackTable<T>({
             <TextField.Root
               placeholder={`Search by ${table.getColumn(currentFilteredColumn)?.columnDef.header?.toString() ?? "..."}`}
               className={styles.searchBar}
-              onChange={e => setSearchQuery(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  addFilter()
+                }
+              }}
+              onChange={e => {
+                setSearchQuery(e.target.value)
+                table.setColumnFilters([...prevFilters, { id: currentFilteredColumn, value: e.target.value }])
+              }}
               value={searchQuery}
             >
               <TextField.Slot>
