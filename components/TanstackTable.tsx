@@ -47,8 +47,8 @@ interface TanstackTableProps<T> {
 }
 
 export const dateFilterFn = <T,>(row: Row<T>, id: string, filterValue: any[]): boolean =>
-  (!filterValue[0] || isAfter(row.getValue(id), filterValue[0])) &&
-  (!filterValue[1] || isAfter(filterValue[1], row.getValue(id)))
+  (!filterValue[0] || isAfter(row.getValue(id), filterValue[0] + "T00:00")) &&
+  (!filterValue[1] || isAfter(filterValue[1] + "T23:59", row.getValue(id)))
 
 const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
   switch (isSorted) {
@@ -134,11 +134,18 @@ export default function TanstackTable<T>({
   const FooterWrapper = isLowWidth ? Flex : Grid
 
   const addFilter = () => {
-    setPrevFilters([
-      ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
-      { id: currentFilteredColumn, value: searchQuery },
-    ])
-    setSearchQuery("")
+    if (dateFilterColumns.includes(currentFilteredColumn)) {
+      setPrevFilters([
+        ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+        { id: currentFilteredColumn, value: [dateStart, dateEnd] },
+      ])
+    } else {
+      setPrevFilters([
+        ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+        { id: currentFilteredColumn, value: searchQuery },
+      ])
+      setSearchQuery("")
+    }
   }
 
   const deleteFilter = (index: number) => {
@@ -199,6 +206,7 @@ export default function TanstackTable<T>({
             ) : (
               <Flex gap="3">
                 <DateTimePicker
+                  showTime={false}
                   name="dateStart"
                   placeholder="Enter start date here"
                   onChange={e => {
@@ -207,6 +215,7 @@ export default function TanstackTable<T>({
                   }}
                 />
                 <DateTimePicker
+                  showTime={false}
                   name="dateEnd"
                   placeholder="Enter end date here"
                   onChange={e => {
@@ -229,7 +238,7 @@ export default function TanstackTable<T>({
               }}
             />
             <Button
-              disabled={dateFilterColumns.includes(currentFilteredColumn) ? !(dateStart || dateEnd) : !searchQuery}
+              disabled={dateFilterColumns.includes(currentFilteredColumn) ? !(dateStart && dateEnd) : !searchQuery}
               onClick={addFilter}
             >
               Add filter
@@ -239,7 +248,11 @@ export default function TanstackTable<T>({
             {prevFilters.map(({ id, value }, index) => (
               <Chip
                 key={index}
-                label={`${columns.find(def => def.id === id)?.header} includes "${value}"`}
+                label={
+                  dateFilterColumns.includes(currentFilteredColumn)
+                    ? `${columns.find(def => def.id === id)?.header} between "${(value as any[])[0]}" and "${(value as any[])[1]}"`
+                    : `${columns.find(def => def.id === id)?.header} includes "${value}"`
+                }
                 deletable
                 onDelete={() => deleteFilter(index)}
               />
