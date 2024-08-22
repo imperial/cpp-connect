@@ -231,7 +231,12 @@ export default function TanstackTable<T>({
           </Flex>
           <Flex gap="2" justify="center">
             {prevFilters.map(({ id, value }, index) => (
-              <Chip key={index} label={`${id} includes ${value}`} deletable onDelete={() => deleteFilter(index)} />
+              <Chip
+                key={index}
+                label={`${columns.find(def => def.id === id)?.header} includes "${value}"`}
+                deletable
+                onDelete={() => deleteFilter(index)}
+              />
             ))}
           </Flex>
         </Flex>
