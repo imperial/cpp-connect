@@ -14,7 +14,6 @@ export const parseString: FormFieldParser<string> = (rawData: FormDataEntryValue
 
 export const parseDateTime: FormFieldParser<Date> = (rawDate: FormDataEntryValue): Date => {
   const date = new Date(rawDate.toString().trim())
-  console.log(rawDate)
   // Check if the date is valid
   if (isNaN(date.getTime())) {
     throw new Error("Parsing error. Invalid datetime format.")
@@ -34,5 +33,8 @@ export const parseOpportunityType: FormFieldParser<OpportunityType> = (
   rawType: FormDataEntryValue,
 ): OpportunityType => {
   const type = parseString(rawType)
+  if (!Object.keys(OpportunityType).includes(type)) {
+    throw new Error("Parsing error. The provided type of opportunity does not exist.")
+  }
   return type as OpportunityType
 }
