@@ -5,18 +5,22 @@ import { useTheme } from "next-themes"
 import { BsFillMoonFill, BsSunFill } from "react-icons/bs"
 
 const DarkModeToggle = ({ fill = "currentColor" }: { fill?: string }) => {
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
 
   return (
-    <Tooltip content={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>
+    <Tooltip content={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}>
       <IconButton
         variant="ghost"
         radius="full"
         size="3"
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
         style={{ width: "fit-content", alignSelf: "center" }}
       >
-        {theme === "dark" ? <BsSunFill size="1.5em" fill={fill} /> : <BsFillMoonFill size="1.5em" fill={fill} />}
+        {resolvedTheme === "dark" ? (
+          <BsSunFill size="1.5em" fill={fill} />
+        ) : (
+          <BsFillMoonFill size="1.5em" fill={fill} />
+        )}
       </IconButton>
     </Tooltip>
   )
