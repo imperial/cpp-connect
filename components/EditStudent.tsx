@@ -246,7 +246,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
             type="url"
           />
         </label>
-        <input type="hidden" name="acceptedTOS" value={JSON.stringify(acceptedTOS)} readOnly />
+        <input type="checkbox" name="acceptedTOS" checked={acceptedTOS} style={{ visibility: "hidden" }} readOnly />
       </FormInModal>
       <DangerZone id={prevStudentProfile.userId} />
     </>

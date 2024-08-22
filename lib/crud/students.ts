@@ -32,7 +32,7 @@ export const updateStudent = studentOnlyAction(
     const website = formData.get("website")?.toString().trim()
     const github = formData.get("github")?.toString().trim()
     const linkedIn = formData.get("linkedIn")?.toString().trim()
-    const acceptedTOS = JSON.parse(formData.get("acceptedTOS"))
+    const acceptedTOS = !!formData.get("acceptedTOS")
 
     try {
       if (skills) {
@@ -58,7 +58,7 @@ export const updateStudent = studentOnlyAction(
       return { message: "Invalid graduation date", status: "error" }
     }
 
-    if (typeof acceptedTOS !== "boolean" || !acceptedTOS) {
+    if (!acceptedTOS) {
       return { message: "Please accept Terms & Conditions before proceeding.", status: "error" }
     }
 
