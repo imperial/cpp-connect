@@ -197,6 +197,15 @@ export default function TanstackTable<T>({
     setColumnFilters(newFilters)
   }
 
+  /** Clears the current filter if it is not set as a chip */
+  const clearCurrentFilter = () => {
+    if (!prevFilters.find(f => f.id === currentFilteredColumn)) {
+      setColumnFilters(columnFilters.filter(f => f.id !== currentFilteredColumn))
+    }
+
+    setSearchQuery("")
+  }
+
   return (
     <Flex gap="4" direction="column" width="100%">
       {enableSearch && (
@@ -221,7 +230,7 @@ export default function TanstackTable<T>({
                   <MagnifyingGlassIcon height="16" width="16" />
                 </TextField.Slot>
                 <TextField.Slot>
-                  <Button variant="ghost" onClick={() => setSearchQuery("")}>
+                  <Button variant="ghost" onClick={clearCurrentFilter}>
                     Reset
                   </Button>
                 </TextField.Slot>
@@ -267,13 +276,9 @@ export default function TanstackTable<T>({
               }))}
               defaultValue={filterableColumns[0].id ?? ""}
               onValueChange={newFilterCol => {
-                // If not in prevFilters, remove from current filters
-                if (!prevFilters.find(f => f.id === currentFilteredColumn)) {
-                  setColumnFilters(columnFilters.filter(f => f.id !== currentFilteredColumn))
-                }
+                clearCurrentFilter()
 
                 setCurrentFilteredColumn(newFilterCol)
-                setSearchQuery("")
                 setDateStart("")
                 setDateEnd("")
               }}
