@@ -32,7 +32,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { format, isAfter } from "date-fns"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Pagination } from "react-headless-pagination"
 import { useMediaQuery } from "react-responsive"
 
@@ -136,19 +136,10 @@ export default function TanstackTable<T>({
   const [dateStart, setDateStart] = useState("")
   const [dateEnd, setDateEnd] = useState("")
 
-  if (!isClient) {
-    return (
-      <Flex align="center" justify="center" p="4" gap="3">
-        <Text>Loading...</Text>
-        <Spinner size="3" />
-      </Flex>
-    )
-  }
-
   const FooterWrapper = isLowWidth ? Flex : Grid
 
   /** Creates a chip to display a filter that the user has created as they were typing into the search box & they have since pressed Add Filter */
-  const addChip = () => {
+  const addChip = useCallback(() => {
     if (dateFilterColumns.includes(currentFilteredColumn)) {
       setPrevFilters([
         ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
@@ -163,47 +154,62 @@ export default function TanstackTable<T>({
       ])
       setSearchQuery("")
     }
-  }
+  }, [currentFilteredColumn, dateEnd, dateFilterColumns, dateStart, prevFilters, searchQuery])
 
   /** Unset a filter and delete its chip that is displayed to the user */
-  const deleteChip = (index: number) => {
-    setPrevFilters(prevFilters.filter((_, i) => i !== index))
-    setColumnFilters([...columnFilters.filter((_, i) => i !== index)])
-  }
+  const deleteChip = useCallback(
+    (index: number) => {
+      setPrevFilters(prevFilters.filter((_, i) => i !== index))
+      setColumnFilters([...columnFilters.filter((_, i) => i !== index)])
+    },
+    [columnFilters, prevFilters],
+  )
 
   /**
    * Update the chips, and then set the filters on the table.
    *
    * If a filter already exists & is shown as a chip, update the chip instead of setting a new filter.
    */
-  const updateFilters = (value: any) => {
-    const newFilters = [
-      ...columnFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
-      { id: currentFilteredColumn, value }, // Add the new filter for this column
-    ]
+  const updateFilters = useCallback(
+    (value: any) => {
+      const newFilters = [
+        ...columnFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+        { id: currentFilteredColumn, value }, // Add the new filter for this column
+      ]
 
-    // Live-update filter chips which are currently displayed (i.e. in prevFilters)
-    if (prevFilters.find(f => f.id === currentFilteredColumn)) {
-      if (!value || (Array.isArray(value) && value.every(v => !v))) {
-        // Delete the chip if the search query is now empty
-        setPrevFilters(prevFilters.filter(f => f.id !== currentFilteredColumn))
-      } else {
-        // Update the chip with the new search query
-        setPrevFilters(newFilters)
+      // Live-update filter chips which are currently displayed (i.e. in prevFilters)
+      if (prevFilters.find(f => f.id === currentFilteredColumn)) {
+        if (!value || (Array.isArray(value) && value.every(v => !v))) {
+          // Delete the chip if the search query is now empty
+          setPrevFilters(prevFilters.filter(f => f.id !== currentFilteredColumn))
+        } else {
+          // Update the chip with the new search query
+          setPrevFilters(newFilters)
+        }
       }
-    }
 
-    // Update the actual filters that are applied to the table
-    setColumnFilters(newFilters)
-  }
+      // Update the actual filters that are applied to the table
+      setColumnFilters(newFilters)
+    },
+    [columnFilters, currentFilteredColumn, prevFilters],
+  )
 
   /** Clears the current filter if it is not set as a chip */
-  const clearCurrentFilter = () => {
+  const clearCurrentFilter = useCallback(() => {
     if (!prevFilters.find(f => f.id === currentFilteredColumn)) {
       setColumnFilters(columnFilters.filter(f => f.id !== currentFilteredColumn))
     }
 
     setSearchQuery("")
+  }, [columnFilters, currentFilteredColumn, prevFilters])
+
+  if (!isClient) {
+    return (
+      <Flex align="center" justify="center" p="4" gap="3">
+        <Text>Loading...</Text>
+        <Spinner size="3" />
+      </Flex>
+    )
   }
 
   return (
