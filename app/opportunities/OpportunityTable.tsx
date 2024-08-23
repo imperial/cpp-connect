@@ -91,11 +91,6 @@ const OpportunityTable = ({
       },
       deadline: {
         cell: info => <time suppressHydrationWarning={true}>{format(info.getValue(), "EEEE do MMMM yyyy")}</time>,
-        // cell: info => (
-        //   <time suppressHydrationWarning={true}>
-        //     {formatDistanceToNowStrict(info.getValue(), { addSuffix: true })}{" "}
-        //   </time>
-        // ),
         header: "Application Deadline",
         sortingFn: "datetime",
         id: "deadline",

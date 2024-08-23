@@ -60,7 +60,15 @@ const formatDateRange = (dates: [string, string]): string => {
   return ""
 }
 
-export const dateFilterFn = <T,>(row: Row<T>, id: string, filterValue: any[]): boolean =>
+/**
+ * Filter function for columns with type date. Keeps rows which are after the start date (if set) and before the end date (if set).
+ * @template T The type of the row
+ * @param row The row to filter
+ * @param id The column id to filter
+ * @param filterValue The filter value to be applied of the form [start, end]
+ * @returns Whether the row should be displayed
+ */
+export const dateFilterFn = <T,>(row: Row<T>, id: string, filterValue: [string, string]): boolean =>
   (!filterValue[0] || isAfter(row.getValue(id), filterValue[0] + "T00:00")) &&
   (!filterValue[1] || isAfter(filterValue[1] + "T23:59", row.getValue(id)))
 
