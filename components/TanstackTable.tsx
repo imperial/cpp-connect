@@ -202,7 +202,7 @@ export default function TanstackTable<T>({
                 <Button variant="soft">Columns</Button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
-                <DropdownMenu.Content className={styles.DropdownMenuContent}>
+                <DropdownMenu.Content className={styles.DropdownMenuContent} sideOffset={5}>
                   {table.getAllLeafColumns().map((column, index) => (
                     <DropdownMenu.CheckboxItem
                       //onSelect={(e) => e.preventDefault()}
@@ -212,8 +212,9 @@ export default function TanstackTable<T>({
                         column.getToggleVisibilityHandler()(e)
                         e.preventDefault()
                       }}
+                      className={styles.DropdownMenuCheckboxItem}
                     >
-                      <DropdownMenu.ItemIndicator>
+                      <DropdownMenu.ItemIndicator className={styles.DropdownMenuItemIndicator}>
                         <CheckIcon />
                       </DropdownMenu.ItemIndicator>
                       {column.id}

@@ -70,6 +70,29 @@
 }
 
 .DropdownMenuContent {
-  background-color: white;
-  z-index: 1000;
+  background-color: var(--gray-1);
+  color: var(--gray-12);
+}
+
+.DropdownMenuCheckboxItem {
+  font-size: 13px;
+  line-height: 1;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  padding: 0 5px;
+  position: relative;
+  padding-left: 25px;
+  user-select: none;
+  outline: none;
+}
+
+.DropdownMenuItemIndicator {
+  position: absolute;
+  left: 0;
+  width: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
