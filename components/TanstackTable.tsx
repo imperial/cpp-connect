@@ -147,7 +147,8 @@ export default function TanstackTable<T>({
 
   const FooterWrapper = isLowWidth ? Flex : Grid
 
-  const addFilter = () => {
+  /** Creates a chip to display a filter that the user has created as they were typing into the search box & they have since pressed Add Filter */
+  const addChip = () => {
     if (dateFilterColumns.includes(currentFilteredColumn)) {
       setPrevFilters([
         ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
@@ -164,12 +165,18 @@ export default function TanstackTable<T>({
     }
   }
 
-  const deleteFilter = (index: number) => {
+  /** Unset a filter and delete its chip that is displayed to the user */
+  const deleteChip = (index: number) => {
     setPrevFilters(prevFilters.filter((_, i) => i !== index))
     setColumnFilters([...columnFilters.filter((_, i) => i !== index)])
   }
 
-  const updateChips = (value: any) => {
+  /**
+   * Update the chips, and then set the filters on the table.
+   *
+   * If a filter already exists & is shown as a chip, update the chip instead of setting a new filter.
+   */
+  const updateFilters = (value: any) => {
     const newFilters = [
       ...columnFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
       { id: currentFilteredColumn, value }, // Add the new filter for this column
@@ -201,12 +208,12 @@ export default function TanstackTable<T>({
                 className={styles.searchBar}
                 onKeyDown={e => {
                   if (e.key === "Enter") {
-                    addFilter()
+                    addChip()
                   }
                 }}
                 onChange={e => {
                   setSearchQuery(e.target.value)
-                  updateChips(e.target.value)
+                  updateFilters(e.target.value)
                 }}
                 value={searchQuery}
               >
@@ -230,7 +237,7 @@ export default function TanstackTable<T>({
                       placeholder="Enter start date here"
                       onChange={e => {
                         setDateStart(e.target.value)
-                        updateChips([e.target.value, dateEnd])
+                        updateFilters([e.target.value, dateEnd])
                       }}
                       value={dateStart}
                     />
@@ -245,7 +252,7 @@ export default function TanstackTable<T>({
                       placeholder="Enter end date here"
                       onChange={e => {
                         setDateEnd(e.target.value)
-                        updateChips([dateStart, e.target.value])
+                        updateFilters([dateStart, e.target.value])
                       }}
                       value={dateEnd}
                     />
@@ -277,7 +284,7 @@ export default function TanstackTable<T>({
             />
             <Button
               disabled={dateFilterColumns.includes(currentFilteredColumn) ? !(dateStart || dateEnd) : !searchQuery}
-              onClick={addFilter}
+              onClick={addChip}
             >
               Add filter
             </Button>
@@ -292,7 +299,7 @@ export default function TanstackTable<T>({
                     : `${columns.find(def => def.id === id)?.header} includes "${value}"`
                 }
                 deletable
-                onDelete={() => deleteFilter(index)}
+                onDelete={() => deleteChip(index)}
               />
             ))}
           </Flex>
