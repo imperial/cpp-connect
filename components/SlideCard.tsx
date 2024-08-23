@@ -6,7 +6,7 @@ import React, { useRef } from "react"
 
 const SlideCard = (props: CardProps & React.RefAttributes<HTMLDivElement> & { direction?: "left" | "right" }) => {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
+  const isInView = useInView(ref, { once: true, margin: "-30%" })
 
   return (
     <Card
@@ -15,7 +15,7 @@ const SlideCard = (props: CardProps & React.RefAttributes<HTMLDivElement> & { di
       style={{
         transform: isInView ? "none" : props.direction === "left" ? "translateX(-200px)" : "translateX(200px)",
         opacity: isInView ? 1 : 0,
-        transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
+        transition: "all cubic-bezier(0.17, 0.55, 0.55, 1) 0.3s",
       }}
     />
   )
