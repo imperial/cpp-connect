@@ -43,6 +43,7 @@ const ICON_SIZE = 20
 interface TanstackTableProps<T> {
   data: T[]
   columns: ColumnDef<T, any>[]
+  initialColumnVisibility?: VisibilityState
   enablePagination?: boolean
   enableSearch?: boolean
   invisibleColumns?: VisibilityState
@@ -105,13 +106,14 @@ const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
 export default function TanstackTable<T>({
   data,
   columns,
+  initialColumnVisibility,
   invisibleColumns,
   enablePagination = true,
   enableSearch = true,
 }: TanstackTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState({})
+  const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility ?? {})
 
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index

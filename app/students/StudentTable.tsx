@@ -125,7 +125,7 @@ const StudentTable = ({
     [columnDefsMap, columns, nonFilterable],
   )
 
-  return <TanstackTable data={students} columns={columnDefs} />
+  return <TanstackTable data={students} columns={columnDefs} initialColumnVisibility={{ name: false }} />
 }
 
 export default StudentTable
