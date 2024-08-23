@@ -9,6 +9,7 @@ model StudentProfile {
   graduationDate   DateTime?
   lookingFor       OpportunityType?
   cv               String?
+  acceptedTOS      Boolean @default(false)
   skills           String[] @default([])
   interests        String[] @default([])
   updatedAt        DateTime @updatedAt

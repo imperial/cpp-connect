@@ -1,8 +1,9 @@
 "use client"
 
 import { DangerZone } from "@/components/DeleteStudent"
+import DialogTOS from "@/components/DialogTOS"
 import { updateStudent } from "@/lib/crud/students"
-import { ServerSideFormHandler } from "@/lib/types"
+import { FormPassBackState, ServerSideFormHandler } from "@/lib/types"
 
 import Chip from "./Chip"
 import FileInput from "./FileInput"
@@ -30,6 +31,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
     updateStudent(prevState, formData, prevStudentProfile.userId)
 
   const [bio, setBio] = useState(prevStudentProfile.bio ?? "")
+  const [acceptedTOS, setAcceptedTOS] = useState(prevStudentProfile.acceptedTOS)
   const mdxEditorRef = useRef<MDXEditorMethods>(null)
 
   const [skill, setSkill] = useState("")
@@ -37,6 +39,8 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
 
   const [interest, setInterest] = useState("")
   const [interests, setInterests] = useState(prevStudentProfile.interests)
+
+  const TosDialogButton = () => <DialogTOS accept={() => setAcceptedTOS(true)} />
 
   const addSkill = () => {
     if (skills.includes(skill.trim())) return
@@ -58,7 +62,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
 
   return (
     <>
-      <FormInModal action={updateStudentWithID} close={close}>
+      <FormInModal action={updateStudentWithID} close={close} submitButton={!acceptedTOS ? TosDialogButton : undefined}>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
             Course
@@ -242,6 +246,7 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
             type="url"
           />
         </label>
+        <input type="checkbox" name="acceptedTOS" checked={acceptedTOS} style={{ visibility: "hidden" }} readOnly />
       </FormInModal>
       <DangerZone id={prevStudentProfile.userId} />
     </>

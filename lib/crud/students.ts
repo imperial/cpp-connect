@@ -32,6 +32,7 @@ export const updateStudent = studentOnlyAction(
     const website = formData.get("website")?.toString().trim()
     const github = formData.get("github")?.toString().trim()
     const linkedIn = formData.get("linkedIn")?.toString().trim()
+    const acceptedTOS = !!formData.get("acceptedTOS")
 
     try {
       if (skills) {
@@ -57,6 +58,10 @@ export const updateStudent = studentOnlyAction(
       return { message: "Invalid graduation date", status: "error" }
     }
 
+    if (!acceptedTOS) {
+      return { message: "Please accept Terms & Conditions before proceeding.", status: "error" }
+    }
+
     // Now update the student in the database
     try {
       await prisma.studentProfile.update({
@@ -71,6 +76,7 @@ export const updateStudent = studentOnlyAction(
           personalWebsite: website,
           skills,
           interests,
+          acceptedTOS,
         },
       })
     } catch (e: any) {
