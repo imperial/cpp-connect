@@ -1,4 +1,5 @@
 import Link from "@/components/Link"
+import { AnimatedButton } from "@/components/buttons/AnimatedButton"
 import "@/styling/globals.scss"
 
 import styles from "./page.module.scss"
@@ -15,16 +16,16 @@ const Home = async () => {
           <Heading size="9">CPP Connect</Heading>
 
           <Flex gap="3" wrap="wrap" align="center" justify="center">
-            <Button asChild className={styles.signInButton} size="4">
+            <AnimatedButton asChild className={styles.signInButton} size="4">
               <Link href="/auth/login" radixProps={{ underline: "none" }}>
                 Student Login
               </Link>
-            </Button>
-            <Button asChild className={styles.signInButton} size="4">
+            </AnimatedButton>
+            <AnimatedButton asChild className={styles.signInButton} size="4">
               <Link href="/auth/login/partner" radixProps={{ underline: "none" }}>
                 Partner Login
               </Link>
-            </Button>
+            </AnimatedButton>
           </Flex>
         </Flex>
         <Image
