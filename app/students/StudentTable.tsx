@@ -12,7 +12,7 @@ import { useMemo } from "react"
 
 type StudentRow = {
   user: Pick<User, "name" | "updatedAt" | "image" | "role">
-} & Pick<StudentProfile, "graduationDate" | "course" | "studentShortcode">
+} & Pick<StudentProfile, "interests" | "skills" | "lookingFor" | "graduationDate" | "course" | "studentShortcode">
 
 const columnHelper = createColumnHelper<StudentRow>()
 
@@ -62,6 +62,26 @@ const StudentTable = ({
         header: "Last Updated",
         id: "updatedAt",
         sortingFn: "datetime",
+      },
+      lookingFor: {
+        cell: info => info.getValue(),
+        header: "Looking For",
+        id: "lookingFor",
+        sortingFn: "text",
+      },
+      skills: {
+        cell: info => info.getValue().join(", "),
+        header: "Skills",
+        id: "skills",
+        enableSorting: false,
+        filterFn: "arrIncludes",
+      },
+      interests: {
+        cell: info => info.getValue().join(", "),
+        header: "Interests",
+        id: "interests",
+        enableSorting: false,
+        filterFn: "arrIncludes",
       },
     }
 

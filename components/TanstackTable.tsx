@@ -253,7 +253,7 @@ export default function TanstackTable<T>({
           <Button asChild variant="surface" color="gray">
             <DropdownMenu.Trigger>
               <Text>Choose columns to display</Text>
-              <ChevronUpIcon />
+              <ChevronDownIcon />
             </DropdownMenu.Trigger>
           </Button>
           <DropdownMenu.Portal>

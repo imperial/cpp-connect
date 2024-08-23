@@ -18,12 +18,18 @@ const StudentsPage = async () => {
       graduationDate: true,
       course: true,
       studentShortcode: true,
+      lookingFor: true,
+      skills: true,
+      interests: true,
     },
   })
   return (
     <Flex direction="column" gap="5" align="center" width="100%">
       <Heading size="8">Students</Heading>
-      <StudentTable students={students} columns={["user.name", "course", "graduationDate", "user.updatedAt"]} />
+      <StudentTable
+        students={students}
+        columns={["user.name", "course", "graduationDate", "lookingFor", "skills", "interests", "user.updatedAt"]}
+      />
     </Flex>
   )
 }
