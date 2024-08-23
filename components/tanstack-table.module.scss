@@ -70,14 +70,16 @@
 }
 
 .DropdownMenuContent {
-  background-color: var(--gray-1);
+  background-color: var(--color-panel-solid);
   color: var(--gray-12);
+  box-shadow: var(--shadow-5);
+  padding: 0.5em;
+  border-radius: 0.5em;
+  margin-top: 0.5em;
 }
 
 .DropdownMenuCheckboxItem {
-  font-size: 13px;
   line-height: 1;
-  border-radius: 3px;
   display: flex;
   align-items: center;
   height: 25px;

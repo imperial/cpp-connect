@@ -143,6 +143,34 @@ export default function TanstackTable<T>({
       {enableSearch && (
         <Flex direction="column" gap="3">
           <Flex gap="3" className={styles.searchBarContainer}>
+            <DropdownMenu.Root>
+              <Button asChild variant="surface" color="gray">
+                <DropdownMenu.Trigger>
+                  Columns
+                  <ChevronDownIcon />
+                </DropdownMenu.Trigger>
+              </Button>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content className={styles.DropdownMenuContent + " radix-themes"}>
+                  {table.getAllLeafColumns().map((column, index) => (
+                    <DropdownMenu.CheckboxItem
+                      key={index}
+                      checked={column.getIsVisible()}
+                      onSelect={e => {
+                        column.getToggleVisibilityHandler()(e)
+                        e.preventDefault()
+                      }}
+                      className={styles.DropdownMenuCheckboxItem}
+                    >
+                      <DropdownMenu.ItemIndicator className={styles.DropdownMenuItemIndicator}>
+                        <CheckIcon />
+                      </DropdownMenu.ItemIndicator>
+                      <Text>{column.columnDef.header?.toString()}</Text>
+                    </DropdownMenu.CheckboxItem>
+                  ))}
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
             <TextField.Root
               placeholder={`Search by ${table.getColumn(currentFilteredColumn)?.columnDef.header?.toString() ?? "..."}`}
               className={styles.searchBar}
@@ -197,32 +225,6 @@ export default function TanstackTable<T>({
               }}
             />
             <Button onClick={addFilter}>Add filter</Button>
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger>
-                <Button variant="soft">Columns</Button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content className={styles.DropdownMenuContent} sideOffset={5}>
-                  {table.getAllLeafColumns().map((column, index) => (
-                    <DropdownMenu.CheckboxItem
-                      //onSelect={(e) => e.preventDefault()}
-                      key={index}
-                      checked={column.getIsVisible()}
-                      onSelect={e => {
-                        column.getToggleVisibilityHandler()(e)
-                        e.preventDefault()
-                      }}
-                      className={styles.DropdownMenuCheckboxItem}
-                    >
-                      <DropdownMenu.ItemIndicator className={styles.DropdownMenuItemIndicator}>
-                        <CheckIcon />
-                      </DropdownMenu.ItemIndicator>
-                      {column.id}
-                    </DropdownMenu.CheckboxItem>
-                  ))}
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
           </Flex>
           <Flex gap="2" justify="center">
             {prevFilters.map(({ id, value }, index) => (
