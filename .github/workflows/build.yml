@@ -65,9 +65,9 @@ jobs:
 
   # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
   build-and-push-image:
-    needs:
-      - lint
-      - format-check
+    # needs:
+    #   - lint
+    #   - format-check
     runs-on: ubuntu-latest
     # Only run if main
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
@@ -105,7 +105,7 @@ jobs:
       # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: docker/build-push-action@v5
         with:
           context: .
           # pushes regardless; only main tagged with latest
