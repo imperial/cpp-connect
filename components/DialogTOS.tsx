@@ -21,7 +21,7 @@ const DialogTOS = ({ accept }: { accept: () => void }) => {
       <Dialog.Trigger>
         <Button type="button">Save</Button>
       </Dialog.Trigger>
-      <Dialog.Content>
+      <Dialog.Content style={{ minWidth: "60vw" }}>
         <Dialog.Title>Terms & Conditions</Dialog.Title>
         {typeof tosText !== "undefined" && <MdViewer markdown={tosText} />}
         <Flex justify="end" gap="3" pt="3">
