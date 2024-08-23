@@ -221,26 +221,36 @@ export default function TanstackTable<T>({
               </TextField.Root>
             ) : (
               <Flex gap="3">
-                <DateTimePicker
-                  showTime={false}
-                  name="dateStart"
-                  placeholder="Enter start date here"
-                  onChange={e => {
-                    setDateStart(e.target.value)
-                    updateChips([e.target.value, dateEnd])
-                  }}
-                  value={dateStart}
-                />
-                <DateTimePicker
-                  showTime={false}
-                  name="dateEnd"
-                  placeholder="Enter end date here"
-                  onChange={e => {
-                    setDateEnd(e.target.value)
-                    updateChips([dateStart, e.target.value])
-                  }}
-                  value={dateEnd}
-                />
+                <Flex asChild gap="2" align="center">
+                  <label>
+                    <Text>Start:</Text>
+                    <DateTimePicker
+                      showTime={false}
+                      name="dateStart"
+                      placeholder="Enter start date here"
+                      onChange={e => {
+                        setDateStart(e.target.value)
+                        updateChips([e.target.value, dateEnd])
+                      }}
+                      value={dateStart}
+                    />
+                  </label>
+                </Flex>
+                <Flex asChild gap="2" align="center">
+                  <label>
+                    <Text>End:</Text>
+                    <DateTimePicker
+                      showTime={false}
+                      name="dateEnd"
+                      placeholder="Enter end date here"
+                      onChange={e => {
+                        setDateEnd(e.target.value)
+                        updateChips([dateStart, e.target.value])
+                      }}
+                      value={dateEnd}
+                    />
+                  </label>
+                </Flex>
               </Flex>
             )}
             <Dropdown
