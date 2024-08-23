@@ -2,7 +2,7 @@
 
 import { DeleteOpportunity } from "@/components/DeleteOpportunity"
 import Link from "@/components/Link"
-import TanstackTable from "@/components/TanstackTable"
+import TanstackTable, { dateFilterFn } from "@/components/TanstackTable"
 import { EditOpportunity } from "@/components/UpsertOpportunity"
 
 import styles from "./opportunityTable.module.scss"
@@ -11,7 +11,7 @@ import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Opportunity } from "@prisma/client"
 import { Flex } from "@radix-ui/themes"
 import { ColumnDef, DisplayColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { formatDistanceToNowStrict } from "date-fns"
+import { format, formatDistanceToNowStrict } from "date-fns"
 import Image from "next/image"
 import { useMemo } from "react"
 
@@ -87,7 +87,14 @@ const OpportunityTable = ({
         header: "Posted",
         sortingFn: "datetime",
         id: "posted",
-        enableColumnFilter: false,
+        filterFn: dateFilterFn,
+      },
+      deadline: {
+        cell: info => <time suppressHydrationWarning={true}>{format(info.getValue(), "EEEE do MMMM yyyy")}</time>,
+        header: "Application Deadline",
+        sortingFn: "datetime",
+        id: "deadline",
+        filterFn: dateFilterFn,
       },
     }
 
