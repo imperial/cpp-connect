@@ -12,7 +12,10 @@ import { useMemo } from "react"
 
 type StudentRow = {
   user: Pick<User, "name" | "updatedAt" | "image" | "role">
-} & Pick<StudentProfile, "interests" | "skills" | "lookingFor" | "graduationDate" | "course" | "studentShortcode">
+} & Pick<
+  StudentProfile,
+  "updatedAt" | "interests" | "skills" | "lookingFor" | "graduationDate" | "course" | "studentShortcode"
+>
 
 const columnHelper = createColumnHelper<StudentRow>()
 
@@ -82,6 +85,17 @@ const StudentTable = ({
         id: "interests",
         enableSorting: false,
         filterFn: arrayFilterFn,
+      },
+      updatedAt: {
+        cell: info => (
+          <time suppressHydrationWarning={true}>
+            {formatDistanceToNowStrict(info.getValue(), { addSuffix: true })}{" "}
+          </time>
+        ),
+        header: "Updated",
+        id: "updatedAt",
+        sortingFn: "datetime",
+        enableColumnFilter: false,
       },
     }
 
