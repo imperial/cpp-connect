@@ -68,13 +68,13 @@ const CompanyTable = ({
         sortingFn: "text",
       },
       size: {
-        cell: info => info.getValue() || "N/A",
+        cell: info => info.getValue(),
         header: "Size",
         id: "size",
         sortingFn: "alphanumeric",
       },
       hq: {
-        cell: info => info.getValue() || "N/A",
+        cell: info => info.getValue(),
         header: "HQ",
         id: "hq",
         sortingFn: "text",
@@ -97,7 +97,7 @@ const CompanyTable = ({
           columnName,
           columnDefsMap[columnName] ?? {
             // default column definition, so that all company values are also accessible
-            cell: info => info.getValue() || "N/A",
+            cell: info => info.getValue(),
             header: columnName,
             sortingFn: "alphanumeric",
             id: columnName,

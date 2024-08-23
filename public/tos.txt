@@ -1,0 +1,90 @@
+# *THIS IS A TEMPLATE*
+
+## 1. Introduction
+Welcome to Imperial's Corporate Parternship Program Connect (the "Website"). These Terms of Service (the "Terms") govern your use of our website, including any content, functionality, and services offered on or through the Website.
+
+By accessing or using the Website, you agree to comply with and be bound by these Terms. If you do not agree to these Terms, please do not use the Website.
+<br>
+
+## 2. Data Protection and Privacy
+
+### 2.1 Personal Data
+
+By using our Website, you may be required to upload, submit, or share personal data. This data may include, but is not limited to, your name, email address, phone number, and any other information you choose to provide ("Personal Data").
+<br>
+
+### 2.2 GDPR Compliance
+
+We are committed to ensuring that your Personal Data is protected and processed in compliance with the General Data Protection Regulation (GDPR). For more information on how we handle your data, please refer to our Privacy Policy.
+<br>
+
+### 2.3 Data Controller
+
+Imperial College London is the data controller responsible for your Personal Data. We are registered in the United Kingdom, with our registered office at Exhibition Rd, South Kensington, London SW7 2AZ.
+<br>
+
+## 3. User Responsibilities
+
+### 3.1 Accuracy of Information
+
+You are responsible for ensuring that the Personal Data you upload is accurate, complete, and up-to-date. We are not responsible for any issues arising from incorrect or outdated information provided by you.
+<br>
+
+### 3.2 Lawful Use
+
+You agree to use the Website and upload Personal Data only in a lawful manner. You are prohibited from uploading any data that:
+
+- Violates any applicable laws or regulations.
+- Infringes on the rights of others, including intellectual property rights.
+- Contains harmful, defamatory, or inappropriate content.
+
+<br>
+
+### 3.3 Data Subject Rights
+
+As a data subject under GDPR, you have the following rights:
+
+- **Right to Access**: You can request access to the Personal Data we hold about you.
+- **Right to Rectification**: You can request correction of any inaccuracies in your Personal Data.
+- **Right to Erasure**: You can request the deletion of your Personal Data under certain conditions.
+- **Right to Restrict Processing**: You can request that we limit the processing of your Personal Data under certain conditions.
+- **Right to Data Portability**: You can request that we transfer your data to another organization, or directly to you, in a structured, commonly used, and machine-readable format.
+- **Right to Object**: You can object to the processing of your Personal Data under certain conditions.
+
+To exercise any of these rights, please contact us at t.curtin@imperial.ac.uk.
+<br>
+
+## 4. Data Security
+
+We have implemented appropriate technical and organizational measures to protect your Personal Data from unauthorized access, use, disclosure, alteration, or destruction.
+
+However, please be aware that no method of transmission over the Internet, or method of electronic storage, is 100% secure. While we strive to protect your Personal Data, we cannot guarantee its absolute security.
+<br>
+
+## 5. Data Retention
+
+We will retain your Personal Data only for as long as is necessary for the purposes set out in these Terms or as required by law. Once your data is no longer needed, it will be securely deleted or anonymized.
+<br>
+
+## 6. Third-Party Services
+
+Our Website may include links to or use third-party services, which may collect and process Personal Data independently. We are not responsible for the practices or policies of these third parties. Please review their respective privacy policies before using their services.
+<br>
+
+## 7. Changes to These Terms
+
+We may update these Terms from time to time. Any changes will be effective immediately upon posting to the Website. Your continued use of the Website after such changes constitutes your acceptance of the revised Terms.
+<br>
+
+## 8. Contact Information
+
+If you have any questions or concerns about these Terms or our data protection practices, please contact us at:
+<br>
+
+**Email**: t.curtin@imperial.ac.uk
+**Address**: Exhibition Rd, South Kensington, London SW7 2AZ
+**Phone**: 020 7589 5111
+
+<hr>
+
+Last updated: 23/8/2024

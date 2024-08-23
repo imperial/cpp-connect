@@ -6,9 +6,13 @@ import rehypeRaw from "rehype-raw"
 import remarkBreaks from "remark-breaks"
 import remarkGfm from "remark-gfm"
 
-const MdViewer = ({ markdown }: { markdown: string }) => {
+const MdViewer = ({ markdown, tos = false }: { markdown: string; tos?: boolean }) => {
   return (
-    <Markdown className={styles.markdownViewer} remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw]}>
+    <Markdown
+      className={tos ? styles.tosViewer : styles.markdownViewer}
+      remarkPlugins={[remarkGfm, remarkBreaks]}
+      rehypePlugins={[rehypeRaw]}
+    >
       {markdown}
     </Markdown>
   )

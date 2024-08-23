@@ -2,7 +2,7 @@
 
 import { DeleteEvent } from "@/components/DeleteEvent"
 import Link from "@/components/Link"
-import TanstackTable from "@/components/TanstackTable"
+import TanstackTable, { dateFilterFn } from "@/components/TanstackTable"
 import { EditEvent } from "@/components/UpsertEvent"
 
 import styles from "./eventTable.module.scss"
@@ -73,7 +73,7 @@ const EventTable = ({
         header: "Start Date",
         sortingFn: "datetime",
         id: "dateStart",
-        enableColumnFilter: false,
+        filterFn: dateFilterFn,
       },
       shortDescription: {
         cell: info => info.getValue(),
@@ -112,7 +112,7 @@ const EventTable = ({
           columnName,
           columnDefsMap[columnName] ?? {
             // default column definition, so that all company values are also accessible
-            cell: info => info.getValue() || "N/A",
+            cell: info => info.getValue(),
             header: columnName,
             sortingFn: "alphanumeric",
             id: columnName,
