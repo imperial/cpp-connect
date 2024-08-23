@@ -259,7 +259,17 @@ export default function TanstackTable<T>({
                 value: col.columnDef.id!,
               }))}
               defaultValue={filterableColumns[0].id ?? ""}
-              onValueChange={setCurrentFilteredColumn}
+              onValueChange={newFilterCol => {
+                // If not in prevFilters, remove from current filters
+                if (!prevFilters.find(f => f.id === currentFilteredColumn)) {
+                  setColumnFilters(columnFilters.filter(f => f.id !== currentFilteredColumn))
+                }
+
+                setCurrentFilteredColumn(newFilterCol)
+                setSearchQuery("")
+                setDateStart("")
+                setDateEnd("")
+              }}
               triggerProps={{
                 "aria-label": "Filter by column",
                 title: "Filter by column",
