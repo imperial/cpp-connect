@@ -1,6 +1,5 @@
 .markdownViewer {
   list-style-position: inside;
-  line-height: 2em;
   table {
     width: 100%;
     border-collapse: collapse;
@@ -19,4 +18,9 @@
   code {
     background-color: var(--gray-4);
   }
+}
+
+.tosViewer {
+  list-style-position: inside;
+  line-height: 2em;
 }
