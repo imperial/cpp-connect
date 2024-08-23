@@ -42,6 +42,7 @@ const config = {
         'style',
         'test',
         'wip',
+        'devops',
       ],
     ] as [RuleConfigSeverity, RuleConfigCondition, string[]],
   },

@@ -49,6 +49,7 @@
     "next-themes": "^0.3.0",
     "nodemailer": "^6.9.14",
     "prettier": "^3.3.3",
+    "prisma": "^5.17.0",
     "react": "^18",
     "react-dom": "^18",
     "react-email": "2.1.6",
@@ -79,7 +80,6 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "husky": "^9.1.4",
-    "prisma": "^5.17.0",
     "sass": "^1.77.8",
     "typescript": "^5"
   },
