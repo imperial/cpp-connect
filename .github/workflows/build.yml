@@ -122,17 +122,20 @@ jobs:
     #   - build-and-push-image
     # if : github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      TSURU_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Install ImPaaS CLI
+        run: |
+          curl -fsSL "https://tsuru.io/get" | bash
+      - name: Setup ImPaaS CLI
+        run: |
+          tsuru target add impaas https://impaas.uk -s
       - name: Deploy to ImPaaS
-        id: impaas-deploy
-        uses: /impaas/impaas-deploy@v3
-        with:
-          app-name: ${{ env.IMPAAS_APP_NAME }}
-          deployment-token: ${{ env.IMPAAS_DEPLOY_TOKEN }}
-          # TODO: Change to DOCKER_IMAGE once public repo
-          method: DOCKER_BUILD
+        run: |
+          tsuru app deploy -a $IMPAAS_APP_NAME --dockerfile Dockerfile
       - name: Run migrations
         run: |
-          impaas app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE npm exec prisma migrate deploy" -a cpp-connect
+          tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE npm exec prisma migrate deploy" -a cpp-connect
