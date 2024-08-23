@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "@/components/Link"
-import TanstackTable, { dateFilterFn } from "@/components/TanstackTable"
+import TanstackTable, { arrayFilterFn, dateFilterFn } from "@/components/TanstackTable"
 import UserAvatar from "@/components/UserAvatar"
 
 import { StudentProfile, User } from "@prisma/client"
@@ -74,14 +74,14 @@ const StudentTable = ({
         header: "Skills",
         id: "skills",
         enableSorting: false,
-        filterFn: "arrIncludes",
+        filterFn: arrayFilterFn,
       },
       interests: {
         cell: info => info.getValue().join(", "),
         header: "Interests",
         id: "interests",
         enableSorting: false,
-        filterFn: "arrIncludes",
+        filterFn: arrayFilterFn,
       },
     }
 

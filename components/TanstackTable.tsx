@@ -74,6 +74,20 @@ export const dateFilterFn = <T,>(row: Row<T>, id: string, filterValue: [string, 
   (!filterValue[0] || isAfter(row.getValue(id), filterValue[0] + "T00:00")) &&
   (!filterValue[1] || isAfter(filterValue[1] + "T23:59", row.getValue(id)))
 
+/**
+ * Filter function for columns with type array. Keeps rows where the cell of column "id" includes the filterValue.
+ * @template T The type of the row
+ * @param row The row to filter
+ * @param id The column id to filter
+ * @param filterValue The keyword to look for in the array
+ * @returns Whether the row should be displayed
+ */
+export const arrayFilterFn = <T,>(row: Row<T>, id: string, filterValue: string): boolean => {
+  const array = row.getValue(id)
+  const filterValueLower = filterValue.toLowerCase()
+  return Array.isArray(array) && array.some((item: string) => item.toLowerCase().includes(filterValueLower))
+}
+
 const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
   switch (isSorted) {
     case false:
@@ -186,7 +200,7 @@ export default function TanstackTable<T>({
     (value: any) => {
       const newFilters = [
         ...columnFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
-        { id: currentFilteredColumn, value }, // Add the new filter for this column
+        ...(value ? [{ id: currentFilteredColumn, value }] : []), // Add the new filter for this column if not empty
       ]
 
       // Live-update filter chips which are currently displayed (i.e. in prevFilters)
