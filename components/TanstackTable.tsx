@@ -4,8 +4,10 @@ import Chip from "./Chip"
 import { Dropdown } from "./Dropdown"
 import styles from "./tanstack-table.module.scss"
 
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import {
   CaretSortIcon,
+  CheckIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -66,6 +68,7 @@ export default function TanstackTable<T>({
 }: TanstackTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState({})
 
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
@@ -75,7 +78,8 @@ export default function TanstackTable<T>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    state: { columnFilters, sorting, pagination, columnVisibility: invisibleColumns },
+    state: { columnFilters, sorting, pagination, columnVisibility: { ...columnVisibility, ...invisibleColumns } },
+    onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -193,6 +197,31 @@ export default function TanstackTable<T>({
               }}
             />
             <Button onClick={addFilter}>Add filter</Button>
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger>
+                <Button variant="soft">Columns</Button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content className={styles.DropdownMenuContent}>
+                  {table.getAllLeafColumns().map((column, index) => (
+                    <DropdownMenu.CheckboxItem
+                      //onSelect={(e) => e.preventDefault()}
+                      key={index}
+                      checked={column.getIsVisible()}
+                      onSelect={e => {
+                        column.getToggleVisibilityHandler()(e)
+                        e.preventDefault()
+                      }}
+                    >
+                      <DropdownMenu.ItemIndicator>
+                        <CheckIcon />
+                      </DropdownMenu.ItemIndicator>
+                      {column.id}
+                    </DropdownMenu.CheckboxItem>
+                  ))}
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
           </Flex>
           <Flex gap="2" justify="center">
             {prevFilters.map(({ id, value }, index) => (
