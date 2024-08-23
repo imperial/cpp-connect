@@ -277,7 +277,7 @@ export default function TanstackTable<T>({
               <Chip
                 key={index}
                 label={
-                  dateFilterColumns.includes(currentFilteredColumn)
+                  dateFilterColumns.includes(id)
                     ? `${columns.find(def => def.id === id)?.header} ${formatDateRange(value as [string, string])}`
                     : `${columns.find(def => def.id === id)?.header} includes "${value}"`
                 }
