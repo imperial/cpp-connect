@@ -11,7 +11,7 @@ import { getCompanyLink } from "../companies/getCompanyLink"
 import type { CompanyProfile, Opportunity } from "@prisma/client"
 import { Flex } from "@radix-ui/themes"
 import { ColumnDef, DisplayColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { formatDistanceToNowStrict } from "date-fns"
+import { format, formatDistanceToNowStrict } from "date-fns"
 import Image from "next/image"
 import { useMemo } from "react"
 
@@ -90,11 +90,12 @@ const OpportunityTable = ({
         filterFn: dateFilterFn,
       },
       deadline: {
-        cell: info => (
-          <time suppressHydrationWarning={true}>
-            {formatDistanceToNowStrict(info.getValue(), { addSuffix: true })}{" "}
-          </time>
-        ),
+        cell: info => <time suppressHydrationWarning={true}>{format(info.getValue(), "EEEE do MMMM yyyy")}</time>,
+        // cell: info => (
+        //   <time suppressHydrationWarning={true}>
+        //     {formatDistanceToNowStrict(info.getValue(), { addSuffix: true })}{" "}
+        //   </time>
+        // ),
         header: "Application Deadline",
         sortingFn: "datetime",
         id: "deadline",
