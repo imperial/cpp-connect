@@ -15,7 +15,7 @@ const SlideCard = (props: CardProps & React.RefAttributes<HTMLDivElement> & { di
       style={{
         transform: isInView ? "none" : props.direction === "left" ? "translateX(-200px)" : "translateX(200px)",
         opacity: isInView ? 1 : 0,
-        transition: "all cubic-bezier(0.17, 0.55, 0.55, 1) 0.3s",
+        transition: "all cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
       }}
     />
   )
