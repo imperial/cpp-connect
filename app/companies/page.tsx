@@ -24,7 +24,7 @@ const OpportunitiesPage = async () => {
       <Flex gap="5" direction="column" align="center">
         <Heading size="8">Companies</Heading>
         <CompanyAdminActions />
-        <CompanyTable columns={["name", "sector", "size", "hq"]} companies={companies} />
+        <CompanyTable initialColumns={["name", "sector", "size", "hq"]} companies={companies} />
       </Flex>
     </RestrictedArea>
   )

@@ -5,8 +5,10 @@ import DateTimePicker from "./DateTimePicker"
 import { Dropdown } from "./Dropdown"
 import styles from "./tanstack-table.module.scss"
 
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import {
   CaretSortIcon,
+  CheckIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -41,6 +43,7 @@ const ICON_SIZE = 20
 interface TanstackTableProps<T> {
   data: T[]
   columns: ColumnDef<T, any>[]
+  initialColumnVisibility?: VisibilityState
   enablePagination?: boolean
   enableSearch?: boolean
   invisibleColumns?: VisibilityState
@@ -72,6 +75,28 @@ export const dateFilterFn = <T,>(row: Row<T>, id: string, filterValue: [string, 
   (!filterValue[0] || isAfter(row.getValue(id), filterValue[0] + "T00:00")) &&
   (!filterValue[1] || isAfter(filterValue[1] + "T23:59", row.getValue(id)))
 
+/**
+ * Filter function for columns with type array. Keeps rows where the cell of column "id" includes all of the filterValues.
+ * @template T The type of the row
+ * @param row The row to filter
+ * @param id The column id to filter
+ * @param filterValues The keywords to look for in the array
+ * @returns Whether the row should be displayed
+ */
+export const arrayFilterFn = <T,>(row: Row<T>, id: string, filterValues: string[]): boolean => {
+  const array = row.getValue(id)
+  if (!Array.isArray(array)) {
+    return false
+  }
+  for (const filterValue of filterValues) {
+    const filterValueLower = filterValue.toLowerCase()
+    if (!array.some((item: string) => item.toLowerCase().includes(filterValueLower))) {
+      return false
+    }
+  }
+  return true
+}
+
 const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
   switch (isSorted) {
     case false:
@@ -89,12 +114,14 @@ const getSortingIcon = (isSorted: false | SortDirection): React.ReactNode => {
 export default function TanstackTable<T>({
   data,
   columns,
+  initialColumnVisibility,
   invisibleColumns,
   enablePagination = true,
   enableSearch = true,
 }: TanstackTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility ?? {})
 
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
@@ -104,7 +131,8 @@ export default function TanstackTable<T>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    state: { columnFilters, sorting, pagination, columnVisibility: invisibleColumns },
+    state: { columnFilters, sorting, pagination, columnVisibility: { ...columnVisibility, ...invisibleColumns } },
+    onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -128,6 +156,10 @@ export default function TanstackTable<T>({
     return columns.filter(column => column.sortingFn === "datetime").map(column => column.id)
   }, [columns])
 
+  const arrayFilterColumns = useMemo(() => {
+    return columns.filter(column => column.filterFn === arrayFilterFn).map(column => column.id)
+  }, [columns])
+
   const filterableColumns = useMemo(
     () =>
       table
@@ -148,21 +180,27 @@ export default function TanstackTable<T>({
 
   /** Creates a chip to display a filter that the user has created as they were typing into the search box & they have since pressed Add Filter */
   const addChip = useCallback(() => {
+    let value
     if (dateFilterColumns.includes(currentFilteredColumn)) {
-      setPrevFilters([
-        ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
-        { id: currentFilteredColumn, value: [dateStart, dateEnd] },
-      ])
+      value = [dateStart, dateEnd]
       setDateStart("")
       setDateEnd("")
+    } else if (arrayFilterColumns.includes(currentFilteredColumn)) {
+      if (prevFilters.find(f => f.id === currentFilteredColumn)) {
+        value = [...(prevFilters.find(f => f.id === currentFilteredColumn)!.value as string[]), ""]
+      } else {
+        value = [searchQuery, ""]
+      }
     } else {
-      setPrevFilters([
-        ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
-        { id: currentFilteredColumn, value: searchQuery },
-      ])
-      setSearchQuery("")
+      value = searchQuery
     }
-  }, [currentFilteredColumn, dateEnd, dateFilterColumns, dateStart, prevFilters, searchQuery])
+
+    setSearchQuery("")
+    setPrevFilters([
+      ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+      { id: currentFilteredColumn, value },
+    ])
+  }, [arrayFilterColumns, currentFilteredColumn, dateEnd, dateFilterColumns, dateStart, prevFilters, searchQuery])
 
   /** Unset a filter and delete its chip that is displayed to the user */
   const deleteChip = useCallback(
@@ -182,7 +220,7 @@ export default function TanstackTable<T>({
     (value: any) => {
       const newFilters = [
         ...columnFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
-        { id: currentFilteredColumn, value }, // Add the new filter for this column
+        ...(value ? [{ id: currentFilteredColumn, value }] : []), // Add the new filter for this column if not empty
       ]
 
       // Live-update filter chips which are currently displayed (i.e. in prevFilters)
@@ -206,10 +244,19 @@ export default function TanstackTable<T>({
   const clearCurrentFilter = useCallback(() => {
     if (!prevFilters.find(f => f.id === currentFilteredColumn)) {
       setColumnFilters(columnFilters.filter(f => f.id !== currentFilteredColumn))
+    } else if (arrayFilterColumns.includes(currentFilteredColumn)) {
+      // remove last value in array filter
+      const value = [...(prevFilters.find(f => f.id === currentFilteredColumn)!.value as string[]).slice(0, -1), ""]
+      const newFilters = [
+        ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+        { id: currentFilteredColumn, value },
+      ]
+      setPrevFilters(newFilters)
+      setColumnFilters(newFilters)
     }
 
     setSearchQuery("")
-  }, [columnFilters, currentFilteredColumn, prevFilters])
+  }, [arrayFilterColumns, columnFilters, currentFilteredColumn, prevFilters])
 
   if (!isClient) {
     return (
@@ -218,6 +265,26 @@ export default function TanstackTable<T>({
         <Spinner size="3" />
       </Flex>
     )
+  }
+
+  const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+    let value: string[] | string
+    if (arrayFilterColumns.includes(currentFilteredColumn)) {
+      // check if array filter already exists
+      if (prevFilters.find(f => f.id === currentFilteredColumn)) {
+        value = [
+          ...(prevFilters.find(f => f.id === currentFilteredColumn)!.value as string[]).slice(0, -1),
+          e.target.value,
+        ]
+      } else {
+        value = [e.target.value]
+      }
+    } else {
+      value = e.target.value
+    }
+
+    updateFilters(value)
   }
 
   return (
@@ -234,10 +301,7 @@ export default function TanstackTable<T>({
                     addChip()
                   }
                 }}
-                onChange={e => {
-                  setSearchQuery(e.target.value)
-                  updateFilters(e.target.value)
-                }}
+                onChange={onSearchQueryChange}
                 value={searchQuery}
               >
                 <TextField.Slot>
@@ -288,7 +352,7 @@ export default function TanstackTable<T>({
                 item: col.columnDef.header!.toString(),
                 value: col.columnDef.id!,
               }))}
-              defaultValue={filterableColumns[0].id ?? ""}
+              defaultValue={filterableColumns[0]?.id ?? ""}
               onValueChange={newFilterCol => {
                 clearCurrentFilter()
 
@@ -315,7 +379,9 @@ export default function TanstackTable<T>({
                 label={
                   dateFilterColumns.includes(id)
                     ? `${columns.find(def => def.id === id)?.header} ${formatDateRange(value as [string, string])}`
-                    : `${columns.find(def => def.id === id)?.header} includes "${value}"`
+                    : arrayFilterColumns.includes(id)
+                      ? `${columns.find(def => def.id === id)?.header} include "${(value as string[]).filter(v => v).join(", ")}"`
+                      : `${columns.find(def => def.id === id)?.header} includes "${value}"`
                 }
                 deletable
                 onDelete={() => deleteChip(index)}
@@ -379,7 +445,34 @@ export default function TanstackTable<T>({
         >
           <nav className={styles.tablePagination}>
             <FooterWrapper columns="3" gap="3" width="100%" direction="column" align="center">
-              <Box />
+              <DropdownMenu.Root>
+                <Button asChild variant="surface" color="gray" className={styles.chooseColumnsButton}>
+                  <DropdownMenu.Trigger>
+                    <Text>Choose columns to display</Text>
+                    <ChevronDownIcon />
+                  </DropdownMenu.Trigger>
+                </Button>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content className={styles.DropdownMenuContent + " radix-themes"}>
+                    {table.getAllLeafColumns().map((column, index) => (
+                      <DropdownMenu.CheckboxItem
+                        key={index}
+                        checked={column.getIsVisible()}
+                        onSelect={e => {
+                          column.getToggleVisibilityHandler()(e)
+                          e.preventDefault()
+                        }}
+                        className={styles.DropdownMenuCheckboxItem}
+                      >
+                        <DropdownMenu.ItemIndicator className={styles.DropdownMenuItemIndicator}>
+                          <CheckIcon width=".6em" height=".6em" />
+                        </DropdownMenu.ItemIndicator>
+                        <Text>{column.columnDef.header?.toString()}</Text>
+                      </DropdownMenu.CheckboxItem>
+                    ))}
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
               <ul>
                 <IconButton variant="outline" disabled={!table.getCanPreviousPage()} onClick={table.firstPage}>
                   <DoubleArrowLeftIcon />

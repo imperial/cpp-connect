@@ -19,7 +19,7 @@ const OpportunitiesPage = async () => {
         <Heading size="8">Opportunities</Heading>
         <OpportunityTable
           opportunities={opportunities}
-          columns={["company.name", "position", "location", "type", "createdAt", "deadline"]}
+          initialColumns={["company.name", "position", "location", "type", "createdAt", "deadline"]}
         />
       </Flex>
     </RestrictedArea>

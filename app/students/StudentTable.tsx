@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "@/components/Link"
-import TanstackTable, { dateFilterFn } from "@/components/TanstackTable"
+import TanstackTable, { arrayFilterFn, dateFilterFn } from "@/components/TanstackTable"
 import UserAvatar from "@/components/UserAvatar"
 
 import { StudentProfile, User } from "@prisma/client"
@@ -11,24 +11,25 @@ import { formatDistanceToNowStrict } from "date-fns"
 import { useMemo } from "react"
 
 type StudentRow = {
-  user: Pick<User, "name" | "updatedAt" | "image" | "role">
-} & Pick<StudentProfile, "graduationDate" | "course" | "studentShortcode">
+  user: Pick<User, "name" | "image" | "role">
+} & Pick<
+  StudentProfile,
+  "updatedAt" | "interests" | "skills" | "lookingFor" | "graduationDate" | "course" | "studentShortcode"
+>
+
+interface StudentTableProps {
+  students: StudentRow[]
+  initialColumns: ColumnName[]
+  nonFilterable?: ColumnName[]
+}
 
 const columnHelper = createColumnHelper<StudentRow>()
 
-type ColumnName = keyof StudentRow | `user.${keyof Pick<User, "name" | "updatedAt" | "role">}`
+type ColumnName = keyof StudentRow | `user.${keyof Pick<User, "name" | "image" | "role">}`
 
-const StudentTable = ({
-  students,
-  columns,
-  nonFilterable = [],
-}: {
-  students: StudentRow[]
-  columns: ColumnName[]
-  nonFilterable?: ColumnName[]
-}) => {
-  const columnDefsMap = useMemo(() => {
-    const columnDefsMap_: Partial<Record<ColumnName, ColumnDef<StudentRow, any>>> = {
+const StudentTable = ({ students, initialColumns, nonFilterable = [] }: StudentTableProps) => {
+  const columnDefs = useMemo(() => {
+    const columnDefsMap: Partial<Record<ColumnName, ColumnDef<StudentRow, any>>> = {
       "user.name": {
         cell: info => (
           <Flex align="center" justify="start" gap="4">
@@ -53,45 +54,60 @@ const StudentTable = ({
         id: "course",
         sortingFn: "text",
       },
-      "user.updatedAt": {
+      lookingFor: {
+        cell: info => info.getValue(),
+        header: "Looking For",
+        id: "lookingFor",
+        sortingFn: "text",
+      },
+      skills: {
+        cell: info => info.getValue().join(", "),
+        header: "Skills",
+        id: "skills",
+        enableSorting: false,
+        filterFn: arrayFilterFn,
+      },
+      interests: {
+        cell: info => info.getValue().join(", "),
+        header: "Interests",
+        id: "interests",
+        enableSorting: false,
+        filterFn: arrayFilterFn,
+      },
+      updatedAt: {
         cell: info => (
           <time suppressHydrationWarning={true}>
             {formatDistanceToNowStrict(info.getValue(), { addSuffix: true })}{" "}
           </time>
         ),
-        header: "Last Updated",
+        header: "Updated",
         id: "updatedAt",
         sortingFn: "datetime",
+        enableColumnFilter: false,
       },
     }
 
     for (let column of nonFilterable) {
-      if (columnDefsMap_[column]) {
-        columnDefsMap_[column]!.enableColumnFilter = false
+      if (columnDefsMap[column]) {
+        columnDefsMap[column]!.enableColumnFilter = false
       }
     }
-    return columnDefsMap_
+
+    return Object.entries(columnDefsMap).map(([columnName, columnDef]) =>
+      columnHelper.accessor(columnName as ColumnName, columnDef),
+    )
   }, [nonFilterable])
 
-  const columnDefs = useMemo(
-    () =>
-      columns.map((columnName: ColumnName) =>
-        columnHelper.accessor(
-          columnName,
-          columnDefsMap[columnName] ?? {
-            // default column definition, so that all student values are also accessible
-            cell: info => info.getValue(),
-            header: columnName,
-            sortingFn: "alphanumeric",
-            id: columnName,
-            enableColumnFilter: !nonFilterable.includes(columnName),
-          },
-        ),
-      ),
-    [columnDefsMap, columns, nonFilterable],
-  )
+  const initialColumnVisibility = useMemo(() => {
+    const initialColumnVisibility_: Partial<Record<ColumnName, boolean>> = {}
+    for (const columnDef of columnDefs) {
+      initialColumnVisibility_[columnDef.accessorKey as ColumnName] = false
+    }
+    initialColumns.forEach(column => (initialColumnVisibility_[column] = true))
+    return initialColumnVisibility_
+  }, [columnDefs, initialColumns])
 
-  return <TanstackTable data={students} columns={columnDefs} />
+  return <TanstackTable data={students} columns={columnDefs} initialColumnVisibility={initialColumnVisibility} />
 }
 
 export default StudentTable

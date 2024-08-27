@@ -25,19 +25,16 @@ type DisplayColumnName = "adminButtons"
 
 type ColumnName = keyof EventRow | `company.${keyof CompanyProfile}`
 
-const EventTable = ({
-  events,
-  columns,
-  displayColumns = [],
-  nonFilterable = [],
-}: {
+interface EventTableProps {
   events: EventRow[]
-  columns: ColumnName[]
+  initialColumns: ColumnName[]
   displayColumns?: DisplayColumnName[]
   nonFilterable?: ColumnName[]
-}) => {
-  const columnDefsMap = useMemo(() => {
-    const columnDefsMap_: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
+}
+
+const EventTable = ({ events, initialColumns, displayColumns = [], nonFilterable = [] }: EventTableProps) => {
+  const columnDefs = useMemo(() => {
+    const columnDefsMap: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
       "company.name": {
         cell: info => (
           <Flex align="center" gap="4">
@@ -97,56 +94,50 @@ const EventTable = ({
     }
 
     for (let column of nonFilterable) {
-      if (columnDefsMap_[column]) {
-        columnDefsMap_[column]!.enableColumnFilter = false
+      if (columnDefsMap[column]) {
+        columnDefsMap[column]!.enableColumnFilter = false
       }
     }
 
-    return columnDefsMap_
+    return Object.entries(columnDefsMap).map(([columnName, columnDef]) =>
+      columnHelper.accessor(columnName as ColumnName, columnDef),
+    )
   }, [nonFilterable])
 
-  const columnDefs = useMemo(
-    () =>
-      columns.map((columnName: ColumnName) =>
-        columnHelper.accessor(
-          columnName,
-          columnDefsMap[columnName] ?? {
-            // default column definition, so that all company values are also accessible
-            cell: info => info.getValue(),
-            header: columnName,
-            sortingFn: "alphanumeric",
-            id: columnName,
-            enableColumnFilter: !(columnName in nonFilterable),
-          },
-        ),
-      ),
-    [columnDefsMap, columns, nonFilterable],
-  )
-
-  const displayColumnDefsMap: Record<DisplayColumnName, DisplayColumnDef<EventRow, any>> = useMemo(
-    () => ({
-      adminButtons: {
+  const displayColumnDefs: DisplayColumnDef<EventRow, any>[] = useMemo(
+    () => [
+      columnHelper.display({
         cell: info => (
           <Flex gap="2">
             <EditEvent prevEvent={info.row.original} companyID={info.row.original.companyID} />
             <DeleteEvent id={info.row.original.id} companyID={info.row.original.companyID} />
           </Flex>
         ),
-        header: "",
+        header: "Admin Actions",
         id: "adminButtons",
         enableSorting: false,
         enableColumnFilter: false,
-      },
-    }),
+      }),
+    ],
     [],
   )
 
-  const displayColumnDefs = useMemo(
-    () => displayColumns.map((columnName: DisplayColumnName) => columnHelper.display(displayColumnDefsMap[columnName])),
-    [displayColumnDefsMap, displayColumns],
-  )
+  const initialColumnVisibility = useMemo(() => {
+    const initialColumnVisibility_: Partial<Record<ColumnName, boolean>> = {}
+    for (const columnDef of columnDefs) {
+      initialColumnVisibility_[columnDef.accessorKey as ColumnName] = false
+    }
+    initialColumns.forEach(column => (initialColumnVisibility_[column] = true))
+    return initialColumnVisibility_
+  }, [columnDefs, initialColumns])
 
-  return <TanstackTable data={events} columns={[...columnDefs, ...displayColumnDefs]} />
+  return (
+    <TanstackTable
+      data={events}
+      columns={[...columnDefs, ...displayColumnDefs]}
+      initialColumnVisibility={initialColumnVisibility}
+    />
+  )
 }
 
 export default EventTable
