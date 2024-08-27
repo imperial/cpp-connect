@@ -38,9 +38,14 @@
   transform: scaleX(0);
 }
 
-.link:hover span::after {
-  transform: scaleX(1);
-  transform-origin: bottom center;
+.link {
+  &:hover,
+  &[data-active="true"] {
+    span::after {
+      transform: scaleX(1);
+      transform-origin: bottom center;
+    }
+  }
 }
 
 .logosContainer {

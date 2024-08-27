@@ -12,12 +12,18 @@ import { Flex } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import React from "react"
 
 const DarkModeToggle = dynamic(() => import("@/components/DarkModeToggle"), { ssr: false })
 
+const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 const DesktopNavbar = (props: NavbarProps) => {
   const { data } = useSession()
+  const pathname = usePathname()
 
   return (
     <Flex className={styles.container} justify="between" asChild>
@@ -33,17 +39,18 @@ const DesktopNavbar = (props: NavbarProps) => {
           {isSignedIn(data, props) && (
             <Flex className={styles.linksContainer}>
               <RestrictedAreaClient allowedRoles={[Role.STUDENT]} showMessage={false}>
-                <Link href="/companies" className={styles.link}>
-                  <span>Companies</span>
-                </Link>
-                <Link href="/events" className={styles.link}>
-                  <span>Events</span>
-                </Link>
-                <Link href="/opportunities" className={styles.link}>
-                  <span>Opportunities</span>
-                </Link>
+                {["companies", "events", "opportunities"].map((title, id) => (
+                  <Link
+                    key={id}
+                    href={`/${title}`}
+                    className={styles.link}
+                    data-active={pathname.startsWith(`/${title}`)}
+                  >
+                    <span>{capitalizeFirstLetter(title)}</span>
+                  </Link>
+                ))}
               </RestrictedAreaClient>
-              <Link href="/students" className={styles.link}>
+              <Link href="/students" className={styles.link} data-active={pathname.startsWith("/students")}>
                 <span>Students</span>
               </Link>
             </Flex>
