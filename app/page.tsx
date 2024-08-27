@@ -59,7 +59,10 @@ const Home = async () => {
       <main>
         <Flex className={styles.intro} align="center" wrap="wrap">
           <Flex className={styles.introText} direction="column" align="center" justify="center" gap="8">
-            <Heading size="9">CPP Connect</Heading>
+            <Box>
+              <Heading size="9">CPP Connect</Heading>
+              <Text>Corporate Partnership Program for DoC</Text>
+            </Box>
 
             <Flex gap="3" wrap="wrap" align="center" justify="center">
               <AnimatedButton asChild className={styles.signInButton} size="4">
@@ -86,12 +89,7 @@ const Home = async () => {
           />
         </Flex>
 
-        <InfoCard
-          direction="left"
-          imageSrc="images/students.jpg"
-          imageAlt="Imperial Students"
-          title="What we offer for students"
-        >
+        <InfoCard direction="left" imageSrc="/images/students.jpg" imageAlt="Imperial Students" title="For Students">
           <Text size="4">
             <ul>
               <li>Quick and convenient access to exclusive employers</li>
@@ -110,7 +108,7 @@ const Home = async () => {
           direction="right"
           imageSrc="/images/partners.jpg"
           imageAlt="Imperial Campus"
-          title="What we offer for corporate partners"
+          title="For Corporate Partners"
         >
           <Text size="4">
             <ul>
@@ -126,12 +124,7 @@ const Home = async () => {
           </Button>
         </InfoCard>
 
-        <InfoCard
-          direction="left"
-          imageSrc="/images/alumni.jpg"
-          imageAlt="Imperial Alumni"
-          title="What we offer for alumni"
-        >
+        <InfoCard direction="left" imageSrc="/images/alumni.jpg" imageAlt="Imperial Alumni" title="For Alumni">
           <Text size="4">
             <ul>
               <li>Gain access to job posting by Corporate Partners</li>
