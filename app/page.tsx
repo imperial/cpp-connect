@@ -61,7 +61,7 @@ const Home = async () => {
           <Flex className={styles.introText} direction="column" align="center" justify="center" gap="8">
             <Box>
               <Heading size="9">CPP Connect</Heading>
-              <Text>Corporate Partnership Program for DoC</Text>
+              <Text>Corporate Partnership Program Portal for DoC</Text>
             </Box>
 
             <Flex gap="3" wrap="wrap" align="center" justify="center">
