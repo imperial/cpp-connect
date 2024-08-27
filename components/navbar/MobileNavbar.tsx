@@ -101,7 +101,7 @@ const MobileNavbar = (props: NavbarProps) => {
   }
 
   return (
-    <Flex className={styles.mobileNavbar} p="2">
+    <Flex className={styles.mobileNavbar} p="3">
       <DropdownMenu.Root onOpenChange={handleToggle}>
         <IconButton size="4" asChild>
           <DropdownMenu.Trigger>
