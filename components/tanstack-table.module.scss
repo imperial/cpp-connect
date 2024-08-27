@@ -74,28 +74,39 @@
   color: var(--gray-12);
   box-shadow: var(--shadow-5);
   padding: 0.5em;
-  border-radius: 0.5em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  outline: none;
+  border-radius: 0.7em;
+  font-size: 0.9em !important;
+  width: var(--radix-popper-anchor-width);
 }
 
 .DropdownMenuCheckboxItem {
-  line-height: 1;
+  padding: 0.5em;
   display: flex;
   align-items: center;
-  height: 25px;
-  padding: 0 5px;
-  position: relative;
-  padding-left: 25px;
-  user-select: none;
   outline: none;
+  border-radius: 0.3em;
+  gap: 0.5em;
+
+  &:hover {
+    background-color: var(--blue-9);
+    color: white;
+  }
+
+  &[data-state="unchecked"] {
+    padding-left: 2.2em;
+  }
 }
 
 .DropdownMenuItemIndicator {
-  position: absolute;
-  left: 0;
-  width: 25px;
+  font-size: 2em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.chooseColumnsButton {
+  width: fit-content;
+  color: var(--gray-12);
+  font-weight: normal;
 }

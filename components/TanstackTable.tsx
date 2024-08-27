@@ -436,81 +436,78 @@ export default function TanstackTable<T>({
           ))}
         </Table.Body>
       </Table.Root>
-      <Flex justify="between">
-        <DropdownMenu.Root>
-          <Button asChild variant="surface" color="gray">
-            <DropdownMenu.Trigger>
-              <Text>Choose columns to display</Text>
-              <ChevronDownIcon />
-            </DropdownMenu.Trigger>
-          </Button>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content className={styles.DropdownMenuContent + " radix-themes"}>
-              {table.getAllLeafColumns().map((column, index) => (
-                <DropdownMenu.CheckboxItem
-                  key={index}
-                  checked={column.getIsVisible()}
-                  onSelect={e => {
-                    column.getToggleVisibilityHandler()(e)
-                    e.preventDefault()
-                  }}
-                  className={styles.DropdownMenuCheckboxItem}
-                >
-                  <DropdownMenu.ItemIndicator className={styles.DropdownMenuItemIndicator}>
-                    <CheckIcon />
-                  </DropdownMenu.ItemIndicator>
-                  <Text>{column.columnDef.header?.toString()}</Text>
-                </DropdownMenu.CheckboxItem>
-              ))}
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
 
-        {enablePagination && (
-          <Pagination
-            totalPages={table.getPageCount()}
-            middlePagesSiblingCount={isLowWidth ? 1 : 2}
-            edgePageCount={0}
-            currentPage={table.getState().pagination.pageIndex}
-            setCurrentPage={table.setPageIndex}
-            truncableText="..."
-          >
-            <nav className={styles.tablePagination}>
-              <FooterWrapper columns="3" gap="3" width="100%" direction="column" align="center">
-                <Box />
-                <ul>
-                  <IconButton variant="outline" disabled={!table.getCanPreviousPage()} onClick={table.firstPage}>
-                    <DoubleArrowLeftIcon />
-                  </IconButton>
-                  <Pagination.PrevButton className="" as={<IconButton variant="outline" />}>
-                    <ChevronLeftIcon />
-                  </Pagination.PrevButton>
-                  <Pagination.PageButton
-                    as={<Button variant="outline" />}
-                    activeClassName={styles.activePage}
-                    inactiveClassName=""
-                    className=""
-                  />
-                  <Pagination.NextButton as={<IconButton variant="outline" />}>
-                    <ChevronRightIcon />
-                  </Pagination.NextButton>
-                  <IconButton variant="outline" disabled={!table.getCanNextPage()} onClick={table.lastPage}>
-                    <DoubleArrowRightIcon />
-                  </IconButton>
-                </ul>
-                <Flex justify="end" gap="3">
-                  <Dropdown
-                    items={["1", "5", "15", "25", "50"].map(i => ({ item: i, value: i }))}
-                    defaultValue={table.getState().pagination.pageSize.toString()}
-                    onValueChange={newPageSize => table.setPageSize(parseInt(newPageSize))}
-                  />
-                  <Text className={styles.inlineFlexCenter}>records per page</Text>
-                </Flex>
-              </FooterWrapper>
-            </nav>
-          </Pagination>
-        )}
-      </Flex>
+      {enablePagination && (
+        <Pagination
+          totalPages={table.getPageCount()}
+          middlePagesSiblingCount={isLowWidth ? 1 : 2}
+          edgePageCount={0}
+          currentPage={table.getState().pagination.pageIndex}
+          setCurrentPage={table.setPageIndex}
+          truncableText="..."
+        >
+          <nav className={styles.tablePagination}>
+            <FooterWrapper columns="3" gap="3" width="100%" direction="column" align="center">
+              <DropdownMenu.Root>
+                <Button asChild variant="surface" color="gray" className={styles.chooseColumnsButton}>
+                  <DropdownMenu.Trigger>
+                    <Text>Choose columns to display</Text>
+                    <ChevronDownIcon />
+                  </DropdownMenu.Trigger>
+                </Button>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content className={styles.DropdownMenuContent + " radix-themes"}>
+                    {table.getAllLeafColumns().map((column, index) => (
+                      <DropdownMenu.CheckboxItem
+                        key={index}
+                        checked={column.getIsVisible()}
+                        onSelect={e => {
+                          column.getToggleVisibilityHandler()(e)
+                          e.preventDefault()
+                        }}
+                        className={styles.DropdownMenuCheckboxItem}
+                      >
+                        <DropdownMenu.ItemIndicator className={styles.DropdownMenuItemIndicator}>
+                          <CheckIcon width=".6em" height=".6em" />
+                        </DropdownMenu.ItemIndicator>
+                        <Text>{column.columnDef.header?.toString()}</Text>
+                      </DropdownMenu.CheckboxItem>
+                    ))}
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+              <ul>
+                <IconButton variant="outline" disabled={!table.getCanPreviousPage()} onClick={table.firstPage}>
+                  <DoubleArrowLeftIcon />
+                </IconButton>
+                <Pagination.PrevButton className="" as={<IconButton variant="outline" />}>
+                  <ChevronLeftIcon />
+                </Pagination.PrevButton>
+                <Pagination.PageButton
+                  as={<Button variant="outline" />}
+                  activeClassName={styles.activePage}
+                  inactiveClassName=""
+                  className=""
+                />
+                <Pagination.NextButton as={<IconButton variant="outline" />}>
+                  <ChevronRightIcon />
+                </Pagination.NextButton>
+                <IconButton variant="outline" disabled={!table.getCanNextPage()} onClick={table.lastPage}>
+                  <DoubleArrowRightIcon />
+                </IconButton>
+              </ul>
+              <Flex justify="end" gap="3">
+                <Dropdown
+                  items={["1", "5", "15", "25", "50"].map(i => ({ item: i, value: i }))}
+                  defaultValue={table.getState().pagination.pageSize.toString()}
+                  onValueChange={newPageSize => table.setPageSize(parseInt(newPageSize))}
+                />
+                <Text className={styles.inlineFlexCenter}>records per page</Text>
+              </Flex>
+            </FooterWrapper>
+          </nav>
+        </Pagination>
+      )}
     </Flex>
   )
 }
