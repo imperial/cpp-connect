@@ -180,30 +180,26 @@ export default function TanstackTable<T>({
 
   /** Creates a chip to display a filter that the user has created as they were typing into the search box & they have since pressed Add Filter */
   const addChip = useCallback(() => {
+    let value
     if (dateFilterColumns.includes(currentFilteredColumn)) {
-      setPrevFilters([
-        ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
-        { id: currentFilteredColumn, value: [dateStart, dateEnd] },
-      ])
+      value = [dateStart, dateEnd]
       setDateStart("")
       setDateEnd("")
-    } else {
-      let value
-      if (arrayFilterColumns.includes(currentFilteredColumn)) {
-        if (prevFilters.find(f => f.id === currentFilteredColumn)) {
-          value = [...(prevFilters.find(f => f.id === currentFilteredColumn)!.value as string[]), ""]
-        } else {
-          value = [searchQuery, ""]
-        }
+    } else if (arrayFilterColumns.includes(currentFilteredColumn)) {
+      if (prevFilters.find(f => f.id === currentFilteredColumn)) {
+        value = [...(prevFilters.find(f => f.id === currentFilteredColumn)!.value as string[]), ""]
       } else {
-        value = searchQuery
+        value = [searchQuery, ""]
       }
-      setPrevFilters([
-        ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
-        { id: currentFilteredColumn, value },
-      ])
-      setSearchQuery("")
+    } else {
+      value = searchQuery
     }
+
+    setSearchQuery("")
+    setPrevFilters([
+      ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+      { id: currentFilteredColumn, value },
+    ])
   }, [arrayFilterColumns, currentFilteredColumn, dateEnd, dateFilterColumns, dateStart, prevFilters, searchQuery])
 
   /** Unset a filter and delete its chip that is displayed to the user */
