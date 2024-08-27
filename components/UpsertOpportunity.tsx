@@ -74,10 +74,12 @@ const UpsertOpportunityForm = ({
         </Text>
         <Dropdown
           defaultValue={opportunityType}
-          items={(Object.keys(OpportunityType) as Array<keyof typeof OpportunityType>).map(key => ({
-            item: key,
-            value: key,
-          }))}
+          items={(Object.keys(OpportunityType) as Array<keyof typeof OpportunityType>)
+            .filter(opportunityType => opportunityType !== OpportunityType.Not_Looking_For_Work)
+            .map(key => ({
+              item: key,
+              value: key,
+            }))}
           onValueChange={(type: string) => setOpportunityType(type as OpportunityType)}
         ></Dropdown>
         <input type="hidden" readOnly name="type" value={opportunityType} />
