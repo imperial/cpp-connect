@@ -120,7 +120,7 @@ const OpportunityTable = ({
             <DeleteOpportunity id={info.row.original.id} companyID={info.row.original.companyID} />
           </Flex>
         ),
-        header: "",
+        header: "Admin Actions",
         id: "adminButtons",
         enableSorting: false,
         enableColumnFilter: false,

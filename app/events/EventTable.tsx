@@ -113,7 +113,7 @@ const EventTable = ({ events, initialColumns, displayColumns = [], nonFilterable
             <DeleteEvent id={info.row.original.id} companyID={info.row.original.companyID} />
           </Flex>
         ),
-        header: "",
+        header: "Admin Actions",
         id: "adminButtons",
         enableSorting: false,
         enableColumnFilter: false,
