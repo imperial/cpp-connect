@@ -248,10 +248,19 @@ export default function TanstackTable<T>({
   const clearCurrentFilter = useCallback(() => {
     if (!prevFilters.find(f => f.id === currentFilteredColumn)) {
       setColumnFilters(columnFilters.filter(f => f.id !== currentFilteredColumn))
+    } else if (arrayFilterColumns.includes(currentFilteredColumn)) {
+      // remove last value in array filter
+      const value = [...(prevFilters.find(f => f.id === currentFilteredColumn)!.value as string[]).slice(0, -1), ""]
+      const newFilters = [
+        ...prevFilters.filter(f => f.id !== currentFilteredColumn), // Remove the previous filter for the same column
+        { id: currentFilteredColumn, value },
+      ]
+      setPrevFilters(newFilters)
+      setColumnFilters(newFilters)
     }
 
     setSearchQuery("")
-  }, [columnFilters, currentFilteredColumn, prevFilters])
+  }, [arrayFilterColumns, columnFilters, currentFilteredColumn, prevFilters])
 
   if (!isClient) {
     return (
