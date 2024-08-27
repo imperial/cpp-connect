@@ -308,7 +308,7 @@ export default function TanstackTable<T>({
                 item: col.columnDef.header!.toString(),
                 value: col.columnDef.id!,
               }))}
-              defaultValue={filterableColumns[0].id ?? ""}
+              defaultValue={filterableColumns[0]?.id ?? ""}
               onValueChange={newFilterCol => {
                 clearCurrentFilter()
 
