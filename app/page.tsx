@@ -1,14 +1,37 @@
+import { auth } from "@/auth"
 import Link from "@/components/Link"
 import { AnimatedButton } from "@/components/buttons/AnimatedButton"
+import getCompanySlug from "@/lib/getCompanySlug"
 import "@/styling/globals.scss"
 
+import { getCompanyLink } from "./companies/getCompanyLink"
 import styles from "./page.module.scss"
 
-import { Box, Button, Flex, Heading, Text } from "@radix-ui/themes"
+import { Role } from "@prisma/client"
+import { Flex, Heading } from "@radix-ui/themes"
 import Image from "next/image"
+import { redirect } from "next/navigation"
 import * as React from "react"
 
 const Home = async () => {
+  const session = await auth()
+
+  // Authenticated users don't see the landing page
+  if (session?.user) {
+    switch (session.user.role) {
+      case Role.ADMIN:
+        return redirect("/companies")
+      case Role.COMPANY:
+        const companySlug = await getCompanySlug(session.user)
+        if (!companySlug) {
+          return redirect("/companies")
+        }
+        return redirect(getCompanyLink({ slug: companySlug }))
+      case Role.STUDENT:
+        return redirect("/opportunities")
+    }
+  }
+
   return (
     <main className={styles.main + " landing-page"}>
       <Flex className={styles.intro} align="center" wrap="wrap">
