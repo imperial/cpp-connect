@@ -19,19 +19,17 @@ type ColumnName = keyof CompanyRow
 
 const columnHelper = createColumnHelper<CompanyRow>()
 
-const CompanyTable = ({
-  companies,
-  columns,
-  nonFilterable = [],
-}: {
+interface CompanyTableProps {
   companies: CompanyRow[]
-  columns: ColumnName[]
+  initialColumns: ColumnName[]
   nonFilterable?: ColumnName[]
-}) => {
+}
+
+const CompanyTable = ({ companies, initialColumns, nonFilterable = [] }: CompanyTableProps) => {
   const { data: session } = useSession()
 
-  const columnDefsMap = useMemo(() => {
-    const columnDefsMap_: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = {
+  const columnDefs = useMemo(() => {
+    const columnDefsMap: Partial<Record<ColumnName, ColumnDef<CompanyRow, any>>> = {
       name: {
         cell: info => (
           <Flex align="center" gap="4">
@@ -82,31 +80,15 @@ const CompanyTable = ({
     }
 
     for (const column of nonFilterable) {
-      if (columnDefsMap_[column]) {
-        columnDefsMap_[column]!.enableColumnFilter = false
+      if (columnDefsMap[column]) {
+        columnDefsMap[column]!.enableColumnFilter = false
       }
     }
 
-    return columnDefsMap_
+    return Object.entries(columnDefsMap).map(([columnName, columnDef]) =>
+      columnHelper.accessor(columnName as ColumnName, columnDef),
+    )
   }, [nonFilterable])
-
-  const columnDefs = useMemo(
-    () =>
-      columns.map((columnName: ColumnName) =>
-        columnHelper.accessor(
-          columnName,
-          columnDefsMap[columnName] ?? {
-            // default column definition, so that all company values are also accessible
-            cell: info => info.getValue(),
-            header: columnName,
-            sortingFn: "alphanumeric",
-            id: columnName,
-            enableColumnFilter: !(columnName in nonFilterable),
-          },
-        ),
-      ),
-    [columnDefsMap, columns, nonFilterable],
-  )
 
   const invisibleColumns =
     session?.user?.role === "ADMIN"
@@ -115,7 +97,23 @@ const CompanyTable = ({
           slug: false,
         }
 
-  return <TanstackTable data={companies} columns={columnDefs} invisibleColumns={invisibleColumns} />
+  const initialColumnVisibility = useMemo(() => {
+    const initialColumnVisibility_: Partial<Record<ColumnName, boolean>> = {}
+    for (const columnDef of columnDefs) {
+      initialColumnVisibility_[columnDef.accessorKey as ColumnName] = false
+    }
+    initialColumns.forEach(column => (initialColumnVisibility_[column] = true))
+    return initialColumnVisibility_
+  }, [columnDefs, initialColumns])
+
+  return (
+    <TanstackTable
+      data={companies}
+      columns={columnDefs}
+      invisibleColumns={invisibleColumns}
+      initialColumnVisibility={initialColumnVisibility}
+    />
+  )
 }
 
 export default CompanyTable
