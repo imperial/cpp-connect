@@ -69,7 +69,6 @@ jobs:
       - lint
       - format-check
     runs-on: ubuntu-latest
-    # Only run if main
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
@@ -79,9 +78,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       # Uses the `docker/login-action` action to log in to the Container registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
       - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -89,7 +90,7 @@ jobs:
       # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
@@ -103,27 +104,36 @@ jobs:
       # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: docker/build-push-action@v6
         with:
           context: .
           # pushes regardless; only main tagged with latest
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   # Deploy!
   deploy-impaas:
     needs:
       - build-and-push-image
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      TSURU_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Install ImPaaS CLI
+        run: |
+          curl -fsSL "https://tsuru.io/get" | bash
+      - name: Setup ImPaaS CLI
+        run: |
+          tsuru target add impaas https://impaas.uk -s
       - name: Deploy to ImPaaS
-        id: impaas-deploy
-        uses: /impaas/impaas-deploy@v3
-        with:
-          app-name: ${{ env.IMPAAS_APP_NAME }}
-          deployment-token: ${{ env.IMPAAS_DEPLOY_TOKEN }}
-          # TODO: Change to DOCKER_IMAGE once public repo
-          method: DOCKER_BUILD
+        run: |
+          tsuru app deploy -i ghcr.io/imperial/cpp-connect:latest -a cpp-connect
+      - name: Run migrations
+        run: |
+          tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE npm exec prisma migrate deploy" -a cpp-connect

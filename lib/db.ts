@@ -1,7 +1,15 @@
-import { PrismaClient } from "@prisma/client"
+import { Prisma, PrismaClient } from "@prisma/client"
 
 const prismaClientSingleton = () => {
-  return new PrismaClient()
+  let options: ConstructorParameters<typeof PrismaClient>[0] = {}
+
+  if (process.env.NODE_ENV === "production") {
+    options = {
+      datasourceUrl: `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
+    }
+  }
+
+  return new PrismaClient(options)
 }
 
 declare const globalThis: {
