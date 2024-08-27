@@ -104,9 +104,9 @@ const EventTable = ({ events, initialColumns, displayColumns = [], nonFilterable
     )
   }, [nonFilterable])
 
-  const displayColumnDefsMap: Record<DisplayColumnName, DisplayColumnDef<EventRow, any>> = useMemo(
-    () => ({
-      adminButtons: {
+  const displayColumnDefs: DisplayColumnDef<EventRow, any>[] = useMemo(
+    () => [
+      columnHelper.display({
         cell: info => (
           <Flex gap="2">
             <EditEvent prevEvent={info.row.original} companyID={info.row.original.companyID} />
@@ -117,8 +117,8 @@ const EventTable = ({ events, initialColumns, displayColumns = [], nonFilterable
         id: "adminButtons",
         enableSorting: false,
         enableColumnFilter: false,
-      },
-    }),
+      }),
+    ],
     [],
   )
 
@@ -130,11 +130,6 @@ const EventTable = ({ events, initialColumns, displayColumns = [], nonFilterable
     initialColumns.forEach(column => (initialColumnVisibility_[column] = true))
     return initialColumnVisibility_
   }, [columnDefs, initialColumns])
-
-  const displayColumnDefs = useMemo(
-    () => displayColumns.map((columnName: DisplayColumnName) => columnHelper.display(displayColumnDefsMap[columnName])),
-    [displayColumnDefsMap, displayColumns],
-  )
 
   return (
     <TanstackTable

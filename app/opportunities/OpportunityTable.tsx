@@ -111,9 +111,9 @@ const OpportunityTable = ({
     )
   }, [nonFilterable])
 
-  const displayColumnDefsMap: Record<DisplayColumnName, DisplayColumnDef<OpportunityRow, any>> = useMemo(
-    () => ({
-      adminButtons: {
+  const displayColumnDefs: DisplayColumnDef<OpportunityRow, any>[] = useMemo(
+    () => [
+      columnHelper.display({
         cell: info => (
           <Flex gap="2">
             <EditOpportunity prevOpportunity={info.row.original} companyID={info.row.original.companyID} />
@@ -124,14 +124,9 @@ const OpportunityTable = ({
         id: "adminButtons",
         enableSorting: false,
         enableColumnFilter: false,
-      },
-    }),
+      }),
+    ],
     [],
-  )
-
-  const displayColumnDefs = useMemo(
-    () => displayColumns.map((columnName: DisplayColumnName) => columnHelper.display(displayColumnDefsMap[columnName])),
-    [displayColumnDefsMap, displayColumns],
   )
 
   const initialColumnVisibility = useMemo(() => {
