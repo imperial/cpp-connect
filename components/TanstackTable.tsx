@@ -267,6 +267,26 @@ export default function TanstackTable<T>({
     )
   }
 
+  const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+    let value: string[] | string
+    if (arrayFilterColumns.includes(currentFilteredColumn)) {
+      // check if array filter already exists
+      if (prevFilters.find(f => f.id === currentFilteredColumn)) {
+        value = [
+          ...(prevFilters.find(f => f.id === currentFilteredColumn)!.value as string[]).slice(0, -1),
+          e.target.value,
+        ]
+      } else {
+        value = [e.target.value]
+      }
+    } else {
+      value = e.target.value
+    }
+
+    updateFilters(value)
+  }
+
   return (
     <Flex gap="4" direction="column" width="100%">
       {enableSearch && (
@@ -281,26 +301,7 @@ export default function TanstackTable<T>({
                     addChip()
                   }
                 }}
-                onChange={e => {
-                  setSearchQuery(e.target.value)
-
-                  let value: string[] | string
-                  if (arrayFilterColumns.includes(currentFilteredColumn)) {
-                    // check if array filter already exists
-                    if (prevFilters.find(f => f.id === currentFilteredColumn)) {
-                      value = [
-                        ...(prevFilters.find(f => f.id === currentFilteredColumn)!.value as string[]).slice(0, -1),
-                        e.target.value,
-                      ]
-                    } else {
-                      value = [e.target.value]
-                    }
-                  } else {
-                    value = e.target.value
-                  }
-
-                  updateFilters(value)
-                }}
+                onChange={onSearchQueryChange}
                 value={searchQuery}
               >
                 <TextField.Slot>
