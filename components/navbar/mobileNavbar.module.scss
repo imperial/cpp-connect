@@ -1,5 +1,5 @@
 .sidebar {
-  height: calc(100vh - 3em - calc(var(--space-2) * 2));
+  height: calc(100vh - 3em - calc(var(--space-3) * 2));
   background-color: var(--color-background);
   box-shadow: 0 0 10px 5px var(--gray-5);
   clip-path: inset(0px -15px 0px 0px);
@@ -31,10 +31,10 @@
 
 @keyframes slideIn {
   from {
-    transform: translate(-100%, var(--space-2));
+    transform: translate(-100%, var(--space-3));
   }
   to {
-    transform: translate(calc(0px - var(--space-2)), var(--space-2));
+    transform: translate(calc(0px - var(--space-3)), var(--space-3));
   }
 }
 

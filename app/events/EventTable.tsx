@@ -40,8 +40,8 @@ const EventTable = ({
     const columnDefsMap_: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
       "company.name": {
         cell: info => (
-          <Flex align="center" justify="start" gap="4">
-            <Flex justify="center" height="4em" maxWidth="8em">
+          <Flex align="center" gap="4">
+            <Flex height="4em" width="8em">
               {info.getValue() && (
                 <Image
                   unoptimized

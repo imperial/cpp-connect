@@ -1,6 +1,61 @@
-.main {
+.slideCard {
+  --size: min(80vw, 800px, 60vh);
+  margin: 0 var(--space-6);
+  padding: 0;
+
+  h2 {
+    font-size: 3em;
+    line-height: normal;
+  }
+
+  img {
+    object-fit: contain;
+    height: var(--size);
+    width: var(--size);
+    border-radius: var(--radius-4);
+  }
+
+  li {
+    line-height: 1.7;
+  }
+
+  li::marker {
+    content: "➤ ";
+  }
+
+  .contents {
+    max-width: calc(1.2 * var(--size));
+    justify-content: space-around;
+  }
+}
+
+.entranceImage {
+  --size: min(80vw, 800px, 70vh);
+  object-fit: contain;
+  height: var(--size);
+  width: var(--size);
+  border-radius: var(--radius-4);
+  box-shadow: rgba(28, 28, 28, 0.5) 2px 2px 10px;
+}
+
+.intro {
+  width: 100vw;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-around;
+  padding: 1em;
+  min-height: calc(100vh - 3em - 2 * var(--space-3));
+  background: linear-gradient(var(--blue-9), color-mix(in oklab, var(--blue-9) 30%, var(--gray-1) 70%));
+  color: white;
+  gap: 2em;
+}
+
+.introText {
+  max-width: 500px;
+  text-align: center;
+}
+
+.signInButton {
+  color: var(--blue-9);
+  background-color: white;
+  box-shadow: rgba(28, 28, 28, 0.5) 2px 2px 10px;
 }
