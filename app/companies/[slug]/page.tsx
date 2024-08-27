@@ -220,7 +220,7 @@ const CompanyPage = async ({ params }: { params: { slug: string } }) => {
             <Box p="8">
               <EventTable
                 events={companyProfile.events}
-                columns={["title", "dateStart", "shortDescription", "location", "spaces"]}
+                initialColumns={["title", "dateStart", "shortDescription", "location", "spaces"]}
                 displayColumns={
                   !!session && (session.user.role === Role.ADMIN || (await checkCompany(companyProfile.id)(session)))
                     ? ["adminButtons"]
