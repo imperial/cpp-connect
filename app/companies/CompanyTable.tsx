@@ -85,10 +85,10 @@ const CompanyTable = ({ companies, initialColumns, nonFilterable = [] }: Company
       }
     }
 
-    return Object.entries(columnDefsMap).map(([columnName, columnDef]) =>
-      columnHelper.accessor(columnName as ColumnName, columnDef),
-    )
-  }, [nonFilterable])
+    return Object.entries(columnDefsMap)
+      .filter(([columnName, _]) => session?.user?.role === "ADMIN" || columnName !== "slug")
+      .map(([columnName, columnDef]) => columnHelper.accessor(columnName as ColumnName, columnDef))
+  }, [nonFilterable, session?.user?.role])
 
   const invisibleColumns =
     session?.user?.role === "ADMIN"
