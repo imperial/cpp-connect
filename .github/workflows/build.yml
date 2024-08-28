@@ -139,4 +139,13 @@ jobs:
           tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE npm exec prisma migrate deploy" -a cpp-connect
       - name: Set environment variables
         run: |
-          tsuru env set -a cpp-connect NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }}
+          tsuru env set -a cpp-connect |
+            NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }} |
+            EMAIL_SERVER_USER=${{ vars.EMAIL_SERVER_USER }} |
+            EMAIL_SERVER_PASSWORD=${{ vars.EMAIL_SERVER_PASSWORD }} |
+            EMAIL_SERVER_HOST=${{ vars.EMAIL_SERVER_HOST }} |
+            EMAIL_SERVER_PORT=${{ vars.EMAIL_SERVER_PORT }} |
+            EMAIL_FROM=${{ vars.EMAIL_FROM }}
+
+
+          
