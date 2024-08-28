@@ -1,6 +1,7 @@
 import Chip from "@/components/Chip"
 import { EditStudent } from "@/components/EditStudent"
 import Link from "@/components/Link"
+import MdViewer from "@/components/MdViewer"
 import UserAvatar from "@/components/UserAvatar"
 import RestrictedArea from "@/components/rbac/RestrictedArea"
 import RestrictedAreaStudent from "@/components/rbac/RestrictedAreaStudent"
@@ -15,7 +16,6 @@ import { notFound } from "next/navigation"
 import React from "react"
 import { BsEnvelope, BsFileEarmarkText, BsGithub, BsGlobe, BsLinkedin } from "react-icons/bs"
 import { IconType } from "react-icons/lib"
-import Markdown from "react-markdown"
 
 const linkIconSize = "25"
 
@@ -128,7 +128,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
               {studentProfile.bio && (
                 <Flex direction="column" gap="3">
                   <Heading size="5">About me</Heading>
-                  <Markdown>{studentProfile.bio}</Markdown>
+                  <MdViewer markdown={studentProfile.bio} />
                 </Flex>
               )}
 
