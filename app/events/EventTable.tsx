@@ -32,7 +32,7 @@ interface EventTableProps {
   nonFilterable?: ColumnName[]
 }
 
-const EventTable = ({ events, initialColumns, displayColumns = [], nonFilterable = [] }: EventTableProps) => {
+const EventTable = ({ events, initialColumns, displayColumns: _, nonFilterable = [] }: EventTableProps) => {
   const columnDefs = useMemo(() => {
     const columnDefsMap: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
       "company.name": {

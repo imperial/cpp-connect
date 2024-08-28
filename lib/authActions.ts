@@ -8,7 +8,7 @@ import { AccessDenied } from "@auth/core/errors"
 import { isRedirectError } from "next/dist/client/components/redirect"
 
 export const signInWithMagicLink = async (
-  prevState: FormPassBackState,
+  _prevState: FormPassBackState,
   formData: FormData,
 ): Promise<FormPassBackState> => {
   try {

@@ -55,11 +55,7 @@ const DesktopNavbar = (props: NavbarProps) => {
 
         <Flex align="center" gap="5">
           <DarkModeToggle fill="white" />
-          {isSignedIn(data, props) ? (
-            <ProfileDropdown {...props} />
-          ) : (
-            <NavbarLink title="Log In" href="/auth/login" />
-          )}
+          {isSignedIn(data, props) ? <ProfileDropdown {...props} /> : <NavbarLink title="Log In" href="/auth/login" />}
         </Flex>
       </nav>
     </Flex>

@@ -5,11 +5,9 @@ import TanstackTable from "@/components/TanstackTable"
 import { DeleteUserButton } from "./DeleteUserButton"
 
 import { User } from "@prisma/client"
-import { Button, Text } from "@radix-ui/themes"
 import { createColumnHelper } from "@tanstack/react-table"
 import { format } from "date-fns"
 import React from "react"
-import { FaTrash } from "react-icons/fa"
 
 export type UsersTableRow = Pick<User, "id" | "createdAt" | "email">
 

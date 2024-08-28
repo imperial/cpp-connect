@@ -63,9 +63,10 @@ export const allowedToDeleteUser = async (userId: string): Promise<string | unde
  * The requirements to allow user deletion are as follows:
  * 1. Any user can delete themselves
  * 2. Admins can delete any user
- * 2. Company users can delete themselves or any user in the same company
+ * 3. Company users can delete themselves or any user in the same company
  * @param id The id of the user to delete
  * @param pathToInvalidate The path to invalidate in the cache, or redirect to if redirect is set to true
+ * @param redirectAfter Whether to redirect after deletion
  */
 export const deleteUser = async (
   id: string,
@@ -87,7 +88,7 @@ export const deleteUser = async (
       })
     } catch (e: any) {
       return {
-        message: "A database error occured. Please try again later.",
+        message: "A database error occurred. Please try again later.",
         status: "error",
       }
     }

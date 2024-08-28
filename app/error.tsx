@@ -4,7 +4,6 @@
 import ErrorPage from "@/components/ErrorPage"
 import { AnimatedButton } from "@/components/buttons/AnimatedButton"
 
-import { Button } from "@radix-ui/themes"
 import React, { useEffect } from "react"
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {

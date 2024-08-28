@@ -1,5 +1,3 @@
-import styles from "./danger-button.module.scss"
-
 import { Button, Text } from "@radix-ui/themes"
 import React from "react"
 import { FaTrash } from "react-icons/fa"

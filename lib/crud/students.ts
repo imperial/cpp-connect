@@ -81,7 +81,7 @@ export const updateStudent = studentOnlyAction(
       })
     } catch (e: any) {
       console.error(e)
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
 
     const cvUpdateRes = await updateUpload(

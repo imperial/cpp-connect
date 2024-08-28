@@ -35,7 +35,7 @@ interface OpportunityTableProps {
 const OpportunityTable = ({
   opportunities,
   initialColumns,
-  displayColumns = [],
+  displayColumns: _,
   nonFilterable = [],
 }: OpportunityTableProps) => {
   const columnDefs = useMemo(() => {

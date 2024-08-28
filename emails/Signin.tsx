@@ -1,5 +1,3 @@
-import Logo from "./images/cpp-connect-logo.png"
-
 import {
   Body,
   Button,
