@@ -141,11 +141,11 @@ jobs:
         run: |
           tsuru env set -a cpp-connect |
             NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }} |
-            EMAIL_SERVER_USER=${{ vars.EMAIL_SERVER_USER }} |
-            EMAIL_SERVER_PASSWORD=${{ vars.EMAIL_SERVER_PASSWORD }} |
-            EMAIL_SERVER_HOST=${{ vars.EMAIL_SERVER_HOST }} |
-            EMAIL_SERVER_PORT=${{ vars.EMAIL_SERVER_PORT }} |
-            EMAIL_FROM=${{ vars.EMAIL_FROM }}
+            EMAIL_SERVER_USER=${{ secrets.EMAIL_SERVER_USER }} |
+            EMAIL_SERVER_PASSWORD=${{ secrets.EMAIL_SERVER_PASSWORD }} |
+            EMAIL_SERVER_HOST=${{ secrets.EMAIL_SERVER_HOST }} |
+            EMAIL_SERVER_PORT=${{ secrets.EMAIL_SERVER_PORT }} |
+            EMAIL_FROM=${{ secrets.EMAIL_FROM }}
 
 
           
