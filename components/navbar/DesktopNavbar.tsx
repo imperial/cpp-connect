@@ -58,9 +58,6 @@ const DesktopNavbar = (props: NavbarProps) => {
           {isSignedIn(data, props) ? (
             <ProfileDropdown {...props} />
           ) : (
-            // <Link href="/auth/login" className={styles.link}>
-            //   <span>Log In</span>
-            // </Link>
             <NavbarLink title="Log In" href="/auth/login" />
           )}
         </Flex>
