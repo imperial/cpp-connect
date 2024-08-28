@@ -12,11 +12,10 @@
   gap: 1em;
   padding: 2em;
   overflow-y: scroll !important;
-}
-
-.sidebar[data-state="open"] {
-  animation: slideIn 0.3s ease-out;
-  animation-fill-mode: forwards;
+  &[data-state="open"] {
+    animation: slideIn 0.3s ease-out;
+    animation-fill-mode: forwards;
+  }
 }
 
 .mobileNavbar {

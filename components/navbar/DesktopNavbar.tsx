@@ -41,7 +41,7 @@ const DesktopNavbar = (props: NavbarProps) => {
               <RestrictedAreaClient allowedRoles={[Role.STUDENT]} showMessage={false}>
                 {["companies", "events", "opportunities"].map((title, id) => (
                   <Link key={id} href={`/${title}`} className={styles.link} data-active={pathname === `/${title}`}>
-                    <span>{capitalizeFirstLetter(title)}</span>
+                    <span>{title}</span>
                   </Link>
                 ))}
               </RestrictedAreaClient>

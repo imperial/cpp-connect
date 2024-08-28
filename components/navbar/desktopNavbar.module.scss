@@ -18,27 +18,23 @@
 .link {
   color: white !important;
   font-size: 1.25em !important;
-}
-
-/* Underline hover animation for links */
-.link span {
-  position: relative;
-}
-
-.link span::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  bottom: -2px;
-  left: 0;
-  background-color: white;
-  transform-origin: bottom center;
-  transition: transform 0.1s linear;
-  transform: scaleX(0);
-}
-
-.link {
+  /* Underline hover animation for links */
+  span {
+    text-transform: capitalize;
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: white;
+      transform-origin: bottom center;
+      transition: transform 0.1s linear;
+      transform: scaleX(0);
+    }
+  }
   &:hover,
   &[data-active="true"] {
     span::after {
