@@ -17,10 +17,11 @@ import React from "react"
 
 const DarkModeToggle = dynamic(() => import("@/components/DarkModeToggle"), { ssr: false })
 
-const NavbarLink = ({ title }: { title: string }) => {
+const NavbarLink = ({ title, href }: { title: string; href?: string }) => {
   const pathname = usePathname()
+  const linkPath = href || `/${title}`
   return (
-    <Link href={`/${title}`} className={styles.link} data-active={pathname === `/${title}`}>
+    <Link href={linkPath} className={styles.link} data-active={pathname === linkPath}>
       <span>{title}</span>
     </Link>
   )
@@ -57,9 +58,10 @@ const DesktopNavbar = (props: NavbarProps) => {
           {isSignedIn(data, props) ? (
             <ProfileDropdown {...props} />
           ) : (
-            <Link href="/auth/login" className={styles.link}>
-              <span>Log In</span>
-            </Link>
+            // <Link href="/auth/login" className={styles.link}>
+            //   <span>Log In</span>
+            // </Link>
+            <NavbarLink title="Log In" href="/auth/login" />
           )}
         </Flex>
       </nav>
