@@ -10,7 +10,7 @@ import { Role } from "@prisma/client"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Button, Flex, Heading, Text } from "@radix-ui/themes"
 import { signOut, useSession } from "next-auth/react"
-import React from "react"
+import React, { useState } from "react"
 import { BsBoxArrowRight, BsBuilding, BsPersonCircle } from "react-icons/bs"
 
 interface DropdownCardProps {
@@ -42,10 +42,11 @@ const DropdownCard = (props: RoleNavbarProps & DropdownCardProps) => {
 }
 
 const ProfileDropdown = (props: RoleNavbarProps) => {
+  const [open, setOpen] = useState(false)
   const { data } = useSession()
   const user = data?.user! // This component is only rendered when the user is logged in
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root open={open} onOpenChange={setOpen}>
       <DropdownMenu.Trigger asChild>
         <button className={styles.avatarButton}>
           <UserAvatar user={{ image: props.avatar, name: user.name ?? undefined }} size="3" />
@@ -60,6 +61,7 @@ const ProfileDropdown = (props: RoleNavbarProps) => {
                 radixProps={{
                   underline: "none",
                 }}
+                onClick={() => setOpen(false)}
               >
                 <BsPersonCircle />
                 <Text>Your Profile</Text>
@@ -73,6 +75,7 @@ const ProfileDropdown = (props: RoleNavbarProps) => {
                 radixProps={{
                   underline: "none",
                 }}
+                onClick={() => setOpen(false)}
               >
                 <BsBuilding />
                 <Text>Your Company</Text>
