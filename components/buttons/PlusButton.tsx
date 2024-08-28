@@ -1,5 +1,5 @@
 import { PlusIcon } from "@radix-ui/react-icons"
-import { Button, Text } from "@radix-ui/themes"
+import { Button } from "@radix-ui/themes"
 import React, { ComponentProps } from "react"
 
 /**

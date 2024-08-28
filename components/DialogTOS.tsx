@@ -2,7 +2,7 @@
 
 import MdViewer from "./MdViewer"
 
-import { Button, Dialog, Flex, Text } from "@radix-ui/themes"
+import { Button, Dialog, Flex } from "@radix-ui/themes"
 import React, { useEffect, useState } from "react"
 
 const DialogTOS = ({ accept }: { accept: () => void }) => {

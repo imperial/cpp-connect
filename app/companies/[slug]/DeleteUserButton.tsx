@@ -6,11 +6,9 @@ import { DangerModalContent } from "@/components/modals/DangerModalContent"
 import { deleteUser } from "@/lib/crud/users"
 
 import { User } from "@prisma/client"
-import { CrossCircledIcon } from "@radix-ui/react-icons"
-import { Button, Callout, Dialog, Flex, Spinner, Text } from "@radix-ui/themes"
+import { Button, Dialog, Flex, Spinner } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
 import React, { useState, useTransition } from "react"
-import { FaTrash } from "react-icons/fa"
 
 export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> }) => {
   const [openState, setOpenState] = useState(false)

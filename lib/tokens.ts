@@ -26,7 +26,7 @@ const getLatestEntraAccountForUser = async (userId: User["id"]) => {
   if (!user?.accounts.length) {
     return null
   }
-  return user.accounts[0]
+  return user.accounts![0]
 }
 
 /**

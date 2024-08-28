@@ -14,7 +14,7 @@ export const urlValidator: FormValidator<string> = (value: string): string | nul
 }
 
 /**
- * @param value - a string to be validated
+ * @param slug - the slug to be validated
  * @return a string with an error message if validation failed or null if validation succeeded
  */
 export const slugValidator: FormValidator<string> = (slug: string): string | null => {

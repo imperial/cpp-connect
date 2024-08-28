@@ -17,11 +17,11 @@ import {
   toolbarPlugin,
 } from "@mdxeditor/editor"
 import { useTheme } from "next-themes"
-import { FC } from "react"
+import { FC, MutableRefObject } from "react"
 
 interface EditorProps {
   markdown: string
-  editorRef?: React.MutableRefObject<MDXEditorMethods | null>
+  editorRef?: MutableRefObject<MDXEditorMethods | null>
   onChange: (markdown: string) => void
 }
 

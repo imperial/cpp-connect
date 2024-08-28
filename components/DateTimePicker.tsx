@@ -7,6 +7,7 @@ import styles from "./datetime-picker.module.scss"
 import { TextField } from "@radix-ui/themes"
 import { format } from "date-fns"
 import { toZonedTime } from "date-fns-tz"
+import { ChangeEvent } from "react"
 
 const DateTimePicker = ({
   name,
@@ -21,7 +22,7 @@ const DateTimePicker = ({
   placeholder: string
   required?: boolean
   defaultDate?: Date | null
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   showTime?: boolean
   value?: string
 }) => {

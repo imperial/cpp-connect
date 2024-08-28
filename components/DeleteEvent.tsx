@@ -8,7 +8,7 @@ import styles from "./delete-company.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
-import { Button, IconButton, Spinner, Text, TextField } from "@radix-ui/themes"
+import { Button, IconButton, Spinner } from "@radix-ui/themes"
 import { useCallback } from "react"
 import { FaTrash } from "react-icons/fa"
 

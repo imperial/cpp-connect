@@ -57,7 +57,7 @@ export const createEvent = companyOnlyAction(
 
       revalidatePath(`/companies/${event.company.slug}`)
     } catch (e: any) {
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
 
     return {
@@ -68,7 +68,7 @@ export const createEvent = companyOnlyAction(
 )
 
 export const updateEvent = companyOnlyAction(
-  async (_: FormPassBackState, formData: FormData, companyID: number, eventID: number): Promise<FormPassBackState> => {
+  async (_: FormPassBackState, formData: FormData, _companyID: number, eventID: number): Promise<FormPassBackState> => {
     let parsedEvent: EventFormData
     try {
       parsedEvent = processForm(formData, formConfig)
@@ -91,7 +91,7 @@ export const updateEvent = companyOnlyAction(
 
       revalidatePath(`/companies/${event.company.slug}`)
     } catch (e: any) {
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
 
     return {
@@ -104,8 +104,8 @@ export const updateEvent = companyOnlyAction(
 export const deleteEvent = companyOnlyAction(
   async (
     _: FormPassBackState,
-    formData: FormData,
-    companyID: number,
+    _formData: FormData,
+    _companyID: number,
     eventID: number,
     redirectOnDelete: boolean = false,
   ): Promise<FormPassBackState> => {
@@ -124,7 +124,7 @@ export const deleteEvent = companyOnlyAction(
         })
       ).company.slug
     } catch (e: any) {
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
 
     if (redirectOnDelete) {
@@ -133,6 +133,6 @@ export const deleteEvent = companyOnlyAction(
       revalidatePath(`/companies/${slug}`)
     }
 
-    return { message: "Succesfully deleted the event.", status: "success" }
+    return { message: "Successfully deleted the event.", status: "success" }
   },
 )

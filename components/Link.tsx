@@ -14,6 +14,7 @@ type LinkProps = NextLinkProps &
  * A wrapper around Next.js' Link component that adds Radix styling.
  * @param radixProps The props for the Radix styling of the link.
  * @param props The props for the Next.js Link component.
+ * @param ref The ref for the anchor element.
  * @example
  *   <Link href="/about" radixProps={{ underline: "hover" }}>About</Link>
  *   The href prop goes to the Next.js Link component, and the radixProps prop goes to the Radix Link component.

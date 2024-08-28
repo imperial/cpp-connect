@@ -39,8 +39,14 @@ const SidebarLink = ({
   closeSidebar: () => void
 }) => {
   const pathname = usePathname()
-  return ( 
-    <Link href={href} className={styles.link} radixProps={{ underline: "none" }} onClick={closeSidebar} data-active={pathname === href}>
+  return (
+    <Link
+      href={href}
+      className={styles.link}
+      radixProps={{ underline: "none" }}
+      onClick={closeSidebar}
+      data-active={pathname === href}
+    >
       <Flex align="center" gap="3">
         <Icon />
         <Text>{displayText}</Text>

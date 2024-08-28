@@ -5,8 +5,8 @@ import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import UsersTable, { UsersTableRow } from "./UsersTable"
 import styles from "./company-management.module.scss"
 
-import { CompanyProfile, User } from "@prisma/client"
-import { Box, Button, Card, Flex, Heading, Text } from "@radix-ui/themes"
+import { CompanyProfile } from "@prisma/client"
+import { Box, Card, Flex, Heading } from "@radix-ui/themes"
 import React from "react"
 
 export const CompanyManagement = ({ company }: { company: CompanyProfile & { companyUsers?: UsersTableRow[] } }) => {

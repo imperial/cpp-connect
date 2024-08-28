@@ -57,14 +57,14 @@ export const updateUpload = async (
         await deleteFile(oldPath)
       }
     } catch (e: any) {
-      return { message: "An error occured while deleting a file. Please try again later.", status: "error" }
+      return { message: "An error occurred while deleting a file. Please try again later.", status: "error" }
     }
 
     // Update the database with the new file
     try {
       await setNewPath(filePath)
     } catch (e: any) {
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
   }
 

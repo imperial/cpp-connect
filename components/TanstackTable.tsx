@@ -18,7 +18,7 @@ import {
   MagnifyingGlassIcon,
 } from "@radix-ui/react-icons"
 import { Spinner, TextField } from "@radix-ui/themes"
-import { Box, Button, Flex, Grid, IconButton, Table, Text } from "@radix-ui/themes"
+import { Button, Flex, Grid, IconButton, Table, Text } from "@radix-ui/themes"
 import {
   ColumnDef,
   ColumnFiltersState,
