@@ -11,7 +11,7 @@ import { Button, Flex, Heading, IconButton, Separator, Text } from "@radix-ui/th
 import { signOut, useSession } from "next-auth/react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import {
   BsBoxArrowLeft,
   BsBoxArrowRight,
@@ -26,9 +26,19 @@ import { IconType } from "react-icons/lib"
 
 const DarkModeToggle = dynamic(() => import("@/components/DarkModeToggle"), { ssr: false })
 
-const SidebarLink = ({ href, Icon, displayText }: { href: string; Icon: IconType; displayText: string }) => {
+const SidebarLink = ({
+  href,
+  Icon,
+  displayText,
+  closeSidebar,
+}: {
+  href: string
+  Icon: IconType
+  displayText: string
+  closeSidebar: () => void
+}) => {
   return (
-    <Link href={href} className={styles.link} radixProps={{ underline: "none" }}>
+    <Link href={href} className={styles.link} radixProps={{ underline: "none" }} onClick={closeSidebar}>
       <Flex align="center" gap="3">
         <Icon />
         <Text>{displayText}</Text>
@@ -37,11 +47,11 @@ const SidebarLink = ({ href, Icon, displayText }: { href: string; Icon: IconType
   )
 }
 
-const UnauthenticatedContent = () => {
-  return <SidebarLink href="/auth/login" Icon={BsBoxArrowRight} displayText="Login" />
+const UnauthenticatedContent = (props: { closeSidebar: () => void }) => {
+  return <SidebarLink href="/auth/login" Icon={BsBoxArrowRight} displayText="Login" closeSidebar={props.closeSidebar} />
 }
 
-const AuthenticatedContent = (props: RoleNavbarProps) => {
+const AuthenticatedContent = (props: RoleNavbarProps & { closeSidebar: () => void }) => {
   const { data } = useSession()
   const user = data?.user! // This component is only rendered when the user is logged in
   return (
@@ -55,19 +65,34 @@ const AuthenticatedContent = (props: RoleNavbarProps) => {
       </Flex>
 
       {props.role === "STUDENT" && (
-        <SidebarLink href={`/students/${props.shortcode}`} Icon={BsPersonCircle} displayText="Your Profile" />
+        <SidebarLink
+          href={`/students/${props.shortcode}`}
+          Icon={BsPersonCircle}
+          displayText="Your Profile"
+          closeSidebar={props.closeSidebar}
+        />
       )}
       {props.role === "COMPANY" && (
-        <SidebarLink href={`/companies/${props.slug}`} Icon={BsBuilding} displayText="Your Company" />
+        <SidebarLink
+          href={`/companies/${props.slug}`}
+          Icon={BsBuilding}
+          displayText="Your Company"
+          closeSidebar={props.closeSidebar}
+        />
       )}
 
       <Separator orientation="horizontal" className={styles.Separator} />
       <RestrictedAreaClient allowedRoles={[Role.STUDENT]} showMessage={false}>
-        <SidebarLink href="/companies" Icon={BsBuilding} displayText="Companies" />
-        <SidebarLink href="/events" Icon={BsCalendar2Date} displayText="Events" />
-        <SidebarLink href="/opportunities" Icon={BsBriefcase} displayText="Opportunities" />
+        <SidebarLink href="/companies" Icon={BsBuilding} displayText="Companies" closeSidebar={props.closeSidebar} />
+        <SidebarLink href="/events" Icon={BsCalendar2Date} displayText="Events" closeSidebar={props.closeSidebar} />
+        <SidebarLink
+          href="/opportunities"
+          Icon={BsBriefcase}
+          displayText="Opportunities"
+          closeSidebar={props.closeSidebar}
+        />
       </RestrictedAreaClient>
-      <SidebarLink href="/students" Icon={BsMortarboard} displayText="Students" />
+      <SidebarLink href="/students" Icon={BsMortarboard} displayText="Students" closeSidebar={props.closeSidebar} />
 
       <Separator orientation="horizontal" className={styles.Separator} />
 
@@ -82,9 +107,11 @@ const AuthenticatedContent = (props: RoleNavbarProps) => {
 }
 
 const MobileNavbar = (props: NavbarProps) => {
+  const [open, setOpen] = useState(false)
   const { data } = useSession()
 
   const handleToggle = (open: boolean) => {
+    setOpen(open)
     if (open) {
       // Prevent scrolling when the menu is open
       document.documentElement.style.overflow = "hidden"
@@ -100,9 +127,16 @@ const MobileNavbar = (props: NavbarProps) => {
     }
   }
 
+  // Pretend the sidebar is closed when the component is unmounted (e.g. when the page resizes)
+  useEffect(() => {
+    return () => {
+      handleToggle(false)
+    }
+  }, [])
+
   return (
     <Flex className={styles.mobileNavbar} p="3">
-      <DropdownMenu.Root onOpenChange={handleToggle}>
+      <DropdownMenu.Root open={open} onOpenChange={handleToggle}>
         <IconButton size="4" asChild>
           <DropdownMenu.Trigger>
             <BsList size="2em" />
@@ -111,7 +145,11 @@ const MobileNavbar = (props: NavbarProps) => {
 
         <DropdownMenu.Content className={styles.sidebar} align="start">
           <Flex direction="column" justify="between" height="100%">
-            {isSignedIn(data, props) ? <AuthenticatedContent {...props} /> : <UnauthenticatedContent />}
+            {isSignedIn(data, props) ? (
+              <AuthenticatedContent {...props} closeSidebar={() => handleToggle(false)} />
+            ) : (
+              <UnauthenticatedContent closeSidebar={() => handleToggle(false)} />
+            )}
             <DarkModeToggle />
           </Flex>
         </DropdownMenu.Content>
