@@ -107,7 +107,7 @@ const AuthenticatedContent = (props: RoleNavbarProps & { closeSidebar: () => voi
 }
 
 const MobileNavbar = (props: NavbarProps) => {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
   const { data } = useSession()
 
   const handleToggle = (open: boolean) => {
