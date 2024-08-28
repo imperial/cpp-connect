@@ -10,7 +10,7 @@ import { Role } from "@prisma/client"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Button, Flex, Heading, Text } from "@radix-ui/themes"
 import { signOut, useSession } from "next-auth/react"
-import React from "react"
+import React, { useState } from "react"
 import { BsBoxArrowRight, BsBuilding, BsPersonCircle } from "react-icons/bs"
 
 interface DropdownCardProps {
@@ -42,7 +42,7 @@ const DropdownCard = (props: RoleNavbarProps & DropdownCardProps) => {
 }
 
 const ProfileDropdown = (props: RoleNavbarProps) => {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
   const { data } = useSession()
   const user = data?.user! // This component is only rendered when the user is logged in
   return (
