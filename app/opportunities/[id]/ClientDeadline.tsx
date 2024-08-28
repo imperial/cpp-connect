@@ -19,7 +19,7 @@ const ClientDeadline = ({ date }: { date: Date }) => {
       </Flex>
     )
   }
-  return <Text>{format(date, "dd/MM/yyyy kk:mm O")}</Text>
+  return <Text>{format(date, "dd/MM/yyyy HH:mm O")}</Text>
 }
 
 export default ClientDeadline

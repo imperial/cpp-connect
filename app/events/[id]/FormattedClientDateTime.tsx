@@ -29,7 +29,7 @@ import { BsCalendar } from "react-icons/bs"
 const formatEventDateTime = (dateStart: Date, dateEnd: Date | null) => {
   const formattedStart = (
     <b>
-      <time>{format(dateStart, "E, dd MMM kk:mm")}</time>
+      <time>{format(dateStart, "E, dd MMM HH:mm")}</time>
     </b>
   )
   const formattedEnd = dateEnd ? (
@@ -37,7 +37,7 @@ const formatEventDateTime = (dateStart: Date, dateEnd: Date | null) => {
       <>
         -
         <b>
-          <time>{format(dateEnd, "kk:mm")}</time>
+          <time>{format(dateEnd, "HH:mm")}</time>
         </b>
       </>
     ) : (
@@ -45,7 +45,7 @@ const formatEventDateTime = (dateStart: Date, dateEnd: Date | null) => {
         {" "}
         to{" "}
         <b>
-          <time>{format(dateEnd, "E, dd MMM kk:mm")}</time>
+          <time>{format(dateEnd, "E, dd MMM HH:mm")}</time>
         </b>
       </>
     )
