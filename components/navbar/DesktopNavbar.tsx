@@ -17,13 +17,17 @@ import React from "react"
 
 const DarkModeToggle = dynamic(() => import("@/components/DarkModeToggle"), { ssr: false })
 
-const capitalizeFirstLetter = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1)
+const NavbarLink = ({ title }: { title: string }) => {
+  const pathname = usePathname()
+  return (
+    <Link href={`/${title}`} className={styles.link} data-active={pathname === `/${title}`}>
+      <span>{title}</span>
+    </Link>
+  )
 }
 
 const DesktopNavbar = (props: NavbarProps) => {
   const { data } = useSession()
-  const pathname = usePathname()
 
   return (
     <Flex className={styles.container} justify="between" asChild>
@@ -40,14 +44,10 @@ const DesktopNavbar = (props: NavbarProps) => {
             <Flex className={styles.linksContainer}>
               <RestrictedAreaClient allowedRoles={[Role.STUDENT]} showMessage={false}>
                 {["companies", "events", "opportunities"].map((title, id) => (
-                  <Link key={id} href={`/${title}`} className={styles.link} data-active={pathname === `/${title}`}>
-                    <span>{title}</span>
-                  </Link>
+                  <NavbarLink title={title} key={id} />
                 ))}
               </RestrictedAreaClient>
-              <Link href="/students" className={styles.link} data-active={pathname === "/students"}>
-                <span>Students</span>
-              </Link>
+              <NavbarLink title="students" />
             </Flex>
           )}
         </Flex>
