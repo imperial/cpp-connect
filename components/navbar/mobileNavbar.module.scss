@@ -52,10 +52,10 @@
   cursor: pointer !important;
   padding: 0.5em !important;
   border-radius: var(--radius-4) !important;
-}
-
-.link:hover {
-  background-color: var(--blue-4) !important;
+  &:hover,
+  &[data-active="true"] {
+    background-color: var(--blue-4) !important;
+  }
 }
 
 .Separator {

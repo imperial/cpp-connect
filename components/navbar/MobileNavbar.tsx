@@ -11,6 +11,7 @@ import { Button, Flex, Heading, IconButton, Separator, Text } from "@radix-ui/th
 import { signOut, useSession } from "next-auth/react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import React from "react"
 import {
   BsBoxArrowLeft,
@@ -27,8 +28,9 @@ import { IconType } from "react-icons/lib"
 const DarkModeToggle = dynamic(() => import("@/components/DarkModeToggle"), { ssr: false })
 
 const SidebarLink = ({ href, Icon, displayText }: { href: string; Icon: IconType; displayText: string }) => {
+  const pathname = usePathname()
   return (
-    <Link href={href} className={styles.link} radixProps={{ underline: "none" }}>
+    <Link href={href} className={styles.link} radixProps={{ underline: "none" }} data-active={pathname === href}>
       <Flex align="center" gap="3">
         <Icon />
         <Text>{displayText}</Text>

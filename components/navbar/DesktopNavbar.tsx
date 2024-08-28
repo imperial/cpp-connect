@@ -40,17 +40,12 @@ const DesktopNavbar = (props: NavbarProps) => {
             <Flex className={styles.linksContainer}>
               <RestrictedAreaClient allowedRoles={[Role.STUDENT]} showMessage={false}>
                 {["companies", "events", "opportunities"].map((title, id) => (
-                  <Link
-                    key={id}
-                    href={`/${title}`}
-                    className={styles.link}
-                    data-active={pathname.startsWith(`/${title}`)}
-                  >
+                  <Link key={id} href={`/${title}`} className={styles.link} data-active={pathname === `/${title}`}>
                     <span>{capitalizeFirstLetter(title)}</span>
                   </Link>
                 ))}
               </RestrictedAreaClient>
-              <Link href="/students" className={styles.link} data-active={pathname.startsWith("/students")}>
+              <Link href="/students" className={styles.link} data-active={pathname === "/students"}>
                 <span>Students</span>
               </Link>
             </Flex>
