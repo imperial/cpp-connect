@@ -72,7 +72,7 @@ const FormattedClientDateTime = ({ dateStart, dateEnd }: { dateStart: Date; date
 
   if (!isClient) {
     return (
-      <Flex direction="row" gap="3">
+      <Flex direction="row" gap="3" align="center">
         <Spinner />
         Loading
       </Flex>

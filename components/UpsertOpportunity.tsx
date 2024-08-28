@@ -5,8 +5,11 @@ import { Dropdown } from "@/components/Dropdown"
 import { PlusButton } from "@/components/buttons/PlusButton"
 import { FormInModal } from "@/components/forms/FormInModal"
 import { GenericFormModal } from "@/components/modals/GenericFormModal"
+import { TIMEZONE } from "@/lib/constants"
 import { createOpportunity, updateOpportunity } from "@/lib/crud/opportunities"
 import { FormPassBackState } from "@/lib/types"
+
+import { InfoCallout } from "./Callouts"
 
 import { Opportunity, OpportunityType } from "@prisma/client"
 import { Pencil1Icon } from "@radix-ui/react-icons"
@@ -82,6 +85,7 @@ const UpsertOpportunityForm = ({
         ></Dropdown>
         <input type="hidden" readOnly name="type" value={opportunityType} />
       </label>
+      <InfoCallout message={`The times correspond to the ${TIMEZONE} timezone.`} />
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Application deadline*

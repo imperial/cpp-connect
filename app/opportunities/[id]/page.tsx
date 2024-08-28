@@ -7,6 +7,7 @@ import { EditOpportunity } from "@/components/UpsertOpportunity"
 import RestrictedAreaCompany from "@/components/rbac/RestrictedAreaCompany"
 import prisma from "@/lib/db"
 
+import ClientDeadline from "./ClientDeadline"
 import styles from "./page.module.scss"
 
 import { Box, Button, Card, Flex, Grid, Heading, Inset, Text } from "@radix-ui/themes"
@@ -105,7 +106,7 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
 
               <BsClock />
               <Text>Deadline</Text>
-              <Text>{format(opportunity.deadline, "dd/MM/yyyy HH:mm")}</Text>
+              <ClientDeadline date={opportunity.deadline} />
 
               {opportunity.available ? (
                 <>
