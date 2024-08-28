@@ -11,7 +11,7 @@ import { Button, Flex, Heading, IconButton, Separator, Text } from "@radix-ui/th
 import { signOut, useSession } from "next-auth/react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import {
   BsBoxArrowLeft,
   BsBoxArrowRight,
