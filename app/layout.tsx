@@ -4,7 +4,7 @@ import NavbarWrapper from "@/components/navbar/NavbarWrapper"
 import { CONTENT_ID } from "@/components/util/constants"
 import "@/styling/globals.scss"
 
-import { Theme, ThemePanel } from "@radix-ui/themes"
+import { Theme } from "@radix-ui/themes"
 import { Box, Flex } from "@radix-ui/themes"
 import "@radix-ui/themes/components.css"
 import "@radix-ui/themes/tokens/base.css"
@@ -91,7 +91,6 @@ const RootLayout = ({
       <body className={inter.className}>
         <ThemeProvider attribute="class">
           <Theme accentColor="blue" grayColor="gray">
-            <ThemePanel defaultOpen={false} />
             <Client>
               <Flex direction="column" justify="between" minHeight="100vh">
                 <NavbarWrapper />
