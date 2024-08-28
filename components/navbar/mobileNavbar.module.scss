@@ -12,11 +12,10 @@
   gap: 1em;
   padding: 2em;
   overflow-y: scroll !important;
-}
-
-.sidebar[data-state="open"] {
-  animation: slideIn 0.3s ease-out;
-  animation-fill-mode: forwards;
+  &[data-state="open"] {
+    animation: slideIn 0.3s ease-out;
+    animation-fill-mode: forwards;
+  }
 }
 
 .mobileNavbar {
@@ -52,10 +51,10 @@
   cursor: pointer !important;
   padding: 0.5em !important;
   border-radius: var(--radius-4) !important;
-}
-
-.link:hover {
-  background-color: var(--blue-4) !important;
+  &:hover,
+  &[data-active="true"] {
+    background-color: var(--blue-4) !important;
+  }
 }
 
 .Separator {

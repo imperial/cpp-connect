@@ -12,9 +12,20 @@ import { Flex } from "@radix-ui/themes"
 import { useSession } from "next-auth/react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import React from "react"
 
 const DarkModeToggle = dynamic(() => import("@/components/DarkModeToggle"), { ssr: false })
+
+const NavbarLink = ({ title, href }: { title: string; href?: string }) => {
+  const pathname = usePathname()
+  const linkPath = href || `/${title}`
+  return (
+    <Link href={linkPath} className={styles.link} data-active={pathname === linkPath}>
+      <span>{title}</span>
+    </Link>
+  )
+}
 
 const DesktopNavbar = (props: NavbarProps) => {
   const { data } = useSession()
@@ -33,19 +44,11 @@ const DesktopNavbar = (props: NavbarProps) => {
           {isSignedIn(data, props) && (
             <Flex className={styles.linksContainer}>
               <RestrictedAreaClient allowedRoles={[Role.STUDENT]} showMessage={false}>
-                <Link href="/companies" className={styles.link}>
-                  <span>Companies</span>
-                </Link>
-                <Link href="/events" className={styles.link}>
-                  <span>Events</span>
-                </Link>
-                <Link href="/opportunities" className={styles.link}>
-                  <span>Opportunities</span>
-                </Link>
+                {["companies", "events", "opportunities"].map((title, id) => (
+                  <NavbarLink title={title} key={id} />
+                ))}
               </RestrictedAreaClient>
-              <Link href="/students" className={styles.link}>
-                <span>Students</span>
-              </Link>
+              <NavbarLink title="students" />
             </Flex>
           )}
         </Flex>
@@ -55,9 +58,7 @@ const DesktopNavbar = (props: NavbarProps) => {
           {isSignedIn(data, props) ? (
             <ProfileDropdown {...props} />
           ) : (
-            <Link href="/auth/login" className={styles.link}>
-              <span>Log In</span>
-            </Link>
+            <NavbarLink title="Log In" href="/auth/login" />
           )}
         </Flex>
       </nav>

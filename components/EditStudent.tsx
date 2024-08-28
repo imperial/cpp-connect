@@ -3,7 +3,7 @@
 import { DangerZone } from "@/components/DeleteStudent"
 import DialogTOS from "@/components/DialogTOS"
 import { updateStudent } from "@/lib/crud/students"
-import { FormPassBackState, ServerSideFormHandler } from "@/lib/types"
+import { ServerSideFormHandler } from "@/lib/types"
 
 import Chip from "./Chip"
 import FileInput from "./FileInput"
@@ -164,12 +164,13 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
                   }
                 }}
                 placeholder="e.g. Python"
+                style={{ flexGrow: 1 }}
               />
               <IconButton size="2" onClick={addSkill} type="button">
                 <PlusIcon />
               </IconButton>
             </Flex>
-            <Flex gap="1">
+            <Flex gap="1" wrap="wrap">
               {skills.map((skill, id) => (
                 <Chip label={skill} key={id} deletable onDelete={() => setSkills(skills.filter(val => val != skill))} />
               ))}
@@ -194,12 +195,13 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
                   }
                 }}
                 placeholder="e.g. Game development"
+                style={{ flexGrow: 1 }}
               />
               <IconButton size="2" onClick={addInterest} type="button">
                 <PlusIcon />
               </IconButton>
             </Flex>
-            <Flex gap="1">
+            <Flex gap="1" wrap="wrap">
               {interests.map((interest, id) => (
                 <Chip
                   label={interest}

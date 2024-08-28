@@ -11,6 +11,7 @@ import { Button, Flex, Heading, IconButton, Separator, Text } from "@radix-ui/th
 import { signOut, useSession } from "next-auth/react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import React, { useEffect, useState } from "react"
 import {
   BsBoxArrowLeft,
@@ -37,8 +38,9 @@ const SidebarLink = ({
   displayText: string
   closeSidebar: () => void
 }) => {
-  return (
-    <Link href={href} className={styles.link} radixProps={{ underline: "none" }} onClick={closeSidebar}>
+  const pathname = usePathname()
+  return ( 
+    <Link href={href} className={styles.link} radixProps={{ underline: "none" }} onClick={closeSidebar} data-active={pathname === href}>
       <Flex align="center" gap="3">
         <Icon />
         <Text>{displayText}</Text>
