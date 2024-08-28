@@ -38,7 +38,7 @@ FROM base AS runner
 WORKDIR /app
 
 # Make UPLOAD_DIRs
-ENV UPLOAD_DIR=/app/uploads
+ENV UPLOAD_DIR=/uploads
 RUN mkdir $UPLOAD_DIR
 RUN mkdir $UPLOAD_DIR/banners $UPLOAD_DIR/cvs $UPLOAD_DIR/avatars $UPLOAD_DIR/logos
 
@@ -67,7 +67,7 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 
 # Take ownershuip of the app folder & upload
 RUN chown node:node /app
-RUN chown -R node:node /app/uploads
+RUN chown -R node:node /uploads
 
 USER node
 
