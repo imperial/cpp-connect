@@ -67,7 +67,7 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 
 # Take ownershuip of the app folder & upload
 RUN chown node:node /app
-RUN chown -R node:node /app/uploads
+RUN chown -R node:node /uploads
 
 USER node
 
