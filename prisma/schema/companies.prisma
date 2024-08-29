@@ -54,6 +54,7 @@ model Event {
   location         String
   // Singular outbound link to the event
   link             String
+  attachment       String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

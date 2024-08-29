@@ -1,7 +1,8 @@
 "use server"
 
+import { updateUpload } from "@/lib/files/updateUpload"
 import { companyOnlyAction } from "@/lib/rbac"
-import { FormConfig, FormPassBackState } from "@/lib/types"
+import { FileCategory, FormConfig, FormPassBackState } from "@/lib/types"
 import { urlValidator } from "@/lib/validators"
 
 import prisma from "../db"
@@ -11,7 +12,7 @@ import { Event } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-type EventFormData = Omit<Event, "id" | "companyID" | "createdAt" | "updatedAt">
+type EventFormData = Omit<Event, "id" | "companyID" | "createdAt" | "updatedAt" | "attachment">
 
 const formConfig: FormConfig<EventFormData> = {
   title: {},
@@ -35,6 +36,8 @@ const formConfig: FormConfig<EventFormData> = {
 
 export const createEvent = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyID: number): Promise<FormPassBackState> => {
+    const attachment = formData.get("attachment") as File
+
     let parsedEvent: EventFormData
     try {
       parsedEvent = processForm(formData, formConfig)
@@ -55,6 +58,25 @@ export const createEvent = companyOnlyAction(
         },
       })
 
+      const attachmentUpdateRes = await updateUpload(
+        attachment,
+        "attachments",
+        FileCategory.DOCUMENT,
+        async () =>
+          (
+            await prisma.event.findUnique({
+              where: { id: event.id },
+              select: { attachment: true },
+            })
+          )?.attachment,
+        async path =>
+          await prisma.event.update({
+            where: { id: event.id },
+            data: { attachment: path },
+          }),
+      )
+      if (attachmentUpdateRes.status === "error") return attachmentUpdateRes
+
       revalidatePath(`/companies/${event.company.slug}`)
     } catch (e: any) {
       return { message: "A database error occurred. Please try again later.", status: "error" }
@@ -69,6 +91,8 @@ export const createEvent = companyOnlyAction(
 
 export const updateEvent = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, _companyID: number, eventID: number): Promise<FormPassBackState> => {
+    const attachment = formData.get("attachment") as File
+
     let parsedEvent: EventFormData
     try {
       parsedEvent = processForm(formData, formConfig)
@@ -88,6 +112,25 @@ export const updateEvent = companyOnlyAction(
           },
         },
       })
+
+      const attachmentUpdateRes = await updateUpload(
+        attachment,
+        "attachments",
+        FileCategory.DOCUMENT,
+        async () =>
+          (
+            await prisma.event.findUnique({
+              where: { id: eventID },
+              select: { attachment: true },
+            })
+          )?.attachment,
+        async path =>
+          await prisma.event.update({
+            where: { id: eventID },
+            data: { attachment: path },
+          }),
+      )
+      if (attachmentUpdateRes.status === "error") return attachmentUpdateRes
 
       revalidatePath(`/companies/${event.company.slug}`)
     } catch (e: any) {
