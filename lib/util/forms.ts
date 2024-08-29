@@ -23,7 +23,7 @@ import { FormConfig, FormFieldParser } from "@/lib/types"
  *   }
  */
 export function processForm<T>(formData: FormData, config: FormConfig<T>): T {
-  const processedData = {} as T
+  const processedData = {} as Partial<T>
   // get keys of T
   const keys = Object.keys(config) as Array<keyof T>
   for (let key of keys) {
@@ -31,6 +31,7 @@ export function processForm<T>(formData: FormData, config: FormConfig<T>): T {
     const formEntry = formData.get(key.toString())
     if (!formEntry) {
       if (field?.optional) {
+        processedData[key] = null as any
         continue
       } else {
         throw new Error(`${key.toString()} is required.`)
@@ -47,5 +48,5 @@ export function processForm<T>(formData: FormData, config: FormConfig<T>): T {
     }
     processedData[key] = value
   }
-  return processedData
+  return processedData as T
 }
