@@ -20,7 +20,7 @@ const columns = [
     id: "email",
   }),
   columnHelper.accessor("createdAt", {
-    cell: info => format(info.getValue(), "MMMM eo yyyy"),
+    cell: info => format(info.getValue(), "MMMM do yyyy"),
     header: "Added",
     id: "createdAt",
   }),

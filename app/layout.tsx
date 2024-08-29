@@ -88,7 +88,8 @@ const RootLayout = ({
       <Head>
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0000cd" />
       </Head>
-      <body className={inter.className}>
+      {/* Hack: id added to increase specificity of styles to override margin added by react-scroll */}
+      <body className={inter.className} id="body">
         <ThemeProvider attribute="class">
           <Theme accentColor="blue" grayColor="gray">
             <Client>

@@ -35,7 +35,7 @@ interface OpportunityTableProps {
 const OpportunityTable = ({
   opportunities,
   initialColumns,
-  displayColumns: _,
+  displayColumns = [],
   nonFilterable = [],
 }: OpportunityTableProps) => {
   const columnDefs = useMemo(() => {
@@ -141,7 +141,7 @@ const OpportunityTable = ({
   return (
     <TanstackTable
       data={opportunities}
-      columns={[...columnDefs, ...displayColumnDefs]}
+      columns={[...columnDefs, ...(displayColumns.includes("adminButtons") ? displayColumnDefs : [])]}
       initialColumnVisibility={initialColumnVisibility}
     />
   )

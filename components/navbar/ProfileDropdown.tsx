@@ -46,7 +46,7 @@ const ProfileDropdown = (props: RoleNavbarProps) => {
   const { data } = useSession()
   const user = data?.user! // This component is only rendered when the user is logged in
   return (
-    <DropdownMenu.Root open={open} onOpenChange={setOpen}>
+    <DropdownMenu.Root open={open} onOpenChange={setOpen} modal={false}>
       <DropdownMenu.Trigger asChild>
         <button className={styles.avatarButton}>
           <UserAvatar user={{ image: props.avatar, name: user.name ?? undefined }} size="3" />

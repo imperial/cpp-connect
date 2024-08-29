@@ -9,6 +9,7 @@ import { AuthError } from "next-auth"
 import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
 import React from "react"
+import { BsBoxArrowRight } from "react-icons/bs"
 
 const ThemedLogo = dynamic(() => import("@/components/ThemedLogo"), { ssr: false })
 
@@ -50,6 +51,7 @@ const LoginPage = async () => {
           <form action={signInEntraID} style={{ width: "100%" }}>
             <Button size="3" style={{ width: "100%" }}>
               Login with SSO
+              <BsBoxArrowRight />
             </Button>
           </form>
           <Link href="/auth/login/partner" style={{ textAlign: "center" }}>

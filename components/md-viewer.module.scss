@@ -18,6 +18,16 @@
   code {
     background-color: var(--gray-4);
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    margin: revert;
+  }
 }
 
 .tosViewer {

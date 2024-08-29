@@ -26,12 +26,20 @@ const YEARS = Array.from({ length: NUM_YEARS_DROPDOWN }, (_, i) => i + new Date(
 
 const MdEditor = dynamic(() => import("@/components/MdEditor"), { ssr: false })
 
-const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; prevStudentProfile: StudentProfile }) => {
+const EditStudentForm = ({
+  close,
+  prevStudentProfile,
+  isAdmin,
+}: {
+  close: () => void
+  prevStudentProfile: StudentProfile
+  isAdmin: boolean
+}) => {
   const updateStudentWithID: ServerSideFormHandler = (prevState, formData) =>
     updateStudent(prevState, formData, prevStudentProfile.userId)
 
   const [bio, setBio] = useState(prevStudentProfile.bio ?? "")
-  const [acceptedTOS, setAcceptedTOS] = useState(prevStudentProfile.acceptedTOS)
+  const [acceptedTOS, setAcceptedTOS] = useState(prevStudentProfile.acceptedTOS || isAdmin)
   const mdxEditorRef = useRef<MDXEditorMethods>(null)
 
   const [skill, setSkill] = useState("")
@@ -255,9 +263,15 @@ const EditStudentForm = ({ close, prevStudentProfile }: { close: () => void; pre
   )
 }
 
-export const EditStudent = ({ prevStudentProfile }: { prevStudentProfile: StudentProfile }) => {
+export const EditStudent = ({
+  prevStudentProfile,
+  isAdmin,
+}: {
+  prevStudentProfile: StudentProfile
+  isAdmin: boolean
+}) => {
   const formRenderer = ({ close }: { close: () => void }) => (
-    <EditStudentForm close={close} prevStudentProfile={prevStudentProfile} />
+    <EditStudentForm close={close} prevStudentProfile={prevStudentProfile} isAdmin={isAdmin} />
   )
 
   return (

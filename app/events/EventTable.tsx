@@ -32,7 +32,7 @@ interface EventTableProps {
   nonFilterable?: ColumnName[]
 }
 
-const EventTable = ({ events, initialColumns, displayColumns: _, nonFilterable = [] }: EventTableProps) => {
+const EventTable = ({ events, initialColumns, displayColumns = [], nonFilterable = [] }: EventTableProps) => {
   const columnDefs = useMemo(() => {
     const columnDefsMap: Partial<Record<ColumnName, ColumnDef<EventRow, any>>> = {
       "company.name": {
@@ -134,7 +134,7 @@ const EventTable = ({ events, initialColumns, displayColumns: _, nonFilterable =
   return (
     <TanstackTable
       data={events}
-      columns={[...columnDefs, ...displayColumnDefs]}
+      columns={[...columnDefs, ...(displayColumns.includes("adminButtons") ? displayColumnDefs : [])]}
       initialColumnVisibility={initialColumnVisibility}
     />
   )
