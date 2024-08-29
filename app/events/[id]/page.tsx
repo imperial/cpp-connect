@@ -76,7 +76,7 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
                 <Heading>Sign Up</Heading>
 
                 <Button size="3" className={styles.signupButton} asChild>
-                  <Link href={event.link} target="_blank">
+                  <Link href={event.link} target="_blank" radixProps={{ underline: "none" }}>
                     Register for this event
                   </Link>
                 </Button>
