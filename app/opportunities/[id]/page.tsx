@@ -104,9 +104,13 @@ const OpportunityPage = async ({ params }: { params: { id: string } }) => {
               <Text>Opportunity type</Text>
               <Text>{opportunity.type}</Text>
 
-              <BsClock />
-              <Text>Deadline</Text>
-              <ClientDeadline date={opportunity.deadline} />
+              {opportunity.deadline && (
+                <>
+                  <BsClock />
+                  <Text>Deadline</Text>
+                  <ClientDeadline date={opportunity.deadline} />
+                </>
+              )}
 
               {opportunity.available ? (
                 <>

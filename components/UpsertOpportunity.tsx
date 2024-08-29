@@ -90,14 +90,9 @@ const UpsertOpportunityForm = ({
       <InfoCallout message={`The times correspond to the ${TIMEZONE} timezone.`} />
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
-          Application deadline*
+          Application deadline
         </Text>
-        <DateTimePicker
-          name="deadline"
-          placeholder="Enter deadline here"
-          defaultDate={prevOpportunity?.deadline}
-          required
-        />
+        <DateTimePicker name="deadline" placeholder="Enter deadline here" defaultDate={prevOpportunity?.deadline} />
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">

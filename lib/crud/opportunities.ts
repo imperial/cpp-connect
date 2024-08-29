@@ -25,6 +25,7 @@ const formConfig: FormConfig<OpportunityFormData> = {
   },
   deadline: {
     parser: parseDateTime,
+    optional: true,
   },
 }
 
@@ -53,7 +54,7 @@ export const createOpportunity = companyOnlyAction(
 
       revalidatePath(`/companies/${opportunity.company.slug}`)
     } catch (e: any) {
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
 
     return {
@@ -67,7 +68,7 @@ export const updateOpportunity = companyOnlyAction(
   async (
     _: FormPassBackState,
     formData: FormData,
-    companyID: number,
+    _companyID: number,
     opportunityID: number,
   ): Promise<FormPassBackState> => {
     // TODO: Validate user session
@@ -97,7 +98,7 @@ export const updateOpportunity = companyOnlyAction(
 
       revalidatePath(`/companies/${opportunity.company.slug}`)
     } catch (e: any) {
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
 
     return {
@@ -110,8 +111,8 @@ export const updateOpportunity = companyOnlyAction(
 export const deleteOpportunity = companyOnlyAction(
   async (
     _: FormPassBackState,
-    formData: FormData,
-    companyID: number,
+    _formData: FormData,
+    _companyID: number,
     opportunityID: number,
     redirectOnDelete: boolean = false,
   ): Promise<FormPassBackState> => {
@@ -130,7 +131,7 @@ export const deleteOpportunity = companyOnlyAction(
         })
       ).company.slug
     } catch (e: any) {
-      return { message: "A database error occured. Please try again later.", status: "error" }
+      return { message: "A database error occurred. Please try again later.", status: "error" }
     }
 
     if (redirectOnDelete) {
@@ -139,6 +140,6 @@ export const deleteOpportunity = companyOnlyAction(
       revalidatePath(`/companies/${slug}`)
     }
 
-    return { message: "Succesfully deleted the opportunity.", status: "success" }
+    return { message: "Successfully deleted the opportunity.", status: "success" }
   },
 )

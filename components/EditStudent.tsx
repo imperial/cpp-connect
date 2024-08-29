@@ -11,7 +11,7 @@ import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
 import { MDXEditorMethods } from "@mdxeditor/editor"
-import { OpportunityType, StudentProfile } from "@prisma/client"
+import { OpportunityType, StudentProfile, User } from "@prisma/client"
 import { PlusIcon } from "@radix-ui/react-icons"
 import { Pencil1Icon } from "@radix-ui/react-icons"
 import { Select } from "@radix-ui/themes"
@@ -32,7 +32,7 @@ const EditStudentForm = ({
   isAdmin,
 }: {
   close: () => void
-  prevStudentProfile: StudentProfile
+  prevStudentProfile: StudentProfile & { user: User }
   isAdmin: boolean
 }) => {
   const updateStudentWithID: ServerSideFormHandler = (prevState, formData) =>
@@ -125,8 +125,8 @@ const EditStudentForm = ({
           </Flex>
         </label>
 
-        <FileInput name="cv" header="CV" />
-        <FileInput name="avatar" header="Profile Picture" />
+        <FileInput name="cv" header="CV" value={prevStudentProfile.cv} />
+        <FileInput name="avatar" header="Profile Picture" value={prevStudentProfile.user.image} />
 
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
@@ -267,7 +267,7 @@ export const EditStudent = ({
   prevStudentProfile,
   isAdmin,
 }: {
-  prevStudentProfile: StudentProfile
+  prevStudentProfile: StudentProfile & { user: User }
   isAdmin: boolean
 }) => {
   const formRenderer = ({ close }: { close: () => void }) => (
