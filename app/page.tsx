@@ -97,7 +97,7 @@ const Home = async () => {
               <li>Search tools to find the opportunity that best fits your needs</li>
             </ul>
           </Text>
-          <Button asChild size="4">
+          <Button asChild size="4" style={{ width: "50%" }}>
             <Link href="/auth/login" radixProps={{ underline: "none" }}>
               Find Opportunities
             </Link>
@@ -117,7 +117,7 @@ const Home = async () => {
               <li>Meet top students at events hosted by Imperial</li>
             </ul>
           </Text>
-          <Button asChild size="4">
+          <Button asChild size="4" style={{ width: "50%" }}>
             <Link href="/auth/login/partner" radixProps={{ underline: "none" }}>
               Get Started
             </Link>
@@ -132,7 +132,7 @@ const Home = async () => {
               <li>Discover contacts among ex-students and industry partners</li>
             </ul>
           </Text>
-          <Button asChild size="4">
+          <Button asChild size="4" style={{ width: "50%" }}>
             <Link href="/auth/login/" radixProps={{ underline: "none" }}>
               Connect Now
             </Link>
