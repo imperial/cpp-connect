@@ -1,5 +1,6 @@
 import { Button, Text } from "@radix-ui/themes"
 import { useState } from "react"
+import { BsCloudUploadFill } from "react-icons/bs"
 
 /**
  * Form input which allows the user to upload a file.
@@ -28,6 +29,7 @@ const FileInput = ({ name, header, value }: { name: string; header: string; valu
               }
             }}
           />
+          <BsCloudUploadFill size="1.2em" />
           {file || "Upload file"}
         </label>
       </Button>
