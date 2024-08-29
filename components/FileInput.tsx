@@ -1,6 +1,8 @@
-import { Button, Text } from "@radix-ui/themes"
+import { FileViewer } from "@/components/FileViewer"
+
+import { Button, Flex, Text } from "@radix-ui/themes"
 import { useState } from "react"
-import { BsCloudUploadFill } from "react-icons/bs"
+import { BsCloudUploadFill, BsSearch } from "react-icons/bs"
 
 /**
  * Form input which allows the user to upload a file.
@@ -16,23 +18,34 @@ const FileInput = ({ name, header, value }: { name: string; header: string; valu
       <Text as="div" size="2" weight="bold">
         {header}
       </Text>
-      <Button asChild>
-        <label>
-          <input
-            type="file"
-            hidden
-            name={name}
-            onChange={e => {
-              const file = e.target.files?.[0]
-              if (file) {
-                setFile(file.name)
-              }
-            }}
-          />
-          <BsCloudUploadFill size="1.2em" />
-          {file || "Upload file"}
-        </label>
-      </Button>
+      <Flex gap="2">
+        <Button asChild style={{ flexGrow: 1, cursor: "pointer" }}>
+          <label>
+            <input
+              type="file"
+              hidden
+              name={name}
+              onChange={e => {
+                const file = e.target.files?.[0]
+                if (file) {
+                  setFile(file.name)
+                }
+              }}
+            />
+
+            <BsCloudUploadFill size="1.2em" />
+            {file || "Upload file"}
+          </label>
+        </Button>
+        {file === value && ( // If a file is already uploaded, and hasn't been changed, show a view button
+          <FileViewer fileUrl={"/api/uploads/" + file} title={header}>
+            <Button variant="outline" style={{ flexGrow: 0, cursor: "pointer" }}>
+              <BsSearch />
+              View
+            </Button>
+          </FileViewer>
+        )}
+      </Flex>
     </>
   )
 }

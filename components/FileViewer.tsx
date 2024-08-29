@@ -39,7 +39,7 @@ export const FileViewer = ({ fileUrl, title, children }: { fileUrl: string; titl
 
           <Flex className={styles.buttons} justify="end" gap="4">
             <Button asChild>
-              <Link href={fileUrl} target="_blank" download>
+              <Link href={fileUrl} target="_blank" download radixProps={{ underline: "none" }}>
                 <BsDownload />
                 Download
               </Link>
