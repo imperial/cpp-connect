@@ -68,14 +68,13 @@ const UpsertEventForm = ({
       </label>
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
-          Link*
+          Link
         </Text>
         <TextField.Root
           name="link"
           placeholder="E.g., https://imperial.ic.ac.uk/event"
-          required
           type="url"
-          defaultValue={prevEvent?.link}
+          defaultValue={prevEvent?.link || ""}
         />
       </label>
 

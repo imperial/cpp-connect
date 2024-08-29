@@ -4,7 +4,10 @@ import { FormValidator } from "@/lib/types"
  * @param value - a string to be validated
  * @return a string with an error message if validation failed or null if validation succeeded
  */
-export const urlValidator: FormValidator<string> = (value: string): string | null => {
+export const urlValidator: FormValidator<string | null> = (value: string | null): string | null => {
+  if (value === null) {
+    return null
+  }
   try {
     new URL(value)
     return null
