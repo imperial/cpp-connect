@@ -92,7 +92,12 @@ const OpportunityTable = ({
         filterFn: dateFilterFn,
       },
       deadline: {
-        cell: info => <time suppressHydrationWarning={true}>{format(info.getValue(), "EEEE do MMMM yyyy")}</time>,
+        cell: info =>
+          info.getValue() ? (
+            <time suppressHydrationWarning={true}>{format(info.getValue(), "EEEE do MMMM yyyy")}</time>
+          ) : (
+            ""
+          ),
         header: "Application Deadline",
         sortingFn: "datetime",
         id: "deadline",
