@@ -1,0 +1,30 @@
+.container {
+  max-height: calc(100vh - var(--space-6) - max(var(--space-6), 6vh));
+  max-width: min(80vw, 1000px);
+}
+
+.content {
+  height: 100%;
+}
+
+.iframe {
+  width: 100%;
+  aspect-ratio: 1 / sqrt(2); // A4 aspect ratio
+}
+
+.title {
+  text-align: center;
+}
+.buttons {
+  width: 100%;
+
+  button {
+    cursor: pointer;
+  }
+}
+
+.image {
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+}
