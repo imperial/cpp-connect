@@ -6,7 +6,7 @@ import { Button, Flex, Heading, Text } from "@radix-ui/themes"
 import { useSearchParams } from "next/navigation"
 import { FaCircleXmark } from "react-icons/fa6"
 
-const SUPPORT_EMAIL = "support@example.com"
+const SUPPORT_EMAIL = "doc-edtech@imperial.ac.uk"
 
 enum Error {
   Configuration = "Configuration",
