@@ -1,6 +1,6 @@
 "use server"
 
-import { signOut } from "@/auth"
+import { auth, signOut } from "@/auth"
 import { deleteFile } from "@/lib/files/deleteFile"
 import { studentOnlyAction } from "@/lib/rbac"
 
@@ -20,6 +20,8 @@ const validateIsOpportunityType = (value: string | undefined): value is Opportun
 
 export const updateStudent = studentOnlyAction(
   async (_: FormPassBackState, formData: FormData, studentId: string): Promise<FormPassBackState> => {
+    const isAdmin = (await auth())!.user.role === "ADMIN"
+
     const course = formData.get("course")?.toString().trim()
     const gradMonth = formData.get("gradMonth")?.toString().trim()
     const gradYear = formData.get("gradYear")?.toString().trim()
@@ -58,7 +60,7 @@ export const updateStudent = studentOnlyAction(
       return { message: "Invalid graduation date", status: "error" }
     }
 
-    if (!acceptedTOS) {
+    if (!acceptedTOS && !isAdmin) {
       return { message: "Please accept Terms & Conditions before proceeding.", status: "error" }
     }
 
@@ -76,7 +78,7 @@ export const updateStudent = studentOnlyAction(
           personalWebsite: website,
           skills,
           interests,
-          acceptedTOS,
+          acceptedTOS: isAdmin ? undefined : acceptedTOS,
         },
       })
     } catch (e: any) {

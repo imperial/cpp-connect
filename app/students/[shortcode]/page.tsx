@@ -1,3 +1,4 @@
+import { auth } from "@/auth"
 import Chip from "@/components/Chip"
 import { EditStudent } from "@/components/EditStudent"
 import Link from "@/components/Link"
@@ -154,7 +155,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
             </Flex>
             <Box position="absolute" top="2" right="2">
               <RestrictedAreaStudent showMessage={false} studentId={studentProfile.userId}>
-                <EditStudent prevStudentProfile={studentProfile} />
+                <EditStudent prevStudentProfile={studentProfile} isAdmin={(await auth())!.user.role === "ADMIN"} />
               </RestrictedAreaStudent>
             </Box>
           </Flex>
