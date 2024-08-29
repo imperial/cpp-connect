@@ -15,7 +15,7 @@ function createFakeOpportunity() {
   }
 }
 
-function createFakeEvent(): Omit<Event, "id" | "companyID" | "createdAt" | "updatedAt"> {
+function createFakeEvent(): Omit<Event, "id" | "companyID" | "createdAt" | "updatedAt" | "attachment"> {
   return {
     title: faker.company.buzzPhrase(),
     dateStart: faker.date.recent(),

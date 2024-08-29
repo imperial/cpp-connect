@@ -1,6 +1,7 @@
 "use client"
 
 import DateTimePicker from "@/components/DateTimePicker"
+import FileInput from "@/components/FileInput"
 import { PlusButton } from "@/components/buttons/PlusButton"
 import { FormInModal } from "@/components/forms/FormInModal"
 import { GenericFormModal } from "@/components/modals/GenericFormModal"
@@ -62,7 +63,7 @@ const UpsertEventForm = ({
           name="shortDescription"
           placeholder="E.g., Networking event in London."
           required
-          defaultValue={prevEvent?.location}
+          defaultValue={prevEvent?.shortDescription}
         />
       </label>
       <label>
@@ -77,6 +78,9 @@ const UpsertEventForm = ({
           defaultValue={prevEvent?.link}
         />
       </label>
+
+      <FileInput name="attachment" header="Attachment" value={prevEvent?.attachment} />
+
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
           Spaces*
