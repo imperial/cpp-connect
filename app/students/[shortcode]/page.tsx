@@ -10,7 +10,7 @@ import prisma from "@/lib/db"
 
 import styles from "./page.module.scss"
 
-import { OpportunityType } from "@prisma/client"
+import { OpportunityType, Role } from "@prisma/client"
 import { Box, Card, Flex, Heading, Separator, Text } from "@radix-ui/themes"
 import { format } from "date-fns"
 import { notFound } from "next/navigation"
@@ -155,7 +155,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
             </Flex>
             <Box position="absolute" top="2" right="2">
               <RestrictedAreaStudent showMessage={false} studentId={studentProfile.userId}>
-                <EditStudent prevStudentProfile={studentProfile} isAdmin={(await auth())!.user.role === "ADMIN"} />
+                <EditStudent prevStudentProfile={studentProfile} isAdmin={(await auth())!.user.role === Role.ADMIN} />
               </RestrictedAreaStudent>
             </Box>
           </Flex>

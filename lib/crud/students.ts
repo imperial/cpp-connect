@@ -8,7 +8,7 @@ import prisma from "../db"
 import { updateUpload } from "../files/updateUpload"
 import getStudentShortcode from "../getStudentShortcode"
 import { FileCategory, FormPassBackState } from "../types"
-import { OpportunityType } from "@prisma/client"
+import { OpportunityType, Role } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
 /**
@@ -20,7 +20,8 @@ const validateIsOpportunityType = (value: string | undefined): value is Opportun
 
 export const updateStudent = studentOnlyAction(
   async (_: FormPassBackState, formData: FormData, studentId: string): Promise<FormPassBackState> => {
-    const isAdmin = (await auth())!.user.role === "ADMIN"
+    // Student-only action, so we can safely assume the user exists
+    const isAdmin = (await auth())!.user.role === Role.ADMIN
 
     const course = formData.get("course")?.toString().trim()
     const gradMonth = formData.get("gradMonth")?.toString().trim()
