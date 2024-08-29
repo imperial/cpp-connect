@@ -67,8 +67,13 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
               </RestrictedAreaCompany>
             </Flex>
             <Text>{event.shortDescription}</Text>
+            {event.link === null && (
+              <Text color="gray" size="2">
+                ({event.spaces} spaces)
+              </Text>
+            )}
           </Flex>
-          {session?.user.role === Role.STUDENT && (
+          {session?.user.role === Role.STUDENT && event.link && (
             <>
               <Separator orientation="vertical" className={styles.Separator} />
               <Flex direction="column" justify="center" align="center" gap="4" p="5">
