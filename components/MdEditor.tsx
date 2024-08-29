@@ -1,5 +1,7 @@
 "use client"
 
+import styles from "./md-editor.module.scss"
+
 import {
   BlockTypeSelect,
   BoldItalicUnderlineToggles,
@@ -58,7 +60,7 @@ const MdEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
       markdown={markdown}
       ref={editorRef}
       onChange={onChange}
-      className={resolvedTheme === "dark" ? "dark-theme" : "light-theme"}
+      className={(resolvedTheme === "dark" ? "dark-theme" : "light-theme") + " " + styles.mdEditor}
     />
   )
 }
