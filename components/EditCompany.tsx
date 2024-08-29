@@ -70,9 +70,9 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
         <input type="hidden" readOnly name="summary" value={summary} />
       </label>
 
-      <FileInput name="banner" header="Banner" />
+      <FileInput name="banner" header="Banner" value={prevCompanyProfile.banner} />
 
-      <FileInput name="logo" header="Logo" />
+      <FileInput name="logo" header="Logo" value={prevCompanyProfile.logo} />
 
       <label>
         <Text as="div" size="2" mb="1" weight="bold">

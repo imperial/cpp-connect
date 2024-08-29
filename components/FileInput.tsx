@@ -5,9 +5,10 @@ import { useState } from "react"
  * Form input which allows the user to upload a file.
  * @param name - The name of the file input for the form.
  * @param header - The header of the file input to show on the page.
+ * @param value - The path to the current file, if any.
  */
-const FileInput = ({ name, header }: { name: string; header: string }) => {
-  const [file, setFile] = useState("")
+const FileInput = ({ name, header, value }: { name: string; header: string; value?: string | null }) => {
+  const [file, setFile] = useState(value || "")
 
   return (
     <>
