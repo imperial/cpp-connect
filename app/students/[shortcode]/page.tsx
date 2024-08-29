@@ -1,6 +1,7 @@
 import { auth } from "@/auth"
 import Chip from "@/components/Chip"
 import { EditStudent } from "@/components/EditStudent"
+import { FileViewer } from "@/components/FileViewer"
 import Link from "@/components/Link"
 import MdViewer from "@/components/MdViewer"
 import UserAvatar from "@/components/UserAvatar"
@@ -67,6 +68,8 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
     notFound()
   }
 
+  const firstName = studentProfile.user.name?.split(",").reverse()[0].trim()
+
   return (
     <RestrictedArea allowedRoles={["STUDENT", "COMPANY"]}>
       <Card className={styles.container}>
@@ -102,12 +105,14 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
                   session.user.role === "COMPANY" || session.user.id === studentProfile.userId
                 }
               >
-                <Flex align="center" gap="2" asChild>
-                  <Link href={`/api/uploads/${studentProfile.cv}`} target="_blank" underline="none">
-                    <BsFileEarmarkText title="download cv" color="var(--gray-12)" />
-                    <Text>{studentProfile.user.name?.split(",").reverse()[0].trim()}&apos;s CV</Text>
+                <FileViewer fileUrl={`/api/uploads/${studentProfile.cv}`} title={`${firstName}'s CV`}>
+                  <Link asChild href="">
+                    <Flex align="center" gap="2">
+                      <BsFileEarmarkText title="download cv" color="var(--gray-12)" />
+                      <Text>{firstName}&apos;s CV</Text>
+                    </Flex>
                   </Link>
-                </Flex>
+                </FileViewer>
               </RestrictedArea>
             )}
             <Flex align="center" gap="2">
