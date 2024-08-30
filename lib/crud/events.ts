@@ -24,6 +24,7 @@ const formConfig: FormConfig<EventFormData> = {
   },
   link: {
     validators: [urlValidator],
+    optional: true,
   },
   dateStart: {
     parser: parseDateTime,

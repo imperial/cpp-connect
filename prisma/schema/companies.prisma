@@ -53,7 +53,7 @@ model Event {
   spaces           Int
   location         String
   // Singular outbound link to the event
-  link             String
+  link             String?
   attachment       String?
 
   createdAt DateTime @default(now())
