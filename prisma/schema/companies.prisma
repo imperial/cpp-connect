@@ -3,7 +3,7 @@ model CompanyProfile {
   name          String
   // Unique slug for the company for use in URLs
   slug          String        @unique
-  summary       String        @default("")
+  summary       String?
   sector        String
   logo          String        @default("")
   banner        String        @default("")

@@ -22,7 +22,7 @@ import { useTheme } from "next-themes"
 import { FC, MutableRefObject } from "react"
 
 interface EditorProps {
-  markdown: string
+  markdown: string | null
   editorRef?: MutableRefObject<MDXEditorMethods | null>
   onChange: (markdown: string) => void
 }
@@ -57,7 +57,7 @@ const MdEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
         listsPlugin(),
         headingsPlugin(),
       ]}
-      markdown={markdown}
+      markdown={markdown ?? ""}
       ref={editorRef}
       onChange={onChange}
       className={(resolvedTheme === "dark" ? "dark-theme" : "light-theme") + " " + styles.mdEditor}
