@@ -67,7 +67,7 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
         <Card>
           <MdEditor markdown={summary} editorRef={mdxEditorRef} onChange={setSummary} />
         </Card>
-        <input type="hidden" readOnly name="summary" value={summary} />
+        <input type="hidden" readOnly name="summary" value={summary ?? ""} />
       </label>
 
       <FileInput name="banner" header="Banner" value={prevCompanyProfile.banner} />

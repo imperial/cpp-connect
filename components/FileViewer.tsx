@@ -29,7 +29,7 @@ export const FileViewer = ({ fileUrl, title, children }: { fileUrl: string; titl
           setIsImage(blob.type.match(/^image\//))
         })
     }
-  }, [])
+  }, [fileUrl, isImage])
 
   const close = () => setOpenState(false)
   return (
