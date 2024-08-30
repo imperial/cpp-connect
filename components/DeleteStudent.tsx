@@ -28,7 +28,7 @@ const DeleteStudentForm = ({ close, id }: DeleteStudentFormProps) => {
       close={close}
       submitButton={(_, isSubmitting) => {
         return (
-          <Button type="submit" color="red" className={styles.dangerButton}>
+          <Button type="submit" color="red" style={{ color: "white" }}>
             {isSubmitting ? <Spinner /> : "Delete"}
           </Button>
         )
@@ -57,7 +57,7 @@ const DeleteStudent = ({ id }: { id: string }) => {
       description="Are you sure you want to delete your profile?"
       form={formRenderer}
     >
-      <DeleteButton text="Delete Account" size="3" className={styles.dangerButton} />
+      <DeleteButton text="Delete Account" size="3" />
     </GenericFormModal>
   )
 }

@@ -1,5 +1,6 @@
 "use server"
 
+import { deleteFile } from "@/lib/files/deleteFile"
 import { updateUpload } from "@/lib/files/updateUpload"
 import { companyOnlyAction } from "@/lib/rbac"
 import { FileCategory, FormConfig, FormPassBackState } from "@/lib/types"
@@ -154,6 +155,20 @@ export const deleteEvent = companyOnlyAction(
     redirectOnDelete: boolean = false,
   ): Promise<FormPassBackState> => {
     let slug = ""
+
+    // Delete attachment
+    try {
+      const files = await prisma.event.findUnique({
+        where: { id: eventID },
+        select: { attachment: true },
+      })
+      if (files?.attachment) {
+        await deleteFile(files.attachment)
+      }
+    } catch (e: any) {
+      return { message: "An error occurred while deleting the attachment. Please try again later.", status: "error" }
+    }
+
     try {
       slug = (
         await prisma.event.delete({

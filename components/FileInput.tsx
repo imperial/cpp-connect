@@ -11,7 +11,8 @@ import { BsCloudUploadFill, BsSearch } from "react-icons/bs"
  * @param value - The path to the current file, if any.
  */
 const FileInput = ({ name, header, value }: { name: string; header: string; value?: string | null }) => {
-  const [file, setFile] = useState(value || "")
+  const [filePath, setFilePath] = useState(value ? `/api/uploads/${value}` : "")
+  const [file, setFile] = useState<File | null>(null)
 
   return (
     <>
@@ -28,17 +29,18 @@ const FileInput = ({ name, header, value }: { name: string; header: string; valu
               onChange={e => {
                 const file = e.target.files?.[0]
                 if (file) {
-                  setFile(file.name)
+                  setFile(file)
+                  setFilePath(file.name)
                 }
               }}
             />
 
             <BsCloudUploadFill size="1.2em" />
-            {file || "Upload file"}
+            {filePath ? filePath.split("/").at(-1) : "Upload file"}
           </label>
         </Button>
-        {file === value && ( // If a file is already uploaded, and hasn't been changed, show a view button
-          <FileViewer fileUrl={"/api/uploads/" + file} title={header}>
+        {filePath && ( // If a file is already uploaded, and hasn't been changed, show a view button
+          <FileViewer fileUrl={file ? URL.createObjectURL(file) : filePath} title={header}>
             <Button variant="outline" style={{ flexGrow: 0, cursor: "pointer" }}>
               <BsSearch />
               View

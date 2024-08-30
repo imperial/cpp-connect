@@ -5,11 +5,8 @@ import React from "react"
 
 type AnimatedButtonProps = React.ComponentProps<typeof Button>
 
-export const AnimatedButton: React.FC<AnimatedButtonProps> = props => {
-  console.log((props?.className || "") + " " + styles.animatedButton)
-  return (
-    <Button {...props} className={(props?.className || "") + " " + styles.animatedButton}>
-      {props.children}
-    </Button>
-  )
-}
+export const AnimatedButton: React.FC<AnimatedButtonProps> = props => (
+  <Button {...props} className={(props?.className || "") + " " + styles.animatedButton}>
+    {props.children}
+  </Button>
+)

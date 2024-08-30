@@ -4,9 +4,10 @@ import { promises as fs } from "fs"
 import { join } from "path"
 import path from "path"
 
-const MAX_FILE_SIZE = 1024 * 1024 * 4
+const MAX_FILE_SIZE = 1000 * 1000 - 1 // Under 1MB
 
-const allowedImageTypes = ["image/png", "image/jpeg", "image/gif"]
+// Must be the same as the allowed file types in the file viewer
+const allowedImageTypes = ["image/png", "image/jpeg", "image/gif", "image/svg+xml"]
 const allowedDocumentTypes = ["application/pdf", "text/plain"]
 
 /**
@@ -91,4 +92,4 @@ export const isFileNotEmpty = (file: File) => file.size > 0
  * @param file The file to get the extension of
  * @example getFileExtension(<some png image>) => "png"
  */
-export const getFileExtension = (file: File) => file.type.split("/")[1]
+export const getFileExtension = (file: File) => file.type.split("/")[1].split("+")[0]

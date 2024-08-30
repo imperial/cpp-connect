@@ -5,7 +5,6 @@ import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
 import { DeleteButton } from "./buttons/DeleteButton"
-import styles from "./delete-company.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
@@ -28,7 +27,7 @@ const DeleteCompanyForm = ({ close, name, id }: DeleteCompanyFormProps) => {
       close={close}
       submitButton={(_, isSubmitting) => {
         return (
-          <Button type="submit" color="red" className={styles.dangerButton}>
+          <Button type="submit" color="red" style={{ color: "white" }}>
             {isSubmitting ? <Spinner /> : "Delete"}
           </Button>
         )
@@ -57,7 +56,7 @@ export const DeleteCompany = ({ name, id }: { name: string; id: number }) => {
       description="Are you sure you want to delete this company?"
       form={formRenderer}
     >
-      <DeleteButton text="Delete Company" size="3" className={styles.dangerButton} />
+      <DeleteButton text="Delete Company" size="3" />
     </GenericFormModal>
   )
 }
