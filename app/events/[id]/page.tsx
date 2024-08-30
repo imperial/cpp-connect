@@ -1,6 +1,7 @@
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
 import { auth } from "@/auth"
 import { DeleteEvent } from "@/components/DeleteEvent"
+import { FileViewer } from "@/components/FileViewer"
 import Link from "@/components/Link"
 import MdViewer from "@/components/MdViewer"
 import { EditEvent } from "@/components/UpsertEvent"
@@ -16,7 +17,7 @@ import { format } from "date-fns"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import React from "react"
-import { BsBoxArrowUpRight, BsPinMap } from "react-icons/bs"
+import { BsBoxArrowUpRight, BsFileRichtext, BsPinMap } from "react-icons/bs"
 
 const EventPage = async ({ params }: { params: { id: string } }) => {
   const session = await auth()
@@ -80,7 +81,7 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
                 <Heading>Sign Up</Heading>
 
                 <Button size="3" className={styles.signupButton} asChild>
-                  <Link href={event.link} target="_blank">
+                  <Link href={event.link} target="_blank" radixProps={{ underline: "none" }}>
                     Register for this event
                   </Link>
                 </Button>
@@ -94,6 +95,21 @@ const EventPage = async ({ params }: { params: { id: string } }) => {
       </Card>
 
       <Card className={styles.aboutCard}>
+        {event.attachment && (
+          <Flex gap="2" direction="column">
+            <Heading>Attachment</Heading>
+
+            <FileViewer fileUrl={`/api/uploads/${event.attachment}`} title={`${event.title} attachment`}>
+              <Flex align="center" gap="2" asChild width="fit-content">
+                <Link href="">
+                  <BsFileRichtext />
+                  View details
+                </Link>
+              </Flex>
+            </FileViewer>
+          </Flex>
+        )}
+
         <Flex gap="2" direction="column">
           <Heading>Date & Time</Heading>
 
