@@ -13,19 +13,19 @@ import { BsBoxArrowRight } from "react-icons/bs"
 
 const ThemedLogo = dynamic(() => import("@/components/ThemedLogo"), { ssr: false })
 
-const LoginPage = async () => {
+const LoginPage = async ({ searchParams }: { searchParams?: { callbackUrl?: string } }) => {
   const signInEntraID = async () => {
     "use server"
     try {
       await signIn("microsoft-entra-id", {
-        redirectTo: "/",
+        redirectTo: searchParams?.callbackUrl ?? "/",
       })
     } catch (error) {
       // Signin can fail for a number of reasons, such as the user
       // not existing, or the user not having the correct role.
       // In some cases, you may want to redirect to a custom error
       if (error instanceof AuthError) {
-        return redirect(`/auth/errror?error=${error.type}`)
+        return redirect(`/auth/error?error=${error.type}`)
       }
 
       // Otherwise if a redirects happens NextJS can handle it
