@@ -6,7 +6,7 @@ import styles from "./fileViewer.module.scss"
 
 import { Button, Dialog, Flex } from "@radix-ui/themes"
 import Image from "next/image"
-import React, { ReactNode, useState } from "react"
+import React, { ReactNode, useEffect, useState } from "react"
 import { BsDownload, BsXCircle } from "react-icons/bs"
 
 /**
@@ -18,7 +18,18 @@ import { BsDownload, BsXCircle } from "react-icons/bs"
 export const FileViewer = ({ fileUrl, title, children }: { fileUrl: string; title: string; children: ReactNode }) => {
   const [openState, setOpenState] = useState(false)
 
-  const isImage = fileUrl.match(/\.(jpeg|jpg|gif|png|svg)$/)
+  const [isImage, setIsImage] = useState(fileUrl.match(/\.(jpeg|jpg|gif|png|svg)$/))
+
+  useEffect(() => {
+    // fetch the file to determine if it's an image
+    if (!isImage && fileUrl.startsWith("blob")) {
+      fetch(fileUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          setIsImage(blob.type.match(/^image\//))
+        })
+    }
+  }, [])
 
   const close = () => setOpenState(false)
   return (
