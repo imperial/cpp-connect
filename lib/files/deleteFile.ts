@@ -17,11 +17,17 @@ export const deleteFile = async (filePath: string) => {
   // Validate the file and path
   validateFilePath(filePath)
 
-  try {
-    await fs.unlink(join(process.env.UPLOAD_DIR, filePath))
-  } catch (e: any) {
-    throw new Error("Failed to delete file", {
-      cause: e,
-    })
+  // check if the file exists
+  const fileExists = await fs.stat(join(process.env.UPLOAD_DIR, filePath)).catch(() => false)
+
+  if (fileExists) {
+    // delete the file if it exists
+    try {
+      await fs.unlink(join(process.env.UPLOAD_DIR, filePath))
+    } catch (e: any) {
+      throw new Error("Failed to delete file", {
+        cause: e,
+      })
+    }
   }
 }
