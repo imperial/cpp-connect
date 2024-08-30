@@ -53,12 +53,12 @@ const formatEventDateTime = (dateStart: Date, dateEnd: Date | null) => {
     ""
   )
   const timezone = format(dateStart, "O")
-  const formattedDuration = dateEnd ? <>{formatDistanceStrict(dateStart, dateEnd)}</> : ""
+  const formattedDuration = dateEnd ? <>({formatDistanceStrict(dateStart, dateEnd)})</> : ""
 
   return (
     <>
       {formattedStart}
-      {formattedEnd} {timezone} ({formattedDuration})
+      {formattedEnd} {timezone} {formattedDuration}
     </>
   )
 }
