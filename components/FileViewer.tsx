@@ -18,7 +18,7 @@ import { BsDownload, BsXCircle } from "react-icons/bs"
 export const FileViewer = ({ fileUrl, title, children }: { fileUrl: string; title: string; children: ReactNode }) => {
   const [openState, setOpenState] = useState(false)
 
-  const isImage = fileUrl.match(/\.(jpeg|jpg|gif|png)$/)
+  const isImage = fileUrl.match(/\.(jpeg|jpg|gif|png|svg)$/)
 
   const close = () => setOpenState(false)
   return (
