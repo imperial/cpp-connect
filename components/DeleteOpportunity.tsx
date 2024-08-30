@@ -4,7 +4,6 @@ import { deleteOpportunity } from "@/lib/crud/opportunities"
 import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
-import styles from "./delete-company.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
@@ -29,7 +28,7 @@ const DeleteOpportunityForm = ({ close, companyID, id, redirectOnDelete = false 
       close={close}
       submitButton={(_, isSubmitting) => {
         return (
-          <Button type="submit" color="red" className={styles.dangerButton}>
+          <Button type="submit" color="red" style={{ color: "white" }}>
             {isSubmitting ? <Spinner /> : "Delete"}
           </Button>
         )
@@ -62,7 +61,7 @@ export const DeleteOpportunity = ({
       description="Are you sure you want to delete this opportunity?"
       form={formRenderer}
     >
-      <IconButton size="3" color="red">
+      <IconButton size="3" color="red" style={{ color: "white" }}>
         <FaTrash color="white" />
       </IconButton>
     </GenericFormModal>

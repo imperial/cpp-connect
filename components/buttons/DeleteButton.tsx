@@ -8,7 +8,7 @@ type DeleteButtonProps = {
 
 export const DeleteButton: React.FC<DeleteButtonProps> = props => {
   return (
-    <Button color="red" {...props}>
+    <Button color="red" {...props} style={{ color: "white" }}>
       <FaTrash />
       <Text>{props.text}</Text>
     </Button>

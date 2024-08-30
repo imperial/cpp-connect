@@ -45,7 +45,7 @@ export const FileViewer = ({ fileUrl, title, children }: { fileUrl: string; titl
               </Link>
             </Button>
 
-            <Button onClick={close} color="red">
+            <Button onClick={close} color="red" style={{ color: "white" }}>
               <BsXCircle />
               Close
             </Button>

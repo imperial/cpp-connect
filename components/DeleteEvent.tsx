@@ -4,7 +4,6 @@ import { deleteEvent } from "@/lib/crud/events"
 import { FormPassBackState } from "@/lib/types"
 
 import { SevereWarningCallout } from "./Callouts"
-import styles from "./delete-company.module.scss"
 import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
@@ -29,7 +28,7 @@ const DeleteEventForm = ({ close, companyID, id, redirectOnDelete = false }: Del
       close={close}
       submitButton={(_, isSubmitting) => {
         return (
-          <Button type="submit" color="red" className={styles.dangerButton}>
+          <Button type="submit" color="red" style={{ color: "white" }}>
             {isSubmitting ? <Spinner /> : "Delete"}
           </Button>
         )
@@ -62,8 +61,8 @@ export const DeleteEvent = ({
       description="Are you sure you want to delete this event?"
       form={formRenderer}
     >
-      <IconButton size="3" color="red">
-        <FaTrash color="white" />
+      <IconButton size="3" color="red" style={{ color: "white" }}>
+        <FaTrash />
       </IconButton>
     </GenericFormModal>
   )
