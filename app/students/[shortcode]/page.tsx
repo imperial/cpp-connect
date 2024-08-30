@@ -108,7 +108,7 @@ const StudentProfilePage = async ({ params }: { params: { shortcode: string } })
                 <FileViewer fileUrl={`/api/uploads/${studentProfile.cv}`} title={`${firstName}'s CV`}>
                   <Link asChild href="">
                     <Flex align="center" gap="2">
-                      <BsFileEarmarkText title="download cv" color="var(--gray-12)" />
+                      <BsFileEarmarkText title="view cv" color="var(--gray-12)" />
                       <Text>{firstName}&apos;s CV</Text>
                     </Flex>
                   </Link>
