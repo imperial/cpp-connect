@@ -4,7 +4,6 @@ import { getDepartment } from "./lib/graph"
 import { Prisma, Role } from "@prisma/client"
 import { DefaultSession, NextAuthConfig } from "next-auth"
 import MicrosoftEntraIDProfile from "next-auth/providers/microsoft-entra-id"
-import Nodemailer from "next-auth/providers/nodemailer"
 
 const ALLOWED_ADMINS = process.env.CPP_ALLOWED_ADMINS?.split(",") ?? []
 const ALLOWED_DEPARTMENTS = process.env.CPP_ALLOWED_DEPARTMENTS?.split(",") ?? ["Computing"]
@@ -141,7 +140,6 @@ export default {
     },
   },
 
-  // TODO: uncomment when we have a login page
   pages: {
     signIn: "/auth/login",
     verifyRequest: "/auth/login/partner/success",
