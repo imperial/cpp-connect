@@ -4,7 +4,7 @@ import { promises as fs } from "fs"
 import { join } from "path"
 import path from "path"
 
-const MAX_FILE_SIZE = 1024 * 1024 * 4
+const MAX_FILE_SIZE = 1000 * 1000 - 1 // Under 1MB
 
 // Must be the same as the allowed file types in the file viewer
 const allowedImageTypes = ["image/png", "image/jpeg", "image/gif", "image/svg+xml"]
