@@ -3,7 +3,7 @@ FROM node:18-alpine AS base
 FROM base as app_base
 
 # Make UPLOAD_DIRs
-ENV UPLOAD_DIR=/uploaded
+ENV UPLOAD_DIR=/uploads
 RUN mkdir $UPLOAD_DIR
 RUN mkdir $UPLOAD_DIR/banners $UPLOAD_DIR/cvs $UPLOAD_DIR/avatars $UPLOAD_DIR/logos $UPLOAD_DIR/attachments
 
@@ -54,7 +54,15 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 RUN chown node:node /app
 RUN chown -R node:node /uploads
 
+WORKDIR /uploads
+RUN ls
+WORKDIR /app
+
 USER node
+
+WORKDIR /uploads
+RUN ls
+WORKDIR /app
 
 EXPOSE 3000
 
