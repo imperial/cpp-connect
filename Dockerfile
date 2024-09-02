@@ -18,9 +18,6 @@ RUN \
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-
-# Add a dummy argument to force rebuild
-ARG CACHEBUST=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
