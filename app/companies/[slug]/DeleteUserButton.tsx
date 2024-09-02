@@ -21,7 +21,7 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
       const { status, message } = await deleteUser(user.id, window.location.pathname)
       if (status === "success") {
         if (user.id === session?.user.id) {
-          signOut({ callbackUrl: "/" })
+          await signOut({ callbackUrl: "/" })
         }
         setOpenState(false)
       } else {
