@@ -23,10 +23,6 @@ export const allowedToDeleteUser = async (userId: string): Promise<string | unde
   if (session.user.role === Role.ADMIN) {
     return
   }
-  // Users can NOT delete themselves
-  if (session.user.id === userId) {
-    return "You cannot delete yourself - contact an admin for help"
-  }
 
   // Company users can delete users in the same company
   if (session.user.role === Role.COMPANY) {
