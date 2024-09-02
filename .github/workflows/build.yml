@@ -108,7 +108,7 @@ jobs:
           context: .
           # pushes regardless; only main tagged with latest
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}, ghcr.io/imperial/cpp-connect:latest
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha, mode=max
