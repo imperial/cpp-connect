@@ -108,7 +108,7 @@ jobs:
           context: .
           # pushes regardless; only main tagged with latest
           push: true
-          tags: user/app:latest
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha, mode=max
