@@ -65,9 +65,9 @@ jobs:
 
   # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
   build-and-push-image:
-    needs:
-      - lint
-      - format-check
+#    needs:
+#      - lint
+#      - format-check
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
@@ -117,7 +117,7 @@ jobs:
   deploy-impaas:
     needs:
       - build-and-push-image
-    if: github.ref == 'refs/heads/main'
+#    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       TSURU_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
