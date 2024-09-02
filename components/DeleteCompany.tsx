@@ -22,7 +22,7 @@ const DeleteCompanyForm = ({ close, name, id }: DeleteCompanyFormProps) => {
   const deleteCompanyWithName = async (prevState: FormPassBackState, formData: FormData) => {
     const res = await deleteCompany(prevState, formData, id, name)
     if (res.status === "success") {
-      signOut({ callbackUrl: "/" })
+      await signOut({ callbackUrl: "/" })
     }
     return res
   }
