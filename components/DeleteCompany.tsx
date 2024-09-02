@@ -9,6 +9,7 @@ import { FormInModal } from "./forms/FormInModal"
 import { GenericFormModal } from "./modals/GenericFormModal"
 
 import { Button, Spinner, Text, TextField } from "@radix-ui/themes"
+import { signOut } from "next-auth/react"
 import { useCallback } from "react"
 
 interface DeleteCompanyFormProps {
@@ -18,8 +19,13 @@ interface DeleteCompanyFormProps {
 }
 
 const DeleteCompanyForm = ({ close, name, id }: DeleteCompanyFormProps) => {
-  const deleteCompanyWithName = async (prevState: FormPassBackState, formData: FormData) =>
-    deleteCompany(prevState, formData, id, name)
+  const deleteCompanyWithName = async (prevState: FormPassBackState, formData: FormData) => {
+    const res = await deleteCompany(prevState, formData, id, name)
+    if (res.status === "success") {
+      signOut({ callbackUrl: "/" })
+    }
+    return res
+  }
 
   return (
     <FormInModal
