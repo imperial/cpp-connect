@@ -1,6 +1,6 @@
 "use server"
 
-import { auth, signOut } from "@/auth"
+import { auth } from "@/auth"
 import { deleteFile } from "@/lib/files/deleteFile"
 import { studentOnlyAction } from "@/lib/rbac"
 
@@ -186,10 +186,6 @@ export const deleteStudent = studentOnlyAction(
     } catch (e: any) {
       return { message: "A database error occurred. Please try again later.", status: "error" }
     }
-
-    await signOut({
-      redirectTo: "/auth/login",
-    })
 
     return {
       status: "success",

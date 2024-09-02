@@ -11,6 +11,7 @@ import { GenericFormModal } from "./modals/GenericFormModal"
 
 import * as Accordion from "@radix-ui/react-accordion"
 import { Box, Button, ChevronDownIcon, Flex, Heading, Spinner, Text, TextField } from "@radix-ui/themes"
+import { signOut } from "next-auth/react"
 import { useCallback } from "react"
 
 interface DeleteStudentFormProps {
@@ -19,8 +20,15 @@ interface DeleteStudentFormProps {
 }
 
 const DeleteStudentForm = ({ close, id }: DeleteStudentFormProps) => {
-  const deleteStudentWithName = async (prevState: FormPassBackState, formData: FormData) =>
-    deleteStudent(prevState, formData, id)
+  const deleteStudentWithName = async (prevState: FormPassBackState, formData: FormData) => {
+    const res = await deleteStudent(prevState, formData, id)
+
+    if (res.status === "success") {
+      signOut({ callbackUrl: "/" })
+    }
+
+    return res
+  }
 
   return (
     <FormInModal
