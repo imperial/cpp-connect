@@ -29,6 +29,8 @@ RUN npm run build
 
 # Production image, copy all the files and run next
 FROM app_base AS runner
+WORKDIR /uploads
+RUN ls
 WORKDIR /app
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
