@@ -1,5 +1,12 @@
 FROM node:18-alpine AS base
 
+FROM base as app_base
+
+# Make UPLOAD_DIRs
+ENV UPLOAD_DIR=/uploads
+RUN mkdir $UPLOAD_DIR
+RUN mkdir $UPLOAD_DIR/banners $UPLOAD_DIR/cvs $UPLOAD_DIR/avatars $UPLOAD_DIR/logos $UPLOAD_DIR/attachments
+
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
@@ -21,13 +28,8 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
 # Production image, copy all the files and run next
-FROM base AS runner
+FROM app_base AS runner
 WORKDIR /app
-
-# Make UPLOAD_DIRs
-ENV UPLOAD_DIR=/uploads
-RUN mkdir $UPLOAD_DIR
-RUN mkdir $UPLOAD_DIR/banners $UPLOAD_DIR/cvs $UPLOAD_DIR/avatars $UPLOAD_DIR/logos $UPLOAD_DIR/attachments
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
