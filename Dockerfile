@@ -1,17 +1,21 @@
+# Use a specific version of the base image for better cache management
 FROM node:18-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
+
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+COPY package.json ./
+COPY yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+
+# Use cached dependencies whenever possible
+RUN --mount=type=cache,target=/root/.cache \
+  if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm install --frozen-lockfile; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
@@ -19,68 +23,37 @@ RUN \
 FROM base AS builder
 WORKDIR /app
 
-# Add a dummy argument to force rebuild
-ARG CACHEBUST=1
+# Copy necessary files only to optimize cache usage
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED 1
+# Disable telemetry during the build if needed
+ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Build the application
+RUN yarn run build || npm run build || (corepack enable pnpm && pnpm run build)
 
-# Production image, copy all the files and run next
-FROM base AS runner
+# Production image
+FROM node:18-alpine AS runner
 WORKDIR /app
 
-# Make UPLOAD_DIRs
-ENV UPLOAD_DIR=/uploads
-RUN mkdir $UPLOAD_DIR
-RUN mkdir $UPLOAD_DIR/banners $UPLOAD_DIR/cvs $UPLOAD_DIR/avatars $UPLOAD_DIR/logos $UPLOAD_DIR/attachments
-
-ENV NODE_ENV=production
-# Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED 1
-
-# RUN addgroup --system --gid 1001 nodejs
-# RUN adduser --system --uid 1001 nextjs
-
+# Copy built application and required files
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/prisma ./prisma
 
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown node:node .next
-
-# Copy prisma schema
-COPY --from=builder --chown=node:node /app/prisma ./prisma
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=node:node /app/.next/standalone ./
-COPY --from=builder --chown=node:node /app/.next/static ./.next/static
-
-
-# Take ownershuip of the app folder & upload
-RUN chown node:node /app
-RUN chown -R node:node /uploads
+# Set the correct permissions for the necessary directories
+RUN mkdir -p /uploads/banners /uploads/cvs /uploads/avatars /uploads/logos /uploads/attachments \
+  && chown -R node:node /app /uploads
 
 USER node
 
-# Install prisma so this user can use it
-RUN npm install prisma
+# Install Prisma CLI as a dev dependency to enable usage
+RUN npm install --production=false prisma
 
 EXPOSE 3000
-
 ENV PORT=3000
 
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD HOSTNAME="0.0.0.0" node server.js
+# Start the application
+CMD ["node", "server.js"]
