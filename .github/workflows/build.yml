@@ -10,11 +10,11 @@ env:
   IMPAAS_APP_NAME: cpp-connect
   IMPAAS_DEPLOY_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+on: [push]
+#  push:
+#    branches: ["main"]
+#  pull_request:
+#    branches: ["main"]
 
 jobs:
   lint:
@@ -65,9 +65,9 @@ jobs:
 
   # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
   build-and-push-image:
-#    needs:
-#      - lint
-#      - format-check
+    needs:
+      - lint
+      - format-check
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
@@ -135,7 +135,7 @@ jobs:
           tsuru app deploy -i ghcr.io/imperial/cpp-connect:latest -a cpp-connect
       - name: Run migrations
         run: |
-          tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE npm exec prisma migrate deploy" -a cpp-connect
+          tsuru app run "npx --yes prisma migrate deploy" -a cpp-connect
       - name: Set environment variables
         run: |
           tsuru env set -a cpp-connect NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }} EMAIL_SERVER_USER=${{ secrets.EMAIL_SERVER_USER }} EMAIL_SERVER_PASSWORD=${{ secrets.EMAIL_SERVER_PASSWORD }} EMAIL_SERVER_HOST=${{ secrets.EMAIL_SERVER_HOST }} EMAIL_SERVER_PORT=${{ secrets.EMAIL_SERVER_PORT }} EMAIL_FROM=${{ secrets.EMAIL_FROM }} AUTH_SECRET=${{ secrets.AUTH_SECRET }} AUTH_TRUST_HOST=true
