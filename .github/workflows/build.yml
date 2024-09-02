@@ -76,6 +76,7 @@ jobs:
       attestations: write
       id-token: write
     steps:
+      - uses: actions/checkout@v4
       - name: do thing
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -83,7 +84,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           image_name: ${{ env.IMAGE_NAME }}
-          dockerfile: '../../Dockerfile'
 #        uses: actions/checkout@v4
 #      - name: Set up Docker Buildx
 #        uses: docker/setup-buildx-action@v3
