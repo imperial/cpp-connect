@@ -60,7 +60,7 @@ RUN chown node:node /app
 RUN chown -R node:node $UPLOAD_DIR
 
 # Install Prisma
-RUN npm install prisma
+RUN npm install prisma --omit=dev
 
 USER node
 
