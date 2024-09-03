@@ -1,6 +1,6 @@
 FROM node:18-alpine AS base
 
-FROM base as app_base
+FROM base AS app_base
 
 # Make UPLOAD_DIRs
 ENV UPLOAD_DIR=/uploads
