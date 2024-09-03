@@ -133,6 +133,9 @@ jobs:
       - name: Deploy to ImPaaS
         run: |
           tsuru app deploy -i ghcr.io/imperial/cpp-connect:latest -a cpp-connect
+      - name: Create upload directories
+        run: |
+          tsuru app run "mkdir -p \$UPLOAD_DIR && cd \$UPLOAD_DIR && mkdir -p banners cvs avatars logos attachments" -a cpp-connect
       - name: Set database URL
         run: |
           tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE && echo \$DATABASE_URL" -a cpp-connect | grep "^postgres://" | xargs -I {} tsuru env set -a cpp-connect DATABASE_URL={}
