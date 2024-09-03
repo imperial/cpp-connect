@@ -25,6 +25,9 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN DATABASE_URL=postgres://$PGUSER:$PGPASSWORD@$PGHOST:$PGPORT/$PGDATABASE
+
 RUN npm run build
 
 # Production image, copy all the files and run next
@@ -53,7 +56,7 @@ RUN chown node:node /app
 RUN chown -R node:node $UPLOAD_DIR
 
 # Install Prisma
-RUN npm install @prisma/cli
+RUN npm install prisma
 
 USER node
 
@@ -61,4 +64,4 @@ EXPOSE 3000
 
 ENV PORT=3000
 
-CMD "DATABASE_URL=postgres://$PGUSER:$PGPASSWORD@$PGHOST:$PGPORT/$PGDATABASE" && HOSTNAME="0.0.0.0" && node server.js
+CMD HOSTNAME="0.0.0.0" && node server.js
