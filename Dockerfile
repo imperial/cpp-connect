@@ -29,8 +29,6 @@ RUN npm run build
 
 # Production image, copy all the files and run next
 FROM app_base AS runner
-WORKDIR /uploads
-RUN ls
 WORKDIR /app
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
@@ -54,18 +52,14 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 RUN chown node:node /app
 RUN chown -R node:node /uploads
 
-WORKDIR /uploads
-RUN ls
-WORKDIR /app
 
 USER node
 
-WORKDIR /uploads
-RUN ls
-WORKDIR /app
+# Install Prisma
+RUN npm install @prisma/cli
 
 EXPOSE 3000
 
 ENV PORT=3000
 
-CMD npx --yes prisma && HOSTNAME="0.0.0.0" && npm run start
+CMD "DATABASE_URL=postgres://$PGUSER:$PGPASSWORD@$PGHOST:$PGPORT/$PGDATABASE" && HOSTNAME="0.0.0.0" && node server.js
