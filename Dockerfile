@@ -68,4 +68,4 @@ EXPOSE 3000
 
 ENV PORT=3000
 
-CMD HOSTNAME="0.0.0.0" && npm run start
+CMD npx --yes prisma && HOSTNAME="0.0.0.0" && npm run start
