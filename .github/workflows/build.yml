@@ -17,106 +17,106 @@ on: [push]
 #    branches: ["main"]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: "npm"
-      - uses: actions/cache@v4 # From https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
-        with:
-          # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
-          path: |
-            ${{ github.workspace }}/.next/cache
-          # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-          # If source files changed but packages didn't, rebuild from a prior cache.
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-      - run: npm ci
-      - run: npm run lint
-
-  format-check:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: "npm"
-      - uses: actions/cache@v4 # From https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
-        with:
-          # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
-          path: |
-            ${{ github.workspace }}/.next/cache
-          # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-          # If source files changed but packages didn't, rebuild from a prior cache.
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-      - run: npm ci
-      - run: npm run format -- --check
+#  lint:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Use Node.js 20.x
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 20.x
+#          cache: "npm"
+#      - uses: actions/cache@v4 # From https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
+#        with:
+#          # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
+#          path: |
+#            ${{ github.workspace }}/.next/cache
+#          # Generate a new cache whenever packages or source files change.
+#          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+#          # If source files changed but packages didn't, rebuild from a prior cache.
+#          restore-keys: |
+#            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+#      - run: npm ci
+#      - run: npm run lint
+#
+#  format-check:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Use Node.js 20.x
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 20.x
+#          cache: "npm"
+#      - uses: actions/cache@v4 # From https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
+#        with:
+#          # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
+#          path: |
+#            ${{ github.workspace }}/.next/cache
+#          # Generate a new cache whenever packages or source files change.
+#          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+#          # If source files changed but packages didn't, rebuild from a prior cache.
+#          restore-keys: |
+#            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+#      - run: npm ci
+#      - run: npm run format -- --check
 
   # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
-  build-and-push-image:
-#    needs:
-#      - lint
-#      - format-check
-    runs-on: ubuntu-latest
-    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      # Uses the `docker/login-action` action to log in to the Container registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
-            type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
-      # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
-      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
-      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          # pushes regardless; only main tagged with latest
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}, ghcr.io/imperial/cpp-connect:latest
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha, mode=max
+#  build-and-push-image:
+##    needs:
+##      - lint
+##      - format-check
+#    runs-on: ubuntu-latest
+#    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+#    permissions:
+#      contents: read
+#      packages: write
+#      attestations: write
+#      id-token: write
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#      # Uses the `docker/login-action` action to log in to the Container registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
+#      - name: Log in to the Container registry
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ${{ env.REGISTRY }}
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
+#      - name: Extract metadata (tags, labels) for Docker
+#        id: meta
+#        uses: docker/metadata-action@v5
+#        with:
+#          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+#          tags: |
+#            type=ref,event=branch
+#            type=ref,event=tag
+#            type=ref,event=pr
+#            type=sha
+#            type=raw,value=latest,enable={{is_default_branch}}
+#      # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
+#      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
+#      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
+#      - name: Build and push Docker image
+#        id: push
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          # pushes regardless; only main tagged with latest
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}, ghcr.io/imperial/cpp-connect:latest
+#          labels: ${{ steps.meta.outputs.labels }}
+#          cache-from: type=gha
+#          cache-to: type=gha, mode=max
 
   # Deploy!
   deploy-impaas:
-    needs:
-      - build-and-push-image
+#    needs:
+#      - build-and-push-image
 #    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
@@ -135,7 +135,7 @@ jobs:
           tsuru app deploy -i ghcr.io/imperial/cpp-connect:latest -a cpp-connect
       - name: Set database URL
         run: |
-          tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE && echo \$DATABASE_URL" -a cpp-connect | tsuru env set -a cpp-connect DATABASE_URL=$_
+          tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE && echo \$DATABASE_URL" -a cpp-connect
       - name: Run migrations
         run: |
           tsuru app run "npm exec prisma migrate deploy" -a cpp-connect
