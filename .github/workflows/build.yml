@@ -138,7 +138,9 @@ jobs:
           tsuru app run "mkdir -p \$UPLOAD_DIR && cd \$UPLOAD_DIR && mkdir -p banners cvs avatars logos attachments" -a cpp-connect
       - name: Set database URL
         run: |
-          tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE && echo \$DATABASE_URL" -a cpp-connect | grep "^postgres://" | xargs -I {} tsuru env set -a cpp-connect DATABASE_URL={}
+          tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE && echo \$DATABASE_URL" -a cpp-connect \
+            | grep "^postgres://" \
+            | xargs -I {} tsuru env set -a cpp-connect DATABASE_URL={}
       - name: Run migrations
         run: |
           tsuru app run "npm exec prisma migrate deploy" -a cpp-connect
