@@ -52,11 +52,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 RUN chown node:node /app
 RUN chown -R node:node $UPLOAD_DIR
 
-
-USER node
-
 # Install Prisma
 RUN npm install @prisma/cli
+
+USER node
 
 EXPOSE 3000
 
