@@ -7,20 +7,22 @@ import { deleteUser } from "@/lib/crud/users"
 
 import { User } from "@prisma/client"
 import { Button, Dialog, Flex, Spinner } from "@radix-ui/themes"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import React, { useState, useTransition } from "react"
 
 export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> }) => {
+  const { data: session } = useSession()
   const [openState, setOpenState] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [serverMessage, setServerMessage] = useState("")
-
-  const { data: session } = useSession()
 
   const handleDelete = async () => {
     startTransition(async () => {
       const { status, message } = await deleteUser(user.id, window.location.pathname)
       if (status === "success") {
+        if (user.id === session?.user.id) {
+          await signOut({ callbackUrl: "/" })
+        }
         setOpenState(false)
       } else {
         setServerMessage(message || "Server error")
@@ -31,16 +33,7 @@ export const DeleteUserButton = ({ user }: { user: Pick<User, "id" | "email"> })
   return (
     <Dialog.Root open={openState} onOpenChange={setOpenState} defaultOpen={false}>
       <Dialog.Trigger>
-        <DeleteButton
-          text="Delete"
-          variant="outline"
-          disabled={session?.user.id === user.id}
-          title={
-            session?.user.id === user.id
-              ? "You can't delete yourself - contact the admins for help."
-              : `Delete user ${user.email}`
-          }
-        />
+        <DeleteButton text="Delete" title={`Delete user ${user.email}`} />
       </Dialog.Trigger>
       <DangerModalContent>
         <Dialog.Title>Are you sure?</Dialog.Title>

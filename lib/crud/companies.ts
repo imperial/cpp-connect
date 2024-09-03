@@ -1,6 +1,7 @@
 "use server"
 
 import { getCompanyLink } from "@/app/companies/getCompanyLink"
+import { auth } from "@/auth"
 import { deleteFile } from "@/lib/files/deleteFile"
 import { updateUpload } from "@/lib/files/updateUpload"
 import { adminOnlyAction, companyOnlyAction } from "@/lib/rbac"
@@ -221,6 +222,7 @@ export const updateCompany = companyOnlyAction(
 
 export const deleteCompany = companyOnlyAction(
   async (_: FormPassBackState, formData: FormData, companyId: number, name: string): Promise<FormPassBackState> => {
+    const session = await auth()
     if (!name) return { message: "Server error: company name is null.", status: "error" }
 
     const enteredName = formData.get("name")?.toString().trim()
@@ -256,6 +258,10 @@ export const deleteCompany = companyOnlyAction(
       return { message: "A database error occurred. Please try again later.", status: "error" }
     }
 
-    redirect("/companies")
+    if (session!.user.role === Role.ADMIN) {
+      redirect("/companies")
+    } else {
+      return { message: "Company deleted successfully.", status: "success" }
+    }
   },
 )
