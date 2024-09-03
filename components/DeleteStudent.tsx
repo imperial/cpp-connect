@@ -24,7 +24,7 @@ const DeleteStudentForm = ({ close, id }: DeleteStudentFormProps) => {
     const res = await deleteStudent(prevState, formData, id)
 
     if (res.status === "success") {
-      signOut({ callbackUrl: "/" })
+      await signOut({ callbackUrl: "/" })
     }
 
     return res
