@@ -135,7 +135,7 @@ jobs:
           tsuru app deploy -i ghcr.io/imperial/cpp-connect:latest -a cpp-connect
       - name: Set database URL
         run: |
-          tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE && echo \$DATABASE_URL" -a cpp-connect
+          tsuru app run "DATABASE_URL=postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE && echo \$DATABASE_URL" -a cpp-connect | grep 'postgres://' | tsuru env set -a cpp-connect DATABASE_URL=$_
       - name: Run migrations
         run: |
           tsuru app run "npm exec prisma migrate deploy" -a cpp-connect
