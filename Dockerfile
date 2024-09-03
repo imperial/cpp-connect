@@ -27,6 +27,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN DATABASE_URL=postgres://$PGUSER:$PGPASSWORD@$PGHOST:$PGPORT/$PGDATABASE
+RUN echo $DATABASE_URL
 
 RUN npm run build
 
@@ -45,6 +46,9 @@ COPY --from=builder /app/public ./public
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown node:node .next
+
+# Copy prisma schema
+COPY --from=builder --chown=node:node /app/prisma ./prisma
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
