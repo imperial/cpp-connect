@@ -171,18 +171,17 @@ jobs:
       - deploy-impaas
     if: needs.changes.outputs.migrations == 'true'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - name: Load cached node_modules
-        uses: actions/cache@v4
-        id: cache-primes
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
-      - name: Apply all pending migrations to the database
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install ImPaaS CLI
+        run: |
+          curl -fsSL "https://tsuru.io/get" | bash
+      - name: Setup ImPaaS CLI
+        run: |
+          tsuru target add impaas https://impaas.uk -s
+      - name: Set database URL
+        run: |
+          tsuru env set -a cpp-connect DATABASE_URL=${{ secrets.DATABASE_URL }}
+      - name: Run migrations
+        run: |
+          tsuru app run "npm exec prisma migrate deploy" -a cpp-connect
