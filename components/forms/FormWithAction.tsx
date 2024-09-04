@@ -1,5 +1,6 @@
 "use client"
 
+import { MAX_FILE_SIZE } from "@/lib/constants"
 import { FormPassBackState, ServerSideFormHandler } from "@/lib/types"
 
 import { ErrorCallout } from "../Callouts"
@@ -53,6 +54,22 @@ export function FormWithAction({
       return new Promise(async (resolve, _reject) => {
         startTransition(async () => {
           try {
+            // Check if the total size of the files is too large
+            let totalSize = 0
+            formData.forEach(value => {
+              if (value instanceof File) {
+                totalSize += value.size
+              }
+            })
+            if (totalSize >= MAX_FILE_SIZE) {
+              resolve({
+                status: "error",
+                message:
+                  "The total size of the files you are trying to upload is too large (total is over 1MB). Please try again with smaller files, or fewer files at once.",
+              })
+              return
+            }
+
             const res = await action(prevState, formData)
             if (res.status === "success") {
               onSuccess?.(res)
