@@ -170,6 +170,8 @@ jobs:
       - changes
       - deploy-impaas
     if: needs.changes.outputs.migrations == 'true'
+    env:
+      TSURU_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
