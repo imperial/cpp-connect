@@ -169,7 +169,7 @@ jobs:
     needs:
       - changes
       - deploy-impaas
-    if: github.ref == 'refs/heads/main' && needs.changes.outputs.migrations == 'true'
+    if: needs.changes.outputs.migrations == 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
