@@ -50,7 +50,7 @@ export function FormWithAction({
   const [isPending, startTransition] = useTransition()
   const wrappedAction = useCallback(
     (prevState: FormPassBackState, formData: FormData): Promise<FormPassBackState> => {
-      return new Promise(async (resolve, reject) => {
+      return new Promise(async (resolve, _reject) => {
         startTransition(async () => {
           try {
             const res = await action(prevState, formData)
@@ -58,8 +58,11 @@ export function FormWithAction({
               onSuccess?.(res)
             }
             resolve(res)
-          } catch (e) {
-            reject(e)
+          } catch (e: any) {
+            resolve({
+              status: "error",
+              message: `An unexpected error occurred: ${e.message}. This may be related to the nginx configuration. Please contact us if this error persists.`,
+            })
           }
         })
       })
