@@ -34,4 +34,5 @@ const StudentsPage = async () => {
   )
 }
 
+export const dynamic = "force-dynamic"
 export default StudentsPage
