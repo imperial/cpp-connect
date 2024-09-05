@@ -64,8 +64,7 @@ export function FormWithAction({
             if (totalSize >= MAX_FILE_SIZE) {
               resolve({
                 status: "error",
-                message:
-                  "The total size of the files you are trying to upload is too large (total is over 1MB). Please try again with smaller files, or fewer files at once.",
+                message: `The total size of the files you are trying to upload is too large (total is over ~${Math.round(MAX_FILE_SIZE / 1_000_000)}MB). Please try again with smaller files, or fewer files at once.`,
               })
               return
             }
