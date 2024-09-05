@@ -73,6 +73,25 @@ From the app’s Entra ID App Registration, navigate to “Certificates & secret
 
 Copy the value from the secret into the `MS_ENTRA_CLIENT_SECRET` row in the `.env.local` file.
 
+#### `EMAIL_SERVER_HOST`, `EMAIL_SERVER_PASSWORD`, `EMAIL_SERVER_PORT`, and `EMAIL_SERVER_USER`
+
+These variables are for Nodemailer and sending emails with magic links to company users. Using the APP registration from the previous step, follow this tutorial: [`https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/send-email-smtp/smtp-authentication`](https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/send-email-smtp/smtp-authentication). You will likely need to follow the prerequisites (on the Microsoft tutorial) as well.
+
+After each of these steps is complete, you should have the following resources on Azure:
+1. An Email Communication Service
+2. A Communication Service
+3. An Email Communication Service Domain
+
+Fill in .env.local with the following environment variable values:
+Set the EMAIL_SERVER_HOST value to
+```<Azure Communication Services Resource name>.<Entra Application ID>.<Entra Tenant ID>```
+(See the tutorial above for more details)
+Set the Email_SERVER_PASSWORD to your App Registration's client secret value
+Set the EMAIL_SERVER_PORT to 587
+Set the EMAIL_SERVER_USER to your Email Communication Service Domain email address
+
+Ensure that NEXTAUTH_URL is set to the value "http://localhost:3000" in the .env.local file. Note "http" (not "https") is critical here, since this url is what the user will be redirected to after authentication with Entra ID. Since the development app can't have a TLS certificate, if the protocol is https, the user will be redirected to an invalid url after authenticating. Additionally, Entra ID will error since it is expecting a redirect url beginning with "http."
+
 ### Required steps for uploads
 
 The application expects certain directories to be present in `UPLOAD_DIR` (by default, `UPLOAD_DIR` is `./uploads`).
@@ -207,15 +226,6 @@ This is especially useful if you've changed the database seed data and need to r
 - `.tsuruignore` - stop large files being uploaded to ImPaaS due to file size restrictions
 - `.prettierrc` - config for code formatter
 
-# CI/CD
-
-The repo has GitHub Actions setup. On push to `main` or any branch with a PR to `main`, the following happens:
-
-1. Linting and format checks run
-2. A build of the application's docker image (which by extension builds the app) is ran
-
-On push to main, the built docker image is uploaded to the GitHub Container Registry under the name `ghcr.io/imperial/cpp-connect`
-
 # Deployment Guide
 
 ## Setting Up ImPaaS
@@ -297,6 +307,52 @@ Add an additional redirectURI in the Azure portal with platform “Web” and ad
 
 Additionally, you might need to check [https://authjs.dev/getting-started/deployment](https://authjs.dev/getting-started/deployment) if you are having issues with our chosen auth library.
 
+## Setting Environment Variables on Impaas
+
+There are some environment variables that need to be set in order for the app to deploy properly (and function.)
+
+Impaas manages envirnment variables through two commands.
+
+To see what environment variables are currently set, run:
+```bash
+impaas env get -a cpp-connect
+```
+
+To set an environment variable for the cpp-connect app, run:
+```bash
+impaas env set -a cpp-connect VAR1=value1 VAR2=value2 ...
+```
+
+Environment variables set in this way are automatically included in any container deployed under the cpp-connect app.
+
+The following variables are required for the app to function properly:
+1. **AUTH_SECRET** (Same as in dev)
+2. **AUTH_TRUST_HOST** (Same as in dev)
+3. **DATABASE_URL** 
+4. **EMAIL_FROM** (Same as in dev)
+5. **EMAIL_SERVER_HOST** (Same as in dev)
+6. **EMAIL_SERVER_PASSWORD** (Same as in dev)
+7. **EMAIL_SERVER_PORT** (Same as in dev)
+8. **EMAIL_SERVER_USER** (Same as in dev)
+9. **MS_ENTRA_CLIENT_ID** (Same as in dev)
+10. **MS_ENTRA_CLIENT_SECRET** (Same as in dev)
+11. **MS_ENTRA_TENANT_ID** (Same as in dev)
+12. **NEXTAUTH_URL**
+
+To get the DATABASE_URL, run the following command:
+```bash
+impaas app run "echo postgres://\$PGUSER:\$PGPASSWORD@\$PGHOST:\$PGPORT/\$PGDATABASE" -a cpp-connect
+```
+
+Then, with the output, run:
+```bash
+impaas env set -a cpp-connect DATABASE_URL={OUTPUT FROM PREVIOUS COMMAND}
+```
+
+NEXTAUTH_URL should simply be "https://cpp-connect.impaas.uk/" or whatever the url of the deployed Impaas app is.
+
+Note: variables such as $PGUSER, $PGPASSWORD, $TSURU_APPDIR, etc. are set by Impaas automatically (assuming the database has been set correctly in the previous steps)
+
 ## Deploying
 
 Deploy the app on ImPaaS using:
@@ -313,3 +369,21 @@ To view logs for the deployed app, run the following:
 
 > [!NOTE]
 > See logs for your deployed app: `impaas app log -a <APP_NAME> -l 100 --follow`
+
+# CI/CD
+
+The repo has GitHub Actions setup. On push to `main` or any branch with a PR to `main`, the following happens:
+
+1. The action calculates which files have been changed.
+2. Dependencies are installed on the runner (for use in later steps.)
+2. A type check, style check, and format checks runs.
+4. If the "event" is a merge into main, then the image is built, pushed to the registry, and then deployed to ImPaaS.
+5. If the database scheme has changed (i.e. the prisma/ folder has changed,) then run migrations on the ImPaaS Postgres DB.
+
+On push to main, the built docker image is uploaded to the GitHub Container Registry under the name `ghcr.io/imperial/cpp-connect`
+
+## GitHub Secrets
+
+There are two secrets which need to be set manually. The first is the IMPAAS_DEPLOY_TOKEN, which allows the pipeline to authenticate with Impaas. This needs to be obtained from Impaas, but requires elevated permissions. If this needs to be set or changed, speak to someone who has these elevated permissions on Impaas.
+
+The second is the DATABASE_URL, which allows the workflow to run migrations from the runner. This should be set to the exact same value as the DATABASE_URL Impaas environment variable.
