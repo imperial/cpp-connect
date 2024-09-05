@@ -1,20 +1,18 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/https://github.com/imperial/cpp-connect/tree/mainbuilding-and-testing-nodejs
+name: CI pipeline
 
-name: Node.js CI
-
-# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   IMPAAS_APP_NAME: cpp-connect
-  IMPAAS_DEPLOY_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+on: [push]
+#  push:
+#    branches:
+#      - main
+#      - 'feat-*'
+#  pull_request:
+#    branches:
+#      - main
 
 jobs:
   changes:
@@ -30,16 +28,68 @@ jobs:
             migrations:
               - 'prisma/migrations/**'
 
+  install-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: cache-primes
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci
+
+  type-check:
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Load cached node_modules
+        uses: actions/cache@v4
+        id: cache-primes
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
+      - name: Prisma generate
+        run: npx prisma generate
+      - name: Check types
+        run: npm run type-check
+
+  style-check:
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Load cached node_modules
+        uses: actions/cache@v4
+        id: cache-primes
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
+      - name: Run Prettier
+        run: npm run format -- --check
+
   lint:
     runs-on: ubuntu-latest
-
+    needs: install-dependencies
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: "npm"
       - uses: actions/cache@v4 # From https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
         with:
           # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
@@ -50,37 +100,14 @@ jobs:
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-      - run: npm ci
       - run: npm run lint
 
-  format-check:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: "npm"
-      - uses: actions/cache@v4 # From https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
-        with:
-          # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
-          path: |
-            ${{ github.workspace }}/.next/cache
-          # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-          # If source files changed but packages didn't, rebuild from a prior cache.
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-      - run: npm ci
-      - run: npm run format -- --check
-
-  # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
   build-and-push-image:
     needs:
+      - type-check
+      - style-check
       - lint
-      - format-check
+#    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
@@ -89,10 +116,10 @@ jobs:
       attestations: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      # Uses the `docker/login-action` action to log in to the Container registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
@@ -119,17 +146,13 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          # pushes regardless; only main tagged with latest
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha, mode=max
+          no-cache: true
 
-  # Deploy!
   deploy-impaas:
-    needs:
-      - build-and-push-image
+    needs: build-and-push-image
 #    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
@@ -137,15 +160,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Install ImPaaS CLI
-        run: |
-          curl -fsSL "https://tsuru.io/get" | bash
-      - name: Setup ImPaaS CLI
-        run: |
-          tsuru target add impaas https://impaas.uk -s
-      - name: Deploy to ImPaaS
-        run: |
-          tsuru app deploy -i ghcr.io/imperial/cpp-connect:latest -a cpp-connect
+      - name: Install tsuru CLI
+        run: curl -fsSL "https://tsuru.io/get" | bash
+      - name: Add impaas target
+        run: tsuru target add impaas https://impaas.uk -s
+      - name: Deploy app
+        run: tsuru app deploy -i ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest -a ${{ env.IMPAAS_APP_NAME }}
       - name: Create upload directories
         run: |
           tsuru app run "mkdir -p \$UPLOAD_DIR && cd \$UPLOAD_DIR && mkdir -p banners cvs avatars logos attachments" -a cpp-connect
@@ -169,21 +189,20 @@ jobs:
     needs:
       - changes
       - deploy-impaas
-    if: needs.changes.outputs.migrations == 'true'
-    env:
-      TSURU_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
+#    if: github.ref == 'refs/heads/main' && needs.changes.outputs.migrations == 'true'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Install ImPaaS CLI
-        run: |
-          curl -fsSL "https://tsuru.io/get" | bash
-      - name: Setup ImPaaS CLI
-        run: |
-          tsuru target add impaas https://impaas.uk -s
-      - name: Set database URL
-        run: |
-          tsuru env set -a cpp-connect DATABASE_URL=${{ secrets.DATABASE_URL }}
-      - name: Run migrations
-        run: |
-          tsuru app run "npm exec prisma migrate deploy" -a cpp-connect
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Load cached node_modules
+        uses: actions/cache@v4
+        id: cache-primes
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
+      - name: Apply all pending migrations to the database
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
