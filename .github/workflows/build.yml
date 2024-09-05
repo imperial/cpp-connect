@@ -5,14 +5,14 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   IMPAAS_APP_NAME: cpp-connect
 
-on: [push]
-#  push:
-#    branches:
-#      - main
-#      - 'feat-*'
-#  pull_request:
-#    branches:
-#      - main
+on:
+  push:
+    branches:
+      - main
+      - 'feat-*'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   changes:
@@ -106,9 +106,8 @@ jobs:
       - type-check
       - style-check
       - lint
-#    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
       packages: write
@@ -125,7 +124,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
@@ -137,9 +135,6 @@ jobs:
             type=ref,event=pr
             type=sha
             type=raw,value=latest,enable={{is_default_branch}}
-      # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
-      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
-      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
@@ -152,7 +147,7 @@ jobs:
 
   deploy-impaas:
     needs: build-and-push-image
-#    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       TSURU_TOKEN: ${{ secrets.IMPAAS_DEPLOY_TOKEN }}
@@ -188,7 +183,7 @@ jobs:
     needs:
       - changes
       - deploy-impaas
-#    if: github.ref == 'refs/heads/main' && needs.changes.outputs.migrations == 'true'
+    if: github.ref == 'refs/heads/main' && needs.changes.outputs.migrations == 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
