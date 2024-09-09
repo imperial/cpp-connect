@@ -1,10 +1,9 @@
+import { MAX_FILE_SIZE } from "@/lib/constants"
 import { FileCategory } from "@/lib/types"
 
 import { promises as fs } from "fs"
 import { join } from "path"
 import path from "path"
-
-const MAX_FILE_SIZE = 1000 * 1000 - 1 // Under 1MB
 
 // Must be the same as the allowed file types in the file viewer
 const allowedImageTypes = ["image/png", "image/jpeg", "image/gif", "image/svg+xml"]

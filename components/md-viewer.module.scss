@@ -5,6 +5,11 @@
     border-collapse: collapse;
     margin: 1em 0;
   }
+  ul,
+  ol {
+    text-indent: -1.2em;
+    padding-left: 1em;
+  }
   table,
   th,
   td {
@@ -28,9 +33,4 @@
   p {
     margin: revert;
   }
-}
-
-.tosViewer {
-  list-style-position: inside;
-  line-height: 2em;
 }
