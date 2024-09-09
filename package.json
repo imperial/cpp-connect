@@ -11,6 +11,7 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "format": "prettier --write '{app,components,lib}/**/*.{js,jsx,ts,tsx,json,css,scss,md}'",
+    "style-check": "prettier --check '{app,components,lib}/**/*.{ts,tsx,js,jsx,json,css,scss,md}'",
     "prepare": "husky",
     "db:pull": "dotenv -e .env.local prisma db pull",
     "db:push": "dotenv -e .env.local prisma db push",

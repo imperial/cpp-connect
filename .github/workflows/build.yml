@@ -81,7 +81,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
       - name: Run Prettier
-        run: npm run format -- --check
+        run: npm run style-check
 
   lint:
     runs-on: ubuntu-latest
