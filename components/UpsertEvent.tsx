@@ -78,7 +78,7 @@ const UpsertEventForm = ({
         />
       </label>
 
-      <FileInput name="attachment" header="Attachment" value={prevEvent?.attachment} />
+      <FileInput name="attachment" header="Attachment" value={prevEvent?.attachment} category="ANY" />
 
       <label>
         <Text as="div" size="2" mb="1" weight="bold">

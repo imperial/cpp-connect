@@ -2,7 +2,7 @@
 
 import { SLUG_START, slugComputer } from "@/app/companies/slug"
 import { updateCompany } from "@/lib/crud/companies"
-import { ServerSideFormHandler } from "@/lib/types"
+import { FileCategory, ServerSideFormHandler } from "@/lib/types"
 
 import FileInput from "./FileInput"
 import { FormInModal } from "./forms/FormInModal"
@@ -10,10 +10,8 @@ import { GenericFormModal } from "./modals/GenericFormModal"
 
 import { MDXEditorMethods } from "@mdxeditor/editor"
 import { CompanyProfile } from "@prisma/client"
-import { InfoCircledIcon } from "@radix-ui/react-icons"
-import { Pencil1Icon } from "@radix-ui/react-icons"
-import { Tooltip } from "@radix-ui/themes"
-import { Card, Flex, IconButton, Text, TextField } from "@radix-ui/themes"
+import { InfoCircledIcon, Pencil1Icon } from "@radix-ui/react-icons"
+import { Card, Flex, IconButton, Text, TextField, Tooltip } from "@radix-ui/themes"
 import dynamic from "next/dynamic"
 import React, { useRef, useState } from "react"
 
@@ -70,9 +68,9 @@ const EditCompanyForm = ({ close, prevCompanyProfile }: { close: () => void; pre
         <input type="hidden" readOnly name="summary" value={summary ?? ""} />
       </label>
 
-      <FileInput name="banner" header="Banner" value={prevCompanyProfile.banner} />
+      <FileInput name="banner" header="Banner" value={prevCompanyProfile.banner} category={FileCategory.IMAGE} />
 
-      <FileInput name="logo" header="Logo" value={prevCompanyProfile.logo} />
+      <FileInput name="logo" header="Logo" value={prevCompanyProfile.logo} category={FileCategory.IMAGE} />
 
       <label>
         <Text as="div" size="2" mb="1" weight="bold">
