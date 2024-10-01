@@ -1,13 +1,11 @@
-import { MAX_FILE_SIZE } from "@/lib/constants"
+"use server"
+
+import { MAX_FILE_SIZE, allowedDocumentTypes, allowedImageTypes } from "@/lib/constants"
 import { FileCategory } from "@/lib/types"
 
 import { promises as fs } from "fs"
 import { join } from "path"
 import path from "path"
-
-// Must be the same as the allowed file types in the file viewer
-const allowedImageTypes = ["image/png", "image/jpeg", "image/gif", "image/svg+xml"]
-const allowedDocumentTypes = ["application/pdf", "text/plain"]
 
 /**
  * Save a file to the file system
@@ -24,7 +22,7 @@ export const saveFile = async (filePath: string, file: File, fileType: FileCateg
 
   // Validate the file and path
   validateFile(file, fileType)
-  if (!validateFilePath(filePath)) {
+  if (!(await validateFilePath(filePath))) {
     throw new Error("Invalid path", {
       cause: "The path provided is invalid",
     })
@@ -38,7 +36,7 @@ export const saveFile = async (filePath: string, file: File, fileType: FileCateg
  * @param filePath The path to validate
  * @returns Whether the path is safe
  */
-export const validateFilePath = (filePath: string): boolean => {
+export const validateFilePath = async (filePath: string): Promise<boolean> => {
   // Normalize the path to move all the ../ to the front of the path
   // Apply regex to remove any ../ from the front of the path
   const safePath = path.normalize(filePath).replace(/^(\.\.(\/|\\|$))+/, "")
@@ -84,11 +82,11 @@ const validateFile = (file: File, fileType: FileCategory) => {
  * Can be used to check if a file has been provided
  * @param file The file to check
  */
-export const isFileNotEmpty = (file: File) => file.size > 0
+export const isFileNotEmpty = async (file: File) => file.size > 0
 
 /**
  * Get the file extension of a file
  * @param file The file to get the extension of
  * @example getFileExtension(<some png image>) => "png"
  */
-export const getFileExtension = (file: File) => file.type.split("/")[1].split("+")[0]
+export const getFileExtension = async (file: File) => file.type.split("/")[1].split("+")[0]
