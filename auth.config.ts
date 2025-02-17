@@ -6,7 +6,7 @@ import { DefaultSession, NextAuthConfig } from "next-auth"
 import MicrosoftEntraIDProfile from "next-auth/providers/microsoft-entra-id"
 
 const ALLOWED_ADMINS = process.env.CPP_ALLOWED_ADMINS?.split(",") ?? []
-const ALLOWED_DEPARTMENTS = process.env.CPP_ALLOWED_DEPARTMENTS?.split(",") ?? ["Computing"]
+const ALLOWED_DEPARTMENTS = process.env.CPP_ALLOWED_DEPARTMENTS?.split(",") ?? ["Department of Computing", "Computing"]
 
 declare module "@auth/core/adapters" {
   interface AdapterUser {
@@ -24,12 +24,14 @@ declare module "next-auth" {
   interface User {
     role: Role
   }
+
   interface Session {
     user: {
       role: Role
       id: string
     } & DefaultSession["user"]
   }
+
   interface JWT {
     role: Role
     id: string
@@ -106,10 +108,15 @@ export default {
         // using magic sign in
         // If they are allowed to do that the COMPANY check will have already passed
       } else if (!account?.access_token || email?.verificationRequest) {
+        console.error("Authentication failed for user", user, account, email)
         return false
       }
       const department = await getDepartment(account?.access_token)
-      return department && ALLOWED_DEPARTMENTS.includes(department)
+      const isCorrectDepartment = department && ALLOWED_DEPARTMENTS.includes(department)
+      if (!isCorrectDepartment) {
+        console.error(`User ${user.name} is from department ${department}, access denied`)
+      }
+      return isCorrectDepartment
     },
     jwt({ token, user }) {
       if (user) {
