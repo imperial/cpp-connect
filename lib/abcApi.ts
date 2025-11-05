@@ -1,13 +1,13 @@
 "use server"
 
-// October is designated as the cut off month for determining the current academic year
+// October is designated as the cut-off month for determining the current academic year
 const ROLLOVER_MONTH = 9
 
 const ABC_ROOT = process.env.ABC_API || "https://abc-api.doc.ic.ac.uk/"
 const ABC_USERNAME = process.env.API_ROLE_USERNAME || "adumble"
 const ABC_PASSWORD = process.env.API_ROLE_PASSWORD || "bob"
 
-const abcWithYear = `${ABC_ROOT}/${currentShortYear()}`
+const abcCurrentYear = `${ABC_ROOT}/${currentShortYear()}`
 
 /**
  * Returns the current academic year as a short string using today's date: e.g. 14 Feb 2025 -> '2425'
@@ -24,7 +24,7 @@ function currentShortYear(): string {
 }
 
 async function fetchFromAbc(endpoint: string, xProxiedUser?: string) {
-  const credentials = btoa(`${ABC_USERNAME}:${ABC_PASSWORD}`)
+  const credentials = Buffer.from(`${ABC_USERNAME}:${ABC_PASSWORD}`).toString("base64")
 
   return fetch(endpoint, {
     headers: new Headers({
@@ -35,7 +35,7 @@ async function fetchFromAbc(endpoint: string, xProxiedUser?: string) {
 }
 
 async function getLogin(email: string): Promise<string | null> {
-  const endpoint = `${abcWithYear}/identity?email=${encodeURIComponent(email)}`
+  const endpoint = `${abcCurrentYear}/identity?email=${encodeURIComponent(email)}`
   const identity = await fetchFromAbc(endpoint)
   if (!identity.ok) return null
   const { login } = await identity.json()
@@ -43,14 +43,22 @@ async function getLogin(email: string): Promise<string | null> {
 }
 
 async function getDegreeYear(login: string): Promise<string | null> {
-  const endpoint = `${abcWithYear}/students/${login}`
+  const endpoint = `${abcCurrentYear}/students/${login}`
   const student = await fetchFromAbc(endpoint, login)
   if (!student.ok) return null
-  const json = await student.json()
-  return json.degree_year
+  const { degree_year } = await student.json()
+  return degree_year
 }
 
-export async function isPlacementStudent(email: string): Promise<boolean> {
+/**
+ * Returns `true` only if the student is a third-year Master's student. This should be used to restrict the visibility of opportunities marked as placements.
+ *
+ * @param email - The student's email address.
+ * @returns {Promise<boolean>} Resolves to `true` when the student is a third-year Master's student; otherwise `false`.
+ */
+export async function isPlacementStudent(email: string | null | undefined): Promise<boolean> {
+  if (!email) return false
+
   const login = await getLogin(email)
   if (!login) return false
 
