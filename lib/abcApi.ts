@@ -2,7 +2,7 @@
 
 import { currentShortYear } from "@/lib/util/academicYear"
 
-const ABC_ROOT = process.env.ABC_API || "https://abc-api.doc.ic.ac.uk/"
+const ABC_ROOT = process.env.ABC_API || "https://abc-api.doc.ic.ac.uk"
 const ABC_USERNAME = process.env.API_ROLE_USERNAME || "adumble"
 const ABC_PASSWORD = process.env.API_ROLE_PASSWORD || "bob"
 
