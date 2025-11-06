@@ -382,6 +382,10 @@ The following variables are required for the app to function properly:
 10. **MS_ENTRA_CLIENT_SECRET** (Same as in dev)
 11. **MS_ENTRA_TENANT_ID** (Same as in dev)
 12. **NEXTAUTH_URL**
+13. **ABC_API**
+14. **API_ROLE_USERNAME** (super user credentials for ABC API)
+15. **API_ROLE_PASSWORD** (super user credentials for ABC API)
+
 
 To get the DATABASE_URL, run the following command:
 
