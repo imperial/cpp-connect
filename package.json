@@ -47,7 +47,7 @@
     "lint-staged": "^15.2.7",
     "mime-types": "^2.1.35",
     "mysql2": "^3.10.3",
-    "next": "^14.2.25",
+    "next": "^14.2.35",
     "next-auth": "^5.0.0-beta.19",
     "next-themes": "^0.3.0",
     "nodemailer": "^6.9.14",
