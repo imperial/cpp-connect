@@ -40,8 +40,8 @@ export const updateUpload = async (
   getOldPath: () => Promise<string | null | undefined>,
   setNewPath: (path: string) => Promise<any>,
 ): Promise<FormPassBackState> => {
-  if (isFileNotEmpty(file)) {
-    const filePath = `${folder}/${randomBytes(16).toString("hex")}.${getFileExtension(file)}`
+  if (await isFileNotEmpty(file)) {
+    const filePath = `${folder}/${randomBytes(16).toString("hex")}.${await getFileExtension(file)}`
 
     // Save the new file to the file system
     try {

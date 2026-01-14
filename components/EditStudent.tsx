@@ -3,7 +3,7 @@
 import { DangerZone } from "@/components/DeleteStudent"
 import DialogTOS from "@/components/DialogTOS"
 import { updateStudent } from "@/lib/crud/students"
-import { ServerSideFormHandler } from "@/lib/types"
+import { FileCategory, ServerSideFormHandler } from "@/lib/types"
 
 import Chip from "./Chip"
 import FileInput from "./FileInput"
@@ -125,8 +125,13 @@ const EditStudentForm = ({
           </Flex>
         </label>
 
-        <FileInput name="cv" header="CV" value={prevStudentProfile.cv} />
-        <FileInput name="avatar" header="Profile Picture" value={prevStudentProfile.user.image} />
+        <FileInput name="cv" header="CV" value={prevStudentProfile.cv} category={FileCategory.DOCUMENT} />
+        <FileInput
+          name="avatar"
+          header="Profile Picture"
+          value={prevStudentProfile.user.image}
+          category={FileCategory.IMAGE}
+        />
 
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
