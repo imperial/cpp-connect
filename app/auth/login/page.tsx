@@ -4,8 +4,7 @@ import ThemedLogo from "@/components/ThemedLogoClient"
 
 import styles from "./page.module.scss"
 
-import { Button, Flex, Separator, Text } from "@radix-ui/themes"
-import { Heading } from "@react-email/components"
+import { Button, Flex, Heading, Separator, Text } from "@radix-ui/themes"
 import { AuthError } from "next-auth"
 import { redirect } from "next/navigation"
 import React from "react"
