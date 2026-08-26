@@ -12,7 +12,6 @@ import "@radix-ui/themes/utilities.css"
 import { Metadata, Viewport } from "next"
 import { ThemeProvider } from "next-themes"
 import { Inter } from "next/font/google"
-import Head from "next/head"
 import { ReactNode } from "react"
 
 // Next object for information in the HTML head
@@ -44,6 +43,13 @@ export const metadata: Metadata = {
         url: "/favicon-16x16.png",
         sizes: "16x16",
         type: "image/png",
+      },
+    ],
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/safari-pinned-tab.svg",
+        color: "#0000cd",
       },
     ],
   },
@@ -83,11 +89,11 @@ const RootLayout = ({
 }: Readonly<{
   children: ReactNode
 }>) => {
+  // suppressHydrationWarning: next-themes sets `class` and `style` on <html> from a blocking
+  // script before hydration, so the server markup intentionally differs from the client's.
+  // See https://github.com/pacocoursey/next-themes#with-app
   return (
-    <html lang="en">
-      <Head>
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0000cd" />
-      </Head>
+    <html lang="en" suppressHydrationWarning>
       {/* Hack: id added to increase specificity of styles to override margin added by react-scroll */}
       <body className={inter.className} id="body">
         <ThemeProvider attribute="class">

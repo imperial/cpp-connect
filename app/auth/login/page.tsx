@@ -1,19 +1,17 @@
 import { signIn } from "@/auth"
 import Link from "@/components/Link"
+import ThemedLogo from "@/components/ThemedLogoClient"
 
 import styles from "./page.module.scss"
 
-import { Button, Flex, Separator, Text } from "@radix-ui/themes"
-import { Heading } from "@react-email/components"
+import { Button, Flex, Heading, Separator, Text } from "@radix-ui/themes"
 import { AuthError } from "next-auth"
-import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
 import React from "react"
 import { BsBoxArrowRight } from "react-icons/bs"
 
-const ThemedLogo = dynamic(() => import("@/components/ThemedLogo"), { ssr: false })
-
-const LoginPage = async ({ searchParams }: { searchParams?: { callbackUrl?: string } }) => {
+const LoginPage = async (props: { searchParams?: Promise<{ callbackUrl?: string }> }) => {
+  const searchParams = await props.searchParams
   const signInEntraID = async () => {
     "use server"
     try {
