@@ -5,7 +5,7 @@ import { signIn } from "@/auth"
 import { FormPassBackState } from "./types"
 
 import { AccessDenied } from "@auth/core/errors"
-import { isRedirectError } from "next/dist/client/components/redirect"
+import { isRedirectError } from "next/dist/client/components/redirect-error"
 
 export const signInWithMagicLink = async (
   _prevState: FormPassBackState,

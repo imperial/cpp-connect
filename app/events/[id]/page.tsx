@@ -19,7 +19,8 @@ import { notFound } from "next/navigation"
 import React from "react"
 import { BsBoxArrowUpRight, BsFileRichtext, BsPinMap } from "react-icons/bs"
 
-const EventPage = async ({ params }: { params: { id: string } }) => {
+const EventPage = async (props: { params: Promise<{ id: string }> }) => {
+  const params = await props.params
   const session = await auth()
   const id = parseInt(params.id, 10)
 

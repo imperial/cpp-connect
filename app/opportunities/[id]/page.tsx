@@ -17,7 +17,8 @@ import { notFound } from "next/navigation"
 import React from "react"
 import { BsBoxArrowUpRight, BsBriefcase, BsCalendar, BsCheckCircle, BsClock, BsPinMap, BsXCircle } from "react-icons/bs"
 
-const OpportunityPage = async ({ params }: { params: { id: string } }) => {
+const OpportunityPage = async (props: { params: Promise<{ id: string }> }) => {
+  const params = await props.params
   const id = parseInt(params.id, 10)
 
   if (isNaN(id) || id.toString() !== params.id) {

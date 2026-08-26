@@ -40,7 +40,8 @@ const CompanyDetail = ({ title, children }: { title: string; children: React.Rea
   }
 }
 
-const CompanyPage = async ({ params }: { params: { slug: string } }) => {
+const CompanyPage = async (props: { params: Promise<{ slug: string }> }) => {
+  const params = await props.params
   const session = await auth()
   const companyProfile = await prisma.companyProfile.findFirst({
     where: {
