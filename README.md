@@ -1,5 +1,11 @@
 # CPP Connect
 
+This repo and site has now moved to gitlab.doc.ic.ac.uk
+https://gitlab.doc.ic.ac.uk/edtech/cpp-connect
+
+
+
+
 This repository contains the code for Imperial's Department of Computing's Coporate Partnership Programme (CPP) Connect
 platform. CPP Connect is a platform that allows students to connect with companies and find internships, placements and
 graduate roles.
